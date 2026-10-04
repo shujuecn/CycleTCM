@@ -1,0 +1,83 @@
+{
+  "status": "running",
+  "pid": 585447,
+  "started_at": "20261005_042629_774918",
+  "output_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite",
+  "report_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/reports/reproduction/20261005_042629_774918_suite",
+  "queue": [
+    {
+      "model": "global",
+      "seed": 42,
+      "status": "complete",
+      "pid": 585750,
+      "returncode": 0,
+      "seconds": 992.2540611719996,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_042631_378427_code_compat_global_seed42"
+    },
+    {
+      "model": "mllm",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "visual",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "full",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "B",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "BA",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "BU",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "BM",
+      "seed": 42,
+      "status": "pending"
+    },
+    {
+      "model": "B",
+      "seed": 43,
+      "status": "pending"
+    },
+    {
+      "model": "visual",
+      "seed": 43,
+      "status": "pending"
+    },
+    {
+      "model": "full",
+      "seed": 43,
+      "status": "pending"
+    },
+    {
+      "model": "B",
+      "seed": 44,
+      "status": "pending"
+    },
+    {
+      "model": "visual",
+      "seed": 44,
+      "status": "pending"
+    },
+    {
+      "model": "full",
+      "seed": 44,
+      "status": "pending"
+    }
+  ]
+}

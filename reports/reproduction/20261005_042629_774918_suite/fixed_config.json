@@ -1,0 +1,18 @@
+{
+  "profile": "code_compat",
+  "seed": 42,
+  "epochs": 200,
+  "batch_size": 32,
+  "device": "cuda:0",
+  "precision": "fp32",
+  "workers": 4,
+  "learning_rate": 0.0002,
+  "weight_decay": 0.0001,
+  "patience": 50,
+  "min_delta": 0.001,
+  "init": "global_only",
+  "normalize": false,
+  "scheduler_monitor": "train_loss",
+  "limit": 0,
+  "mllm_features_file": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/20261005_041211_284070_qwen_features/all_features.json"
+}
