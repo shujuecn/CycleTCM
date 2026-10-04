@@ -24,18 +24,11 @@ from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models.model_multimodal import CycleTCM, count_parameters, print_model_info
+from train.runtime import add_path_arguments, configure_logging, training_path_config
+from utils.paths import FEATURE_FILE
 
-_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MLLM_FEATURE_DIM = 2560
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(f'train_model.log'),
-        logging.StreamHandler()
-    ]
-)
 logger = logging.getLogger(__name__)
 
 
@@ -729,10 +722,10 @@ def predict_test(model, config, device):
     logger.info(f"Predicting test.json")
     logger.info(f"{'='*80}")
     
-    feature_file = config.get('feature_file', 'feature_all_encoded')
+    feature_file = config.get('feature_file', str(FEATURE_FILE))
     mllm_features_file = config.get('mllm_features_file')
     test_label_file = os.path.join(config['label_dir'], 'test.json')
-    base_dir = config.get('base_dir', os.path.dirname(os.path.dirname(feature_file)))
+    base_dir = config.get('base_dir', os.path.dirname(feature_file))
     
     logger.info("Loading test ID list...")
     with open(test_label_file, 'r', encoding='utf-8') as f:
@@ -851,11 +844,11 @@ def train_model(config):
     logger.info(f"Starting CycleTCM multimodal training (weighted BCE, 7 images + MLLM, syndrome + organ)")
     logger.info(f"{'='*80}")
     
-    feature_file = config.get('feature_file', 'feature_all_encoded.json')
+    feature_file = config.get('feature_file', str(FEATURE_FILE))
     mllm_features_file = config.get('mllm_features_file')
     train_label_file = os.path.join(config['label_dir'], f'train_dataset.json')
     val_label_file = os.path.join(config['label_dir'], f'val_dataset.json')
-    base_dir = config.get('base_dir', os.path.dirname(os.path.dirname(feature_file)))
+    base_dir = config.get('base_dir', os.path.dirname(feature_file))
     
     logger.info("Loading train/val ID lists...")
     with open(train_label_file, 'r', encoding='utf-8') as f:
@@ -1009,19 +1002,17 @@ def train_model(config):
 def main():
 
     parser = argparse.ArgumentParser(description='Train CycleTCM model')
-    parser.add_argument('--output_log', type=str, default=None, help='Path to log file for per-class acc/F1')
+    add_path_arguments(parser, 'multimodal', mllm=True)
     args = parser.parse_args()
+    paths = training_path_config(args)
+    configure_logging(paths['output_dir'])
     
     seed = 42
     set_seed(seed)
     logger.info(f"Random seed: {seed}")
 
     config = {
-        'feature_file': 'feature_all_encoded.json',
-        'mllm_features_file': os.path.join(_PROJECT_ROOT, 'all_features.json'),
-        'base_dir': 'CycleTCM',
-        'label_dir': 'labels/json',
-        'checkpoint_dir': 'temp/checkpoints',
+        **paths,
         'batch_size': 32,
         'num_workers': 4,
         'num_epochs': 200,
@@ -1034,11 +1025,9 @@ def main():
         'early_stopping_min_delta': 0.001
     }
     
-    os.makedirs(config['checkpoint_dir'], exist_ok=True)
-    
     logger.info("="*80)
     logger.info("Starting CycleTCM multimodal (7 images + MLLM qwen_feature, weighted BCE)")
-    logger.info("Feature file: feature_all_encoded.json")
+    logger.info(f"Feature file: {config['feature_file']}")
     logger.info(f"MLLM features: {config['mllm_features_file']}")
     logger.info(f"Train: train_dataset.json")
     logger.info(f"Val: val_dataset.json")
@@ -1131,4 +1120,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

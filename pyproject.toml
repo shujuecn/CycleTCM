@@ -1,0 +1,36 @@
+[project]
+name = "cycletcm"
+version = "0.1.0"
+description = "MLLM-Enhanced Region-Aware Bidirectional Evidence-Based Model for Tongue Diagnosis"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    # --- Deep learning ---
+    "torch>=2.6,<2.7",
+    "torchvision>=0.21,<0.22",
+    "transformers>=4.57,<5",
+    "accelerate>=1.0",
+    "safetensors>=0.4",
+    # --- MLLM backbone download (Qwen3-VL-4B-Instruct) ---
+    "modelscope>=1.20",
+    # --- Vision / metrics / plotting ---
+    "opencv-python-headless>=4.10",
+    "numpy>=1.26",
+    "scikit-learn>=1.4",
+    "matplotlib>=3.8",
+    "pillow>=10",
+    "tqdm>=4.66",
+]
+
+[tool.uv]
+package = false
+
+# NVIDIA driver 550.90.07 == CUDA 12.4, so pin the cu124 PyTorch wheel builds.
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+torchvision = { index = "pytorch-cu124" }

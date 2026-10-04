@@ -2,6 +2,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import sys
+import argparse
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.paths import PROCESSED_DATA_DIR
 
 # Extract bounding box and width/height of foreground contour
 def get_bounding_box_and_xy_delta(img_gray):
@@ -392,7 +397,7 @@ def process_single_image(image_path, output_dirs, r=0.168, r2=0.432, r_liver=Non
         return False
 
 
-def batch_process_images(input_dir, output_base_dir="data", r=0.168, r2=0.432, r_liver=None, spleen_top_sharpness=1.8, spleen_bottom_sharpness=1.3):
+def batch_process_images(input_dir, output_base_dir=str(PROCESSED_DATA_DIR), r=0.168, r2=0.432, r_liver=None, spleen_top_sharpness=1.8, spleen_bottom_sharpness=1.3):
 
     output_dirs = {
         'top_edge': os.path.join(output_base_dir, 'images_heart_lung'),
@@ -423,10 +428,11 @@ def batch_process_images(input_dir, output_base_dir="data", r=0.168, r2=0.432, r
 
 if __name__ == "__main__":
 
-    input_dir = "data/pp"
-    output_base_dir = "data/pp"
-    r = 0.196  # Edge erosion rate
-    r2 = 0.632  # Center rectangle erosion rate
-    r_liver = 0.10  # Liver erosion rate
-    batch_process_images(input_dir, output_base_dir, r=r, r2=r2, r_liver=r_liver)
-        
+    parser = argparse.ArgumentParser(description='Organ-associated tongue region segmentation')
+    parser.add_argument('--input-dir', default=str(PROCESSED_DATA_DIR / 'pp'))
+    parser.add_argument('--output-dir', default=str(PROCESSED_DATA_DIR))
+    parser.add_argument('--r', type=float, default=0.196, help='Edge erosion rate')
+    parser.add_argument('--r2', type=float, default=0.632, help='Center rectangle erosion rate')
+    parser.add_argument('--r-liver', type=float, default=0.10, help='Liver erosion rate')
+    args = parser.parse_args()
+    batch_process_images(args.input_dir, args.output_dir, r=args.r, r2=args.r2, r_liver=args.r_liver)

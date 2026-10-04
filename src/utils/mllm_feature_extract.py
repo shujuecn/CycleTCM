@@ -1,12 +1,16 @@
 """
-Extract features from images_whole using Qwen3-VL-4B-Instruct.
+Extract features from processed whole-tongue images using Qwen3-VL-4B-Instruct.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from utils.paths import MLLM_FEATURES_FILE, PROCESSED_DATA_DIR
 
 import torch
 from PIL import Image
@@ -74,13 +78,13 @@ def main() -> None:
     parser.add_argument(
         "--images-dir",
         type=str,
-        default=str(Path(__file__).resolve().parent / "images_whole"),
+        default=str(PROCESSED_DATA_DIR / "images"),
         help="Directory containing input images",
     )
     parser.add_argument(
         "--output",
         type=str,
-        default=str(Path(__file__).resolve().parent.parent / "all_features.json"),
+        default=str(MLLM_FEATURES_FILE),
         help="Output JSON path",
     )
     parser.add_argument("--max-images", type=int, default=0, help="Process only the first N images; 0 means all")
@@ -91,14 +95,14 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    model_dir = Path(args.model_dir)
+    model_dir = Path(args.model_dir).expanduser().resolve()
     if not model_dir.is_dir():
         raise FileNotFoundError(
             f"Model directory not found: {model_dir}\n"
             "Download weights first, or set QWEN3_VL_MODEL_DIR to your Qwen3-VL-4B-Instruct folder."
         )
 
-    images_dir = Path(args.images_dir)
+    images_dir = Path(args.images_dir).expanduser().resolve()
     if not images_dir.is_dir():
         raise FileNotFoundError(f"Image directory not found: {images_dir}")
 
@@ -173,7 +177,7 @@ def main() -> None:
             }
         )
 
-    out_path = Path(args.output)
+    out_path = Path(args.output).expanduser().resolve()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(records, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"Wrote {len(records)} records -> {out_path}")

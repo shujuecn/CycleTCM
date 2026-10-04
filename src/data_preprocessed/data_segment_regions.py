@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.paths import PROCESSED_DATA_DIR
 
 # Get bounding box and width/height from binary contour, return largest contour
 def get_bounding_box_and_xy_delta(img_gray):
@@ -67,9 +71,9 @@ def process_image(image_path, output_body_dir, output_edge_dir, r):
 def main():
     parser = argparse.ArgumentParser(description='Tongue Edge Segmentation')
     parser.add_argument('--r', type=float, required=True, help='Tongue edge width ratio')
-    parser.add_argument('--input_dir', type=str, default="data/images", help='Directory containing input images')
-    parser.add_argument('--output_body_dir', type=str, default="data/images_body", help='Directory to save body images')
-    parser.add_argument('--output_edge_dir', type=str, default="data/images_edge",  help='Directory to save edge images')
+    parser.add_argument('--input_dir', type=str, default=str(PROCESSED_DATA_DIR / 'pp'), help='Directory containing input images')
+    parser.add_argument('--output_body_dir', type=str, default=str(PROCESSED_DATA_DIR / 'images_body'), help='Directory to save body images')
+    parser.add_argument('--output_edge_dir', type=str, default=str(PROCESSED_DATA_DIR / 'images_edge'), help='Directory to save edge images')
 
     args = parser.parse_args()
 

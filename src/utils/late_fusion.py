@@ -5,7 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from utils.paths import LABEL_DIR, OUTPUT_DIR
 
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -254,24 +258,23 @@ def run_late_fusion(
 
 
 def parse_args() -> argparse.Namespace:
-    project_root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description="Late fusion with linear regression for TCM + LLM predictions.")
     parser.add_argument(
         "--llm-json",
         type=Path,
-        default=project_root / "test_llm.json",
+        default=OUTPUT_DIR / "mllm/test_llm.json",
         help="Path to LLM prediction JSON.",
     )
     parser.add_argument(
         "--tcm-json",
         type=Path,
-        default=project_root / "test_tcm.json",
+        default=OUTPUT_DIR / "visual/test_tcm.json",
         help="Path to TCM prediction JSON.",
     )
     parser.add_argument(
         "--truth-json",
         type=Path,
-        default=project_root / "test_truth.json",
+        default=LABEL_DIR / "test.json",
         help="Path to ground-truth JSON.",
     )
     return parser.parse_args()

@@ -26,28 +26,65 @@ To address these limitations, we propose **CycleTCM**, an MLLM-Enhanced Region-A
 
 **Tips B**: Download the Qwen3-VL backbone before MLLM feature extraction.
 
+The paper analysis, implementation audit, experiment targets, and staged execution plan are documented in [the reproduction plan](docs/reproduction_plan.md).
+
 ## 📚Data Preparation
 
-Place your tongue image dataset and labels under the `src/data` directory. The preprocessing pipeline consists of two steps:
+Raw data defaults to `~/Documents/NuanWorkSpace/Datasets/TongueDx2/release`, containing `list/` CSV splits and `seg/` tongue images. Generated data and experiment outputs live outside `src/`:
 
-**Step 1 — Region segmentation (body & edge).**
+```text
+data/
+  processed/CycleTCM/
+    pp/                         # Segmented images before resizing
+    images/                     # Whole tongue images
+    images_body/, images_edge/
+    images_heart_lung/, images_kidney/, images_liver/, images_spleen/
+    feature_all_encoded.json    # Labels and relative paths to the seven views
+    labels/json/                # train_dataset.json, val_dataset.json, test.json
+  features/all_features.json    # Pooled Qwen vectors
+outputs/
+  visual/, multimodal/, mllm/   # Separate training run directories
+    train.log                   # Training and evaluation log
+    results.log                 # Per-class test metrics
+    checkpoints/                # Reserved checkpoint directory
+  feature_extraction/           # Feature extraction logs
+```
 
-**Step 2 — Organ-associated region segmentation.**
+The defaults are defined in `src/utils/paths.py` relative to the repository, so scripts can run from the repository root, `src/`, or another working directory. `data/` and `outputs/` are excluded from Git.
 
-**Step 3 — MLLM feature extraction (for multimodal training).**
+**Step 1 — Prepare all seven views and the split manifests.** Run from the repository root:
+
+```bash
+python3 prepare_data.py
+# Optional: --raw-data-dir /path/to/TongueDx2/release --output-dir /path/to/processed --workers 8
+```
+
+This applies body/edge segmentation and organ-associated segmentation, then resizes the seven training views to 224×224. Image paths inside the manifest stay relative to the processed dataset directory.
+
+**Step 2 — Extract MLLM features (for multimodal training).**
+
+```bash
+mkdir -p outputs/feature_extraction
+python3 src/utils/mllm_feature_extract.py > outputs/feature_extraction/extract.log 2>&1
+# Optional: --images-dir /path/to/processed/images --output /path/to/all_features.json --model-dir /path/to/Qwen
+```
+
+Existing generated images, split labels, and feature JSONs have been moved into these locations without regenerating them. Previous visual training logs are archived under `outputs/visual/legacy/`; the previous extraction log is under `outputs/feature_extraction/legacy/`. The original `/tmp` logs are also retained.
 
 
 ## ⏳Training the Model
 
-All training scripts should be executed from the `src` directory.
+The examples below run from the repository root. Use `--data-dir` to select another processed dataset, `--feature-file` / `--label-dir` to override individual inputs, and `--output-dir` for a separate experiment. Multimodal and MLLM-only training also accept `--mllm-features-file`.
+
+Training logs and per-class metrics are written under each model's output directory by default. `--output-log` (also accepted as `--output_log`) overrides the metrics filename; relative filenames are resolved under `--output-dir`, while absolute paths are used directly. The current trainers keep the best weights in memory; they do not yet write checkpoint files to disk.
 
 ### Visual Model (AGLFF + UWBMoE)
 
 Train the visual-only CycleTCM using seven regional tongue images:
 
 ```bash
-cd src
-python train/train_model_visual.py --output_log results_visual.log
+python3 src/train/train_model_visual.py
+# Optional: --output-dir outputs/visual/experiment_01 --output-log results_visual.log
 ```
 
 ### Multimodal Model (AGLFF + UWBMoE + MLLM)
@@ -55,8 +92,7 @@ python train/train_model_visual.py --output_log results_visual.log
 Train the full CycleTCM with Qwen3-VL features fused at the representation level:
 
 ```bash
-cd src
-python train/train_model_multimodal.py --output_log results_multimodal.log
+python3 src/train/train_model_multimodal.py
 ```
 
 ### MLLM-Only Baseline
@@ -64,8 +100,7 @@ python train/train_model_multimodal.py --output_log results_multimodal.log
 Train a lightweight MLP classifier on Qwen3-VL features alone:
 
 ```bash
-cd src
-python train/train_model_mllm.py --output_log results_mllm.log
+python3 src/train/train_model_mllm.py
 ```
 
 ## 🎇Late Fusion Strategy
@@ -73,11 +108,8 @@ python train/train_model_mllm.py --output_log results_mllm.log
 For late-fusion strategy of MLLM and visual model predictions, please refer to:
 
 ```bash
-cd src
-python utils/late_fusion.py \
+python3 src/utils/late_fusion.py \
     --llm-json [LLM_PREDICTIONS] \
     --tcm-json [TCM_PREDICTIONS] \
     --truth-json [GROUND_TRUTH]
 ```
-
-
