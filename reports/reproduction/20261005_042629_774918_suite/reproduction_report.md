@@ -10,6 +10,7 @@ code_compat 保留独立七图增强、无 ImageNet normalization、global-only 
 | 模型 | seed | best epoch (0-based) | 证候 Acc / F1 (%) | 脏腑 Acc / F1 (%) |
 | --- | ---: | ---: | ---: | ---: |
 | global | 42 | 104 | 85.32 / 69.88 | 78.79 / 81.18 |
+| mllm | 42 | 30 | 74.32 / 62.09 | 69.68 / 77.20 |
 
 六组消融和主模型多 seed 的运行状态见 `run_status.json`；未完成时不宣称整个复现完成。
 TVMoE 等外部实现/同 split 逐图预测、论文 Sankey 8×5 公式仍缺失，不能复现对应比较和图。

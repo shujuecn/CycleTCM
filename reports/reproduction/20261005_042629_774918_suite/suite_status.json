@@ -17,7 +17,11 @@
     {
       "model": "mllm",
       "seed": 42,
-      "status": "pending"
+      "status": "complete",
+      "pid": 634460,
+      "returncode": 0,
+      "seconds": 39.037019969999164,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044306_337121_code_compat_mllm_seed42"
     },
     {
       "model": "visual",
