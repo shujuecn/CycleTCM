@@ -1,12 +1,14 @@
 """Prepare seven tongue views and split manifests outside the source tree."""
 
 import os, sys, csv, json, argparse
+from pathlib import Path
 import cv2
 from multiprocessing import Pool
 
-SRC = os.path.dirname(os.path.abspath(__file__))
+SRC = str(Path(__file__).resolve().parents[1])
 sys.path.insert(0, os.path.join(SRC, 'src'))
 from utils.paths import PROCESSED_DATA_DIR, RAW_DATA_DIR
+from utils.experiment import run_directory
 from data_preprocessed import data_segment_regions as reg
 from data_preprocessed import data_segment_organs as org
 
@@ -63,13 +65,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--raw-data-dir', default=str(RAW_DATA_DIR),
                         help='TongueDx2 release directory containing list/ and seg/')
-    parser.add_argument('--output-dir', default=str(PROCESSED_DATA_DIR),
-                        help='Processed dataset directory')
+    parser.add_argument('--output-dir', default=str(PROCESSED_DATA_DIR.parent),
+                        help='Parent for a new timestamp-prefixed processed dataset')
     parser.add_argument('--workers', type=int, default=8, help='Number of preprocessing workers')
     args = parser.parse_args()
     if args.workers < 1:
         parser.error('--workers must be at least 1')
-    configure_paths(args.raw_data_dir, args.output_dir)
+    configure_paths(args.raw_data_dir, run_directory(args.output_dir, 'CycleTCM'))
     ensure_dirs()
     rows = load_rows()
     print('rows', len(rows))

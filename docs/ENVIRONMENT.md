@@ -43,31 +43,17 @@ Downloading: 100%|##########| 15/15 [12:36<00:00, 50.43s/file]
 ~/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master/
 ```
 
-对应的特征抽取也已完成（`/tmp/mllm_extract.log`）：5109 张图全部处理，`Wrote 5109 records -> all_features.json`，
-`last_hidden_states[-1]` 形状 `(1, 276, 2560)`，池化 2560 维。所以**多模态训练无需重新抽特征**。
-
-### 路径不匹配的坑
-
-`src/utils/mllm_feature_extract.py` 的默认路径写的是旧版 ModelScope 布局
-`~/.cache/modelscope/hub/Qwen/Qwen3-VL-4B-Instruct`，**该目录不存在**。原因是 modelscope 1.40.1
-改用了新布局：
+旧特征缓存已存在，但本次检查发现 Transformers 4.57.6 与旧提取版本 5.17.0 的输出明显不同，不能直接认定数值一致。当前锁定环境已全量重提 5109 图，新文件为：
 
 ```text
-{$MODELSCOPE_CACHE 或 ~/.cache/modelscope}/{repo_type}s/{owner}--{name}/snapshots/{revision}
+data/features/20261005_041211_284070_qwen_features/all_features.json
 ```
 
-`src/utils/download_qwen_vl.py` 里传的 `cache_dir=~/.cache/modelscope/hub` 在 1.40.1 下已不再决定最终落盘位置，
-故权重落到了 `~/.cache/modelscope/models/`。直接运行抽取脚本会报 `FileNotFoundError`，二选一绕过：
-
-```bash
-export QWEN3_VL_MODEL_DIR=~/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master
-# 或
-uv run python src/utils/mllm_feature_extract.py --model-dir ~/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master
-```
+该时间戳目录保存权重、prompt、逐图输入/token 哈希和版本；旧缓存未覆盖。详情见 [执行记录](reproduction_progress.md)。提取脚本已使用正确的 ModelScope 默认目录。
 
 权重缺失时用 `uv run python src/utils/download_qwen_vl.py` 重新下载（约 8 G）。
 
-> 注：因特征已抽取完毕，第 4 节命令 2 仅在换权重或换图像预处理后才需重跑。
+> 特征抽取与分类训练顺序运行；模型、processor、prompt 或依赖版本发生变化时，先做小样本数值核查。
 
 ## 4. 常用命令
 
@@ -75,11 +61,10 @@ uv run python src/utils/mllm_feature_extract.py --model-dir ~/.cache/modelscope/
 
 ```bash
 # 1) 生成七视图 + 划分清单
-uv run python prepare_data.py
+uv run --no-sync python scripts/prepare_data.py
 
 # 2) 抽取 MLLM 特征（多模态训练前置步骤）
-mkdir -p outputs/feature_extraction
-uv run python src/utils/mllm_feature_extract.py > outputs/feature_extraction/extract.log 2>&1
+uv run --no-sync python src/utils/mllm_feature_extract.py
 
 # 3) 训练（三个入口，默认 200 epoch）
 uv run python src/train/train_model_visual.py        # AGLFF + UWBMoE
@@ -91,8 +76,7 @@ uv run python src/utils/late_fusion.py \
     --llm-json [LLM_PREDICTIONS] --tcm-json [TCM_PREDICTIONS] --truth-json [GROUND_TRUTH]
 ```
 
-三个训练脚本通用参数：`--data-dir`、`--feature-file`、`--label-dir`、`--output-dir`、`--output-log`
-（多模态与 mllm-only 另有 `--mllm-features-file`）。日志与 per-class 指标写入各自 `--output-dir`。
+三个入口共享 `src/train/reproduce.py`：支持 `--config`、`--seed`、`--epochs`、`--batch-size`、`--precision`、`--resume`、`--evaluate` 与数据路径参数。`--output-dir` 为父目录，每次执行自动创建时间戳子目录。metrics 为结构化 JSON/CSV，不再使用旧 `--output-log`。multimodal / mllm 训练请显式传入经过核查的新 `--mllm-features-file`。
 
 ## 5. 路径默认值
 

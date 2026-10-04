@@ -76,15 +76,15 @@ Existing generated images, split labels, and feature JSONs have been moved into 
 
 The examples below run from the repository root. Use `--data-dir` to select another processed dataset, `--feature-file` / `--label-dir` to override individual inputs, and `--output-dir` for a separate experiment. Multimodal and MLLM-only training also accept `--mllm-features-file`.
 
-Training logs and per-class metrics are written under each model's output directory by default. `--output-log` (also accepted as `--output_log`) overrides the metrics filename; relative filenames are resolved under `--output-dir`, while absolute paths are used directly. The current trainers keep the best weights in memory; they do not yet write checkpoint files to disk.
+Each execution creates a new `YYYYMMDD_HHMMSS_microseconds_...` directory under `--output-dir` (Asia/Shanghai). The shared trainer saves `best.pt`, `last.pt`, configuration, environment, history, per-image validation/test predictions and per-class metrics. See [the execution record](docs/reproduction_progress.md) for the fixed protocol and current progress.
 
 ### Visual Model (AGLFF + UWBMoE)
 
 Train the visual-only CycleTCM using seven regional tongue images:
 
 ```bash
-python3 src/train/train_model_visual.py
-# Optional: --output-dir outputs/visual/experiment_01 --output-log results_visual.log
+uv run --no-sync python src/train/train_model_visual.py --config configs/reproduction/code_compat.json
+# Engineering smoke only: --epochs 1 --limit 32 --init none
 ```
 
 ### Multimodal Model (AGLFF + UWBMoE + MLLM)
@@ -92,7 +92,7 @@ python3 src/train/train_model_visual.py
 Train the full CycleTCM with Qwen3-VL features fused at the representation level:
 
 ```bash
-python3 src/train/train_model_multimodal.py
+uv run --no-sync python src/train/train_model_multimodal.py --config configs/reproduction/code_compat.json --mllm-features-file [VERIFIED_FEATURE_JSON]
 ```
 
 ### MLLM-Only Baseline
@@ -100,7 +100,7 @@ python3 src/train/train_model_multimodal.py
 Train a lightweight MLP classifier on Qwen3-VL features alone:
 
 ```bash
-python3 src/train/train_model_mllm.py
+uv run --no-sync python src/train/train_model_mllm.py --config configs/reproduction/code_compat.json --mllm-features-file [VERIFIED_FEATURE_JSON]
 ```
 
 ## 🎇Late Fusion Strategy

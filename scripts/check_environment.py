@@ -33,8 +33,8 @@ def main():
     args = parser.parse_args()
     if args.batch_size < 2 or args.workers < 0:
         parser.error('batch-size must be >=2 (BatchNorm); workers must be >=0')
-    output = args.output_dir.expanduser().resolve()
-    output.mkdir(parents=True, exist_ok=True)
+    from utils.experiment import run_directory
+    output = run_directory(args.output_dir, f'batch{args.batch_size}')
     os.environ.setdefault('MPLCONFIGDIR', str(output / 'matplotlib-cache'))
     report = {
         'timestamp': datetime.now(ZoneInfo('Asia/Shanghai')).isoformat(),
@@ -189,23 +189,17 @@ def main():
     check('local_imagenet_weights', pretrained)
 
     def model_step(name):
-        module = importlib.import_module(f'train.train_model_{name}')
-        transform = transforms.ToTensor()
-        selected_ids = [records[0]['id'], records[1]['id']]
-        if name == 'mllm':
-            dataset = module.TongueMLLMDataset(str(FEATURE_FILE), str(MLLM_FEATURES_FILE), selected_ids)
-            model = module.MLLM_Model()
-        else:
-            kwargs = {'base_dir': str(PROCESSED_DATA_DIR), 'transform': transform, 'id_list': selected_ids}
-            if name == 'multimodal':
-                kwargs['mllm_features_file'] = str(MLLM_FEATURES_FILE)
-            dataset = module.TongueImageDataset(str(FEATURE_FILE), **kwargs)
-            model = module.CycleTCM(pretrained=False)
+        from train.data import TongueDataset, load_features
+        from train.reproduce import build_model, DEFAULTS
+        model_name = 'full' if name == 'multimodal' else name
+        features = load_features(MLLM_FEATURES_FILE) if name in ('mllm','multimodal') else None
+        dataset = TongueDataset(records[:2], PROCESSED_DATA_DIR, model_name, features)
+        model = build_model(dict(DEFAULTS, model=model_name, init='none'))
         loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size,
                                             num_workers=args.workers, shuffle=False)
         batch = next(iter(loader))
         # Repeat a small real-data batch if a larger resource smoke test was requested.
-        size = batch['syndrome_labels'].shape[0]
+        size = batch['labels'].shape[0]
         batch = {key: value.repeat((args.batch_size + size - 1) // size,
                                     *([1] * (value.dim() - 1)))[:args.batch_size].cuda()
                  for key, value in batch.items() if isinstance(value, torch.Tensor)}
@@ -223,8 +217,8 @@ def main():
         syndrome, organ = model(*inputs)
         assert syndrome.shape == (args.batch_size, 8) and organ.shape == (args.batch_size, 5)
         assert torch.isfinite(syndrome).all() and torch.isfinite(organ).all()
-        loss = (torch.nn.functional.binary_cross_entropy_with_logits(syndrome, batch['syndrome_labels'])
-                + torch.nn.functional.binary_cross_entropy_with_logits(organ, batch['organ_labels']))
+        loss = (torch.nn.functional.binary_cross_entropy_with_logits(syndrome, batch['labels'][:, :8])
+                + torch.nn.functional.binary_cross_entropy_with_logits(organ, batch['labels'][:, 8:]))
         loss.backward()
         assert all(torch.isfinite(parameter.grad).all() for parameter in model.parameters()
                    if parameter.grad is not None)
@@ -245,13 +239,13 @@ def main():
             torch.cuda.empty_cache()
 
     def metrics():
-        from train.train_model_visual import calculate_metrics
-        truth = np.array([[1, 0], [0, 1], [1, 1], [0, 0]])
-        probabilities = np.array([[0.9, 0.2], [0.6, 0.8], [0.7, 0.4], [0.2, 0.3]])
-        result = calculate_metrics(probabilities, truth)
-        assert np.isclose(result['per_class_acc_mean'], 0.75)
-        assert np.isclose(result['f1'], (0.8 + 2 / 3) / 2)
-        return {'macro_accuracy': float(result['per_class_acc_mean']), 'macro_f1': float(result['f1'])}
+        from train.evaluation import metrics as calculate_metrics
+        truth = np.tile(np.array([[1,0],[0,1],[1,1],[0,0]]),(1,7))[:,:13]
+        probabilities = np.tile(np.array([[.9,.2],[.6,.8],[.7,.4],[.2,.3]]),(1,7))[:,:13]
+        result = calculate_metrics(truth,probabilities)
+        assert np.isclose(result['syndrome']['acc'], .75)
+        assert np.isclose(result['syndrome']['f1'], (.8+2/3)/2)
+        return {'macro_accuracy': result['syndrome']['acc'], 'macro_f1': result['syndrome']['f1']}
 
     check('sklearn_metrics', metrics)
 
