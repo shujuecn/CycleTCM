@@ -1,1 +1,28 @@
-{}
+{
+  "visual_vs_full_seed42": {
+    "definition": "second minus first; paired subject resampling",
+    "iterations": 10000,
+    "seed": 20261005,
+    "subjects": 895,
+    "first_predictions_sha256": "adfd6246b5719d4d6ad93917589f6663d104b86c8d14597ebd5520cac38ad02b",
+    "second_predictions_sha256": "fb2264f54564847317337c0df90051791d647bcde77375def8488ecf7d00baf6",
+    "ci95_pp": {
+      "syndrome_acc": [
+        -2.3743016759776525,
+        -0.6703910614525133
+      ],
+      "syndrome_f1": [
+        -5.250793067283315,
+        -1.3526131467941696
+      ],
+      "organ_acc": [
+        -3.9776536312849164,
+        -1.452513966480451
+      ],
+      "organ_f1": [
+        -3.5179905188103193,
+        -1.2317989973433026
+      ]
+    }
+  }
+}
