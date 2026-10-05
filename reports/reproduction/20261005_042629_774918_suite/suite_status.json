@@ -1,6 +1,5 @@
 {
   "status": "running",
-  "pid": 585447,
   "started_at": "20261005_042629_774918",
   "output_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite",
   "report_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/reports/reproduction/20261005_042629_774918_suite",
@@ -89,7 +88,10 @@
     {
       "model": "visual",
       "seed": 43,
-      "status": "pending"
+      "status": "complete",
+      "pid": 777719,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43",
+      "returncode": 0
     },
     {
       "model": "full",

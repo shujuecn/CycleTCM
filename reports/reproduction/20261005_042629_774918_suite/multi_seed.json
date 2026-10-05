@@ -21,5 +21,28 @@
       "mean": 81.16373775788425,
       "std_sample": 0.21854491423826636
     }
+  },
+  {
+    "model": "visual",
+    "seeds": [
+      42,
+      43
+    ],
+    "syndrome_acc_percent": {
+      "mean": 84.81145251396649,
+      "std_sample": 0.06913055123331915
+    },
+    "syndrome_f1_percent": {
+      "mean": 71.03684572603099,
+      "std_sample": 0.6158672965265706
+    },
+    "organ_acc_percent": {
+      "mean": 79.54189944134077,
+      "std_sample": 0.01580126885332579
+    },
+    "organ_f1_percent": {
+      "mean": 82.07735236555062,
+      "std_sample": 0.01636077139054085
+    }
   }
 ]
