@@ -90,3 +90,17 @@ uv run --no-sync python scripts/verify_resume.py \
 保留这些历史 revision，新增明确说明续训、状态与 provenance 修正的提交，避免改变已有 environment.json 中引用的 revision。所有发布入口均列出具体文件路径，并用 git commit --only 提交指定文件；本次也按此执行。原始 OpenCode 会话与无关 HTML 不纳入修复提交。
 
 现有 GPU visual/44 与控制器继续运行，不为代码核查重启。20:04 已到 epoch 76，已完成正式运行仍为 12/14，之后按固定队列启动 full/44。运行中的进程保持启动时的代码；后续新进程读取修正后的源码。报告跟踪器只在报告与完成队列一致后提交并推送明确列出的报告文件。完成后的权重继续只保留 best，日志、配置和元数据保留。
+
+## 2026-10-05 论文式报告与定量、定性分析准备
+
+22:03 的阶段性分析基于实际完成的 13/14 个正式运行，visual/44 已完成；full/44 尚在训练，不提前计入。论文式报告为 [paper_report.md](../reports/reproduction/20261005_220342_355189_analysis/paper_report.md)，包含摘要、方法、结果、讨论、结论、参考材料及运行附录。报告区分论文引用值、本地单种子消融、多种子均值±样本标准差和同种子的配对 bootstrap 区间，不将 full 的两种子均值视为最终三种子统计。
+
+`scripts/analyze_reproduction.py` 从完成队列及其保存的 895 图预测生成独立时间戳报告。全部 13 个运行的逐类指标及主要 macro 指标均由概率精确重算并核对，样本、标签、subject、权重哈希引用对齐。新增五类图：多种子分布、论文/本地消融对照、配对效应森林图、类别构成及条件错误率、逐类 F1 差值；连同原有三类图共八张定量图，新增图同时输出 PNG 与 PDF。来源文件哈希、完整环境快照、逐类统计及训练资源另存 source_manifest.json、per_class_analysis.csv、resources.csv。报告检查见 `outputs/verification/20261005_220558_589655_scientific_report/verification.json`。
+
+定性选择使用 visual/42 为参考，固定 TonguePale、Crack、Heart、Kidney 四个标签，每个 TP/TN/FP/FN cell 选择词典序首个样本，在 visual/42 与 full/42 的同一样本上对照。共 16 个标签—样本组合、32 张真实 GradCAM、四张三列组合图。源 metadata 位于 `outputs/qualitative/20261005_214746_808479_gradcam_visual_seed42_confusion/` 与 `20261005_215317_840103_gradcam_full_seed42_confusion/`；组合图路径由报告中的相对链接给出。
+
+GradCAM 使用 CPU，不占训练 GPU；针对正类 logit、全局 layer4[-1]、每图独立归一化。CPU 单图与正式 GPU batch 概率最大差为 0.000675828，所选 32 个模型—样本组合均未改变阈值分类。metadata 同时保留原正式概率和解释前向概率。已修正开发时过严的 1e-4 概率断言并保留失败目录说明，不把不同硬件的近似前向声称为逐元素相同。报告使用 C01–C16 代号，原始图像、CAM、样本映射及逐图预测文件保留本地。
+
+目前已完成的 visual/full 配对 seeds 42/43 中，完整模型证候/脏腑 F1 平均变化为 -3.26/-2.19 pp，对应区间均低于 0；不作未经控制的差异来源归因。Spleen 的六个阴性样本在 seed42 两种模型中均被误判为阳性，FurThick 也存在高 F1 与较高 FPR 并存的现象。固定定性集合里 full 修正三个 visual 错例，同时新增三个错误；这一人为分层集合不能估计总体增益。
+
+跟踪器新增 `--analysis-qualitative VISUAL_METADATA FULL_METADATA`，只在 suite 和报告均完成后自动生成新的时间戳最终报告并推送；不重启训练控制器。完成触发一次、传递固定样本 metadata、传递 publish、分析失败时保存 failed 状态均已验证，见 `outputs/verification/20261005_220225_075009_analysis_tracker/verification.json`。新报告提交依然使用明确文件列表和 git commit --only；开发阶段的渲染草稿保留于 outputs/analysis_drafts。

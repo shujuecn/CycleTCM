@@ -21,6 +21,8 @@ def main():
     parser.add_argument('--suite', type=Path, required=True)
     parser.add_argument('--controller-pid', type=int, required=True)
     parser.add_argument('--publish', action='store_true')
+    parser.add_argument('--analysis-qualitative', type=Path, nargs=2, metavar=('VISUAL', 'FULL'),
+                        help='Generate the scientific report on suite completion using these fixed CAM metadata files')
     args = parser.parse_args()
     suite = args.suite.resolve()
     report = ROOT / 'reports/reproduction' / suite.name
@@ -67,6 +69,13 @@ def main():
             if queue_state['status'] == 'failed':
                 raise RuntimeError('Training controller reported failure; inspect suite logs')
             if ready and queue_state['status'] == 'complete':
+                if args.analysis_qualitative:
+                    command = [sys.executable, str(ROOT / 'scripts/analyze_reproduction.py'),
+                               '--suite', str(suite), '--qualitative-metadata',
+                               *map(str, args.analysis_qualitative)]
+                    if args.publish:
+                        command.append('--publish')
+                    subprocess.run(command, cwd=ROOT, check=True)
                 state['status'] = 'complete'
                 break
             os.kill(args.controller_pid, 0)
