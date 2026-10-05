@@ -63,6 +63,11 @@ def main():
         run_paths.extend(created)
         entry.update(status='complete' if returncode==0 else 'failed',returncode=returncode,
                      seconds=time.monotonic()-started,run=str(created[0]))
+        if returncode == 0:
+            resumable = created[0] / 'checkpoints/last.pt'
+            if resumable.exists():
+                entry['last_checkpoint_bytes_removed'] = resumable.stat().st_size
+                resumable.unlink()
         write_json(output/'suite_status.json',state)
         build_report(run_paths,report)
         write_json(report/'suite_status.json',state)
