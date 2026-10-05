@@ -104,3 +104,21 @@ GradCAM 使用 CPU，不占训练 GPU；针对正类 logit、全局 layer4[-1]�
 目前已完成的 visual/full 配对 seeds 42/43 中，完整模型证候/脏腑 F1 平均变化为 -3.26/-2.19 pp，对应区间均低于 0；不作未经控制的差异来源归因。Spleen 的六个阴性样本在 seed42 两种模型中均被误判为阳性，FurThick 也存在高 F1 与较高 FPR 并存的现象。固定定性集合里 full 修正三个 visual 错例，同时新增三个错误；这一人为分层集合不能估计总体增益。
 
 跟踪器新增 `--analysis-qualitative VISUAL_METADATA FULL_METADATA`，只在 suite 和报告均完成后自动生成新的时间戳最终报告并推送；不重启训练控制器。完成触发一次、传递固定样本 metadata、传递 publish、分析失败时保存 failed 状态均已验证，见 `outputs/verification/20261005_220225_075009_analysis_tracker/verification.json`。新报告提交依然使用明确文件列表和 git commit --only；开发阶段的渲染草稿保留于 outputs/analysis_drafts。
+
+## 2026-10-05 固定队列完成与最终报告
+
+22:23 固定队列已完成 14/14 个正式运行，全部覆盖 895 位测试受试者；B、visual、full 的 seeds 42/43/44 均齐全。最终论文式报告为 [paper_report.md](../reports/reproduction/20261005_222333_753567_analysis/paper_report.md)，阶段版另行保留。最终报告与定量图已由跟踪器自动生成，提交 `7065b37` 并推送；固定队列汇总提交为 `374330b`。
+
+| 模型（三种子） | 证候 Acc / F1 (%)，均值±样本 SD | 脏腑 Acc / F1 (%)，均值±样本 SD |
+| --- | --- | --- |
+| B | 84.93±0.58 / 70.29±0.94 | 78.69±0.09 / 81.00±0.32 |
+| visual | 84.54±0.47 / 70.84±0.56 | 79.12±0.73 / 81.78±0.51 |
+| full | 82.97±0.24 / 67.15±1.14 | 76.95±0.16 / 79.68±0.40 |
+
+完整模型相对纯视觉的配对三种子 F1 平均变化为 -3.68/-2.10 pp；六组本地配对 bootstrap 的定义、样本和哈希均保留。此结论限定于本次固定协议，不宣称复现了论文的多模态增益，也不对差异来源作未经控制的因果归因。最终检查见 `outputs/verification/20261005_222831_471708_final_scientific_report/verification.json`：14 个运行、三种子统计、六个配对区间、报告链接及图形均通过检查。
+
+收尾时发现原控制器、full/44 训练和旧跟踪器均已退出，套件状态仍为 running，最后训练日志停在 22:09:41 的 epoch124。日志无 Python 错误堆栈，所检查的内核日志也无对应记录，退出原因无法确认。22:18 启动新控制器和报告跟踪器，记录于 `outputs/tracking/20261005_221810_503750_suite_resume_with_analysis/launch.json`；使用保存的 last.pt 从 epoch125 续训，继承 best_epoch=80、counter=44，至 epoch130 按 patience=50 结束。正式完成目录为 `20261005_221822_932720_code_compat_full_seed44`，继承的 history 连续为 epoch0–130，resume.json 保存来源 checkpoint 与 best 的哈希。
+
+完成评价和最终报告后，核对旧 full/44 来源的 last/best 文件哈希及新目录最优权重哈希，删除旧目录的过时 checkpoint，释放 7.58 GiB；来源环境、配置、日志、历史和命令记录均保留，不删除目录。清单为 `outputs/cleanup/20261005_222835_404787_full44_resume_source_weights/cleanup.json`。14 个正式完成目录均只有 best.pt；训练控制器及报告跟踪器已结束，跟踪状态为 complete。
+
+主要结果、六组消融及预设三种子训练已经完成。本文定性对照覆盖四个标签的固定正确/错误样本，并非论文 13 类解释图的全量精确复现；外部 SOTA 的同 split 实现/预测与论文 Sankey 提取公式仍缺失，整个 P5 不标记为全部完成。
