@@ -1,0 +1,353 @@
+{
+  "created_at": "2026-10-05T23:00:55.671311+08:00",
+  "branch": "shujuecn",
+  "status": "complete",
+  "entries": [
+    {
+      "path": "outputs/reproduction/20261005_041044_651231_code_compat_mllm_seed42/checkpoints/best.pt",
+      "reason": "completed engineering smoke checkpoint; retain logs, config, metrics and provenance",
+      "files": 1,
+      "bytes": 37913154,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/reproduction/20261005_041943_418153_code_compat_mllm_seed42/checkpoints/best.pt",
+      "reason": "completed engineering smoke checkpoint; retain logs, config, metrics and provenance",
+      "files": 1,
+      "bytes": 37913154,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/reproduction/20261005_041955_363346_code_compat_visual_seed42/checkpoints/best.pt",
+      "reason": "completed engineering smoke checkpoint; retain logs, config, metrics and provenance",
+      "files": 1,
+      "bytes": 1996558474,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200425_921336_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200425_921336_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 113745374,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200429_925854_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200429_925854_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 113745950,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200433_643622_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200433_643622_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 113745822,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200436_296814_controller_resume/20261005_200425_921336_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 4,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200436_502543_controller_failure/20261005_200425_921336_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 4,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200829_456068_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200829_456068_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 113745374,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200833_363908_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200833_363908_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 113745950,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200837_063422_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200837_063422_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 113745822,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200841_198959_code_compat_mllm_seed73/checkpoints/best.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 37912386,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200843_184204_controller_resume/20261005_200829_456068_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 4,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200843_385348_controller_failure/20261005_200829_456068_code_compat_mllm_seed73/checkpoints/last.pt",
+      "reason": "temporary resume regression checkpoint; retain verification results and run metadata",
+      "files": 1,
+      "bytes": 4,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/analysis_drafts/20261005_215518_967138_analysis",
+      "reason": "superseded scientific report rendering draft",
+      "files": 24,
+      "bytes": 1347347,
+      "record_before_removal": {
+        "analysis.json": {
+          "completed": 13,
+          "planned": 14
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/analysis_drafts/20261005_220050_391289_analysis",
+      "reason": "superseded scientific report rendering draft",
+      "files": 24,
+      "bytes": 1348960,
+      "record_before_removal": {
+        "analysis.json": {
+          "completed": 13,
+          "planned": 14
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_102123_637694_gradcam_visual_seed42",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 0,
+      "bytes": 0,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_102140_056246_gradcam_visual_seed42",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 0,
+      "bytes": 0,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_102212_169827_gradcam_visual_seed42",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 3,
+      "bytes": 213960,
+      "record_before_removal": {
+        "metadata.json": {
+          "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044348_211957_code_compat_visual_seed42",
+          "selection_rule": "lexically first correct Crack positive and TonguePale negative",
+          "checkpoint_sha256": null
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_102307_018643_gradcam_visual_seed42",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 3,
+      "bytes": 214022,
+      "record_before_removal": {
+        "metadata.json": {
+          "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044348_211957_code_compat_visual_seed42",
+          "selection_rule": "lexically first correct Crack positive and TonguePale negative",
+          "checkpoint_sha256": "9f96a375857787b238facc9ff6cdb4b4bfa2f287d64ecef27a4ad9a5c1e2aa18"
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_191359_522751_gradcam_full_seed43",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 3,
+      "bytes": 216323,
+      "record_before_removal": {
+        "metadata.json": {
+          "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_163636_597466_code_compat_full_seed43",
+          "selection_rule": "lexically first correct Crack positive and TonguePale negative",
+          "checkpoint_sha256": "3076e6ebc94b642769c7ac236a6574f1d7b6ccbc3f373dd899385dd422ae66ee"
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_214507_350437_gradcam_visual_seed42_confusion",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 5,
+      "bytes": 623609,
+      "record_before_removal": {
+        "status.json": {
+          "status": "failed",
+          "reason": "An overly strict 1e-4 CPU/GPU probability assertion stopped generation. Replaced by explicit saved-test and CAM-forward probability records; complete rerun has no selected classification flips.",
+          "superseded_by": "outputs/qualitative/20261005_214746_808479_gradcam_visual_seed42_confusion"
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_215527_903628_paired_confusion",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 5,
+      "bytes": 9251808,
+      "record_before_removal": {
+        "metadata.json": {}
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_220059_014260_paired_confusion",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 5,
+      "bytes": 9251808,
+      "record_before_removal": {
+        "metadata.json": {}
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/qualitative/20261005_220351_215506_paired_confusion",
+      "reason": "superseded or incomplete qualitative output; keep final paired cases and both source heatmap sets",
+      "files": 5,
+      "bytes": 9251808,
+      "record_before_removal": {
+        "metadata.json": {}
+      },
+      "action": "removed"
+    },
+    {
+      "path": "reports/reproduction/20261005_220342_355189_analysis",
+      "reason": "13/14 intermediate report replaced by final 14/14 report; historical version remains in Git e38d3a6",
+      "files": 24,
+      "bytes": 1338831,
+      "record_before_removal": {
+        "analysis.json": {
+          "completed": 13,
+          "planned": 14
+        }
+      },
+      "action": "removed"
+    },
+    {
+      "path": "outputs/environment/20261005_042048_132176_batch2/matplotlib-cache",
+      "reason": "generated matplotlib runtime font cache",
+      "files": 1,
+      "bytes": 255463,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/environment/20261005_042101_913479_batch8/matplotlib-cache",
+      "reason": "generated matplotlib runtime font cache",
+      "files": 1,
+      "bytes": 255463,
+      "record_before_removal": {},
+      "action": "removed"
+    },
+    {
+      "path": "outputs/environment/20261005_042115_092726_batch32/matplotlib-cache",
+      "reason": "generated matplotlib runtime font cache",
+      "files": 1,
+      "bytes": 255463,
+      "record_before_removal": {},
+      "action": "removed"
+    }
+  ],
+  "removed_files": 124,
+  "removed_bytes": 3054070657,
+  "protected_formal_runs": 14,
+  "retained_report": "reports/reproduction/20261005_222333_753567_analysis",
+  "retained_qualitative_directories": [
+    "outputs/qualitative/20261005_222345_531999_paired_confusion",
+    "outputs/qualitative/20261005_214746_808479_gradcam_visual_seed42_confusion",
+    "outputs/qualitative/20261005_215317_840103_gradcam_full_seed42_confusion"
+  ],
+  "policy": "Retain final best weights, predictions, logs, provenance, data audit and verification records; remove superseded reports, qualitative renders, drafts and engineering checkpoints. No data, source code, user files or Git history removed.",
+  "verification": {
+    "protected_metadata_byte_identical": true,
+    "formal_best_weights_size_and_mtime_unchanged": true,
+    "all_requested_paths_removed": true,
+    "final_completed_runs": 14,
+    "predictions_recompute_saved_metrics_exactly": true,
+    "all_formal_runs_keep_only_best": true,
+    "final_source_manifest_hashes_match": true,
+    "final_qualitative_metadata_hashes_match": true,
+    "markdown_links_resolve": 29
+  }
+}

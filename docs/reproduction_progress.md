@@ -50,7 +50,7 @@ full/43 证候 Acc/F1=82.84%/67.39%，脏腑 Acc/F1=77.12%/80.07%；B 的 seeds 
 
 权重压缩清单为 `outputs/cleanup/20261005_185917_808971_completed_model_only_checkpoints/cleanup.json`；清理时验证模型 tensor 字节一致，并同步更换所有引用的文件哈希。独立 CPU 加载压缩后的 mllm/42 权重、评价全部 895 测试图，阈值分类与原结果完全一致，最大概率差 4.7132e-7；验证文件为 `outputs/verification/20261005_191303_675867_code_compat_mllm_seed42_eval/verification.json`。
 
-新增 full/43 固定规则 GradCAM 位于 `outputs/qualitative/20261005_191359_522751_gradcam_full_seed43/`；metadata 记录样本、标签、概率、目标层与权重哈希。现有 GradCAM 展示正确样本，错误样本分析及外部 SOTA/Sankey 材料仍属于 P5 待办。
+新增 full/43 固定规则 GradCAM 位于 `outputs/qualitative/20261005_191359_522751_gradcam_full_seed43/`；metadata 记录样本、标签、概率、目标层与权重哈希。当时的 GradCAM 展示正确样本，错误样本分析及外部 SOTA/Sankey 材料尚待补充；该早期图组后来由 seed42 固定正确/错误样本对照取代，整理时已清理。
 
 续跑脚本本身没有自动发布；`scripts/track_reproduction_suite.py` 跟踪现有控制器，待报告与完成队列一致后将报告单独提交并推送 fork/shujuecn，最终标记跟踪完成。跟踪记录使用新的时间戳目录 `outputs/tracking/`；失败时记录明确错误，不将未完成运行提前计入。
 
@@ -93,21 +93,21 @@ uv run --no-sync python scripts/verify_resume.py \
 
 ## 2026-10-05 论文式报告与定量、定性分析准备
 
-22:03 的阶段性分析基于实际完成的 13/14 个正式运行，visual/44 已完成；full/44 尚在训练，不提前计入。论文式报告为 [paper_report.md](../reports/reproduction/20261005_220342_355189_analysis/paper_report.md)，包含摘要、方法、结果、讨论、结论、参考材料及运行附录。报告区分论文引用值、本地单种子消融、多种子均值±样本标准差和同种子的配对 bootstrap 区间，不将 full 的两种子均值视为最终三种子统计。
+22:03 的阶段性分析基于实际完成的 13/14 个正式运行，visual/44 已完成；full/44 尚在训练，不提前计入。阶段报告原存于 `reports/reproduction/20261005_220342_355189_analysis/paper_report.md`（整理时已由最终版替代，Git 提交 `e38d3a6` 可查阅），包含摘要、方法、结果、讨论、结论、参考材料及运行附录。报告区分论文引用值、本地单种子消融、多种子均值±样本标准差和同种子的配对 bootstrap 区间，不将 full 的两种子均值视为最终三种子统计。
 
 `scripts/analyze_reproduction.py` 从完成队列及其保存的 895 图预测生成独立时间戳报告。全部 13 个运行的逐类指标及主要 macro 指标均由概率精确重算并核对，样本、标签、subject、权重哈希引用对齐。新增五类图：多种子分布、论文/本地消融对照、配对效应森林图、类别构成及条件错误率、逐类 F1 差值；连同原有三类图共八张定量图，新增图同时输出 PNG 与 PDF。来源文件哈希、完整环境快照、逐类统计及训练资源另存 source_manifest.json、per_class_analysis.csv、resources.csv。报告检查见 `outputs/verification/20261005_220558_589655_scientific_report/verification.json`。
 
 定性选择使用 visual/42 为参考，固定 TonguePale、Crack、Heart、Kidney 四个标签，每个 TP/TN/FP/FN cell 选择词典序首个样本，在 visual/42 与 full/42 的同一样本上对照。共 16 个标签—样本组合、32 张真实 GradCAM、四张三列组合图。源 metadata 位于 `outputs/qualitative/20261005_214746_808479_gradcam_visual_seed42_confusion/` 与 `20261005_215317_840103_gradcam_full_seed42_confusion/`；组合图路径由报告中的相对链接给出。
 
-GradCAM 使用 CPU，不占训练 GPU；针对正类 logit、全局 layer4[-1]、每图独立归一化。CPU 单图与正式 GPU batch 概率最大差为 0.000675828，所选 32 个模型—样本组合均未改变阈值分类。metadata 同时保留原正式概率和解释前向概率。已修正开发时过严的 1e-4 概率断言并保留失败目录说明，不把不同硬件的近似前向声称为逐元素相同。报告使用 C01–C16 代号，原始图像、CAM、样本映射及逐图预测文件保留本地。
+GradCAM 使用 CPU，不占训练 GPU；针对正类 logit、全局 layer4[-1]、每图独立归一化。CPU 单图与正式 GPU batch 概率最大差为 0.000675828，所选 32 个模型—样本组合均未改变阈值分类。metadata 同时保留原正式概率和解释前向概率。已修正开发时过严的 1e-4 概率断言并记录失败原因（后续整理已清理失败目录，原因保存在清理清单），不把不同硬件的近似前向声称为逐元素相同。报告使用 C01–C16 代号，原始图像、CAM、样本映射及逐图预测文件保留本地。
 
 目前已完成的 visual/full 配对 seeds 42/43 中，完整模型证候/脏腑 F1 平均变化为 -3.26/-2.19 pp，对应区间均低于 0；不作未经控制的差异来源归因。Spleen 的六个阴性样本在 seed42 两种模型中均被误判为阳性，FurThick 也存在高 F1 与较高 FPR 并存的现象。固定定性集合里 full 修正三个 visual 错例，同时新增三个错误；这一人为分层集合不能估计总体增益。
 
-跟踪器新增 `--analysis-qualitative VISUAL_METADATA FULL_METADATA`，只在 suite 和报告均完成后自动生成新的时间戳最终报告并推送；不重启训练控制器。完成触发一次、传递固定样本 metadata、传递 publish、分析失败时保存 failed 状态均已验证，见 `outputs/verification/20261005_220225_075009_analysis_tracker/verification.json`。新报告提交依然使用明确文件列表和 git commit --only；开发阶段的渲染草稿保留于 outputs/analysis_drafts。
+跟踪器新增 `--analysis-qualitative VISUAL_METADATA FULL_METADATA`，只在 suite 和报告均完成后自动生成新的时间戳最终报告并推送；不重启训练控制器。完成触发一次、传递固定样本 metadata、传递 publish、分析失败时保存 failed 状态均已验证，见 `outputs/verification/20261005_220225_075009_analysis_tracker/verification.json`。新报告提交依然使用明确文件列表和 git commit --only；开发阶段的渲染草稿当时保留于 outputs/analysis_drafts，最终产物核验后已在仓库整理时删除。
 
 ## 2026-10-05 固定队列完成与最终报告
 
-22:23 固定队列已完成 14/14 个正式运行，全部覆盖 895 位测试受试者；B、visual、full 的 seeds 42/43/44 均齐全。最终论文式报告为 [paper_report.md](../reports/reproduction/20261005_222333_753567_analysis/paper_report.md)，阶段版另行保留。最终报告与定量图已由跟踪器自动生成，提交 `7065b37` 并推送；固定队列汇总提交为 `374330b`。
+22:23 固定队列已完成 14/14 个正式运行，全部覆盖 895 位测试受试者；B、visual、full 的 seeds 42/43/44 均齐全。最终论文式报告为 [paper_report.md](../reports/reproduction/20261005_222333_753567_analysis/paper_report.md)，阶段版后来在仓库整理时删除，历史内容可从 Git 提交 `e38d3a6` 查阅。最终报告与定量图已由跟踪器自动生成，提交 `7065b37` 并推送；固定队列汇总提交为 `374330b`。
 
 | 模型（三种子） | 证候 Acc / F1 (%)，均值±样本 SD | 脏腑 Acc / F1 (%)，均值±样本 SD |
 | --- | --- | --- |
@@ -122,3 +122,9 @@ GradCAM 使用 CPU，不占训练 GPU；针对正类 logit、全局 layer4[-1]�
 完成评价和最终报告后，核对旧 full/44 来源的 last/best 文件哈希及新目录最优权重哈希，删除旧目录的过时 checkpoint，释放 7.58 GiB；来源环境、配置、日志、历史和命令记录均保留，不删除目录。清单为 `outputs/cleanup/20261005_222835_404787_full44_resume_source_weights/cleanup.json`。14 个正式完成目录均只有 best.pt；训练控制器及报告跟踪器已结束，跟踪状态为 complete。
 
 主要结果、六组消融及预设三种子训练已经完成。本文定性对照覆盖四个标签的固定正确/错误样本，并非论文 13 类解释图的全量精确复现；外部 SOTA 的同 split 实现/预测与论文 Sankey 提取公式仍缺失，整个 P5 不标记为全部完成。
+
+## 2026-10-05 仓库与输出整理
+
+按用户要求清理已被最终结果取代的阶段产物。清单见 [cleanup.json](../reports/maintenance/20261005_230055_671161_repository_cleanup/cleanup.json)，本地副本为 `outputs/cleanup/20261005_230055_671161_repository_cleanup/cleanup.json`。本次删除 35 项、124 个文件，共释放 2.84 GiB：工程短跑及续训回归测试权重、两套论文分析草稿、早期/失败的 GradCAM 与重复组合图、13/14 阶段报告，以及运行时绘图库缓存。工程验证的配置、日志、指标和验证结论继续保留；失败图组原因已写入清单。阶段报告历史仍在 Git 中，没有重写实验所引用的提交。
+
+保留 14 个正式运行的 best.pt、逐图预测、评价、历史、配置和环境；full/44 的中断来源元数据保留。最终论文式报告和两个模型的原始 GradCAM、最终组合图均保留。清理前后的 218 个受保护记录文件逐字节哈希相同，14 个最优权重的大小及修改时间未变。README 重写为中文复现入口，列出实际结果、锁定环境、可执行命令、产物位置及 P5 未完成项。无关工作区文件及他人改动不纳入提交。
