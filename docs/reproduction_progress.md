@@ -16,7 +16,7 @@ P2 使用 `src/train/reproduce.py` 一个训练/评价实现，原三个入口�
 
 数值验证覆盖：实际 AGLFF 门控重建到分类头输入、confidence 对称性/常量/零范数、Top-K 权重归一化与手算 expert 加权、双向残差、Adapter 形状、共享增强的像素相等、两个任务的加权 BCE 之和、task macro positive F1、undefined AUC=null。缺图和越界路径都抛错；无黑图占位或 batch 异常跳过。
 
-checkpoint 保存 model、Adam、scheduler、scaler、epoch、选中指标、early-stop counter、Python/NumPy/Torch/CUDA RNG、配置、数据/特征哈希。best/last 原子写入磁盘，不保存额外 GPU best 副本。保存的实际 best epoch 与历史 val_loss 最低点分别记录。小样本 MLLM 检查中，独立加载后 64 图 logits 全部完全一致；2 epoch + resume 到第 3 epoch 与连续 3 epoch 的全部模型参数、Adam 状态、scheduler 状态完全一致。这些短跑不进入正式结果表。
+训练中的 `last.pt` 保存 model、Adam、scheduler、scaler、epoch、选中指标、early-stop counter、Python/NumPy/Torch/CUDA RNG、配置、数据/特征哈希，用于 resume。`best.pt` 现只保存模型参数与评价元信息；完成后删除 `last.pt`，仅保留可独立评价的最优权重。best/last 原子写入磁盘，不保存额外 GPU best 副本。保存的实际 best epoch 与历史 val_loss 最低点分别记录。此前小样本 MLLM 检查中，独立加载后 64 图 logits 全部完全一致；2 epoch + resume 到第 3 epoch 与连续 3 epoch 的全部模型参数、Adam 状态、scheduler 状态完全一致。这些短跑不进入正式结果表。
 
 正式配置已固定在 `configs/reproduction/code_compat.json`：fold1、Adam lr=2e-4 / decay=1e-4、physical batch=32、FP32、200 epoch 上限、patience=50 / min_delta=.001、val task-average Acc 选模型、train_loss ReduceLROnPlateau factor=.3 / patience=5。保留独立七图增强、ToTensor 无 ImageNet normalization、global-only ImageNet V1 初始化、inverse-positive-ratio train/val 各自权重、test 无权重 loss。新的 Qwen 4.57.6 缓存是本次明确记录的版本变化，不宣称与旧提取环境完全相同。未用 test 选择缓存、参数或模型协议。
 
@@ -41,3 +41,15 @@ P5 的外部 SOTA 实现和同 split 逐图预测、Sankey 的 8×5 提取公式
 原固定 suite 父进程在 `visual seed=43` 第 71 轮后退出；该运行的 `last.pt` 可读且状态完整，没有使用测试集选择模型。已从该 checkpoint 续跑至原定 patience=50，续跑目录为 `outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43/`，best epoch=81，测试集 895 张完整评估：证候 Acc/F1=84.86%/70.60%，脏腑 Acc/F1=79.55%/82.07%。旧中断目录的日志、配置和 best checkpoint 保留为 provenance；续跑完成后删除其过时的 `last.pt`，不计入报告。
 
 新增 `scripts/continue_reproduction_suite.py` 用于按 suite 状态恢复：已完成目录复用，未完成项顺序执行，每项结束更新报告，成功后删除 `last.pt` 以保留 best checkpoint。该恢复队列当前已启动 `full seed=43`；报告和 `suite_status.json` 会随队列推进更新。当前报告已收录 10 个实际完成运行（global、mllm、visual/full seed=42、B/BA/BU/BM seed=42、B/visual seed=43），未将 full seed=43 及 seed=44 运行提前计入。
+
+## 2026-10-05 晚间跟踪记录
+
+19:12 核查时已完成 12/14 个正式运行：full/43 与 B/44 已完整评估，visual/44 正常训练，full/44 待执行。12 个完成运行均有 895 个唯一测试样本，metrics/summary/逐图预测中的 checkpoint 哈希一致，且各完成目录仅保留 best.pt。续跑控制器 PID=1069139，visual/44 训练 PID=1518002；实时状态以 suite_status.json 为准。
+
+full/43 证候 Acc/F1=82.84%/67.39%，脏腑 Acc/F1=77.12%/80.07%；B 的 seeds 42/43/44 已齐全，证候 F1=70.29%±0.94%，脏腑 F1=81.00%±0.32%（样本标准差）。visual 与 full 仍缺 seed44，暂不把两种子统计当作最终三种子结果。full 在两个已完成种子上均低于 visual，按固定协议报告该偏差，不根据测试结果调参。
+
+权重压缩清单为 `outputs/cleanup/20261005_185917_808971_completed_model_only_checkpoints/cleanup.json`；清理时验证模型 tensor 字节一致，并同步更换所有引用的文件哈希。独立 CPU 加载压缩后的 mllm/42 权重、评价全部 895 测试图，阈值分类与原结果完全一致，最大概率差 4.7132e-7；验证文件为 `outputs/verification/20261005_191303_675867_code_compat_mllm_seed42_eval/verification.json`。
+
+新增 full/43 固定规则 GradCAM 位于 `outputs/qualitative/20261005_191359_522751_gradcam_full_seed43/`；metadata 记录样本、标签、概率、目标层与权重哈希。现有 GradCAM 展示正确样本，错误样本分析及外部 SOTA/Sankey 材料仍属于 P5 待办。
+
+续跑脚本本身没有自动发布；`scripts/track_reproduction_suite.py` 跟踪现有控制器，待报告与完成队列一致后将报告单独提交并推送 fork/shujuecn，最终标记跟踪完成。跟踪记录使用新的时间戳目录 `outputs/tracking/`；失败时记录明确错误，不将未完成运行提前计入。

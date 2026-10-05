@@ -68,5 +68,19 @@
     "engineering_only": false,
     "best_epoch": 81,
     "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_163636_597466_code_compat_full_seed43",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 99,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_183541_301023_code_compat_B_seed44",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 26,
+    "stop_reason": "patience"
   }
 ]

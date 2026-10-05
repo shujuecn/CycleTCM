@@ -76,7 +76,7 @@ Existing generated images, split labels, and feature JSONs have been moved into 
 
 The examples below run from the repository root. Use `--data-dir` to select another processed dataset, `--feature-file` / `--label-dir` to override individual inputs, and `--output-dir` for a separate experiment. Multimodal and MLLM-only training also accept `--mllm-features-file`.
 
-Each execution creates a new `YYYYMMDD_HHMMSS_microseconds_...` directory under `--output-dir` (Asia/Shanghai). The shared trainer saves `best.pt`, `last.pt`, configuration, environment, history, per-image validation/test predictions and per-class metrics. See [the execution record](docs/reproduction_progress.md) for the fixed protocol and current progress.
+Each execution creates a new `YYYYMMDD_HHMMSS_microseconds_...` directory under `--output-dir` (Asia/Shanghai). The shared trainer saves model weights and evaluation metadata in `best.pt`, and full training state in `last.pt` for `--resume`, plus configuration, environment, history, per-image validation/test predictions and per-class metrics. See [the execution record](docs/reproduction_progress.md) for the fixed protocol and current progress.
 
 ### Visual Model (AGLFF + UWBMoE)
 

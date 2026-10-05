@@ -233,6 +233,8 @@ def run(default_model=None):
     if config['limit'] and config['limit'] % config['batch_size'] == 1:
         parser.error('Training tail batch cannot contain one sample (BatchNorm)')
     if args.resume:
+        if not all(key in checkpoint for key in ('optimizer', 'scheduler', 'scaler', 'rng', 'history')):
+            parser.error('Resume requires a full training checkpoint (last.pt); best.pt contains evaluation weights only')
         allowed = {'epochs', 'device', 'workers'}
         changed = {key for key in DEFAULTS if config[key] != checkpoint['config'][key]}
         if changed - allowed:
@@ -243,10 +245,19 @@ def run(default_model=None):
     torch.set_num_threads(8)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    output = run_directory(args.output_dir, f'{config["profile"]}_{config["model"]}_seed{config["seed"]}' + ('_eval' if args.evaluate else ''))
+    label = f'{config["profile"]}_{config["model"]}_seed{config["seed"]}'
+    if args.resume:
+        output = args.resume.resolve().parent.parent
+        if not args.resume.resolve().is_relative_to(args.output_dir.resolve()):
+            parser.error(f'Resume checkpoint {args.resume} is outside --output-dir {args.output_dir}')
+        if output.name.split('_', 3)[-1] != label:
+            parser.error(f'Resume directory {output.name} does not match requested {label}')
+    else:
+        output = run_directory(args.output_dir, label + ('_eval' if args.evaluate else ''))
     ACTIVE_RUN = output
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s',
-                        handlers=[logging.FileHandler(output / 'train.log'), logging.StreamHandler()])
+                        handlers=[logging.FileHandler(output / 'train.log', mode='a' if args.resume else 'w'),
+                                  logging.StreamHandler()])
     logging.info('RUN %s', output)
     write_json(output / 'status.json', {'status': 'initializing'})
     write_json(output / 'config.json', config)
@@ -268,7 +279,7 @@ def run(default_model=None):
     logging.info('PARAMETERS %d', sum(p.numel() for p in model.parameters()))
     if checkpoint:
         model.load_state_dict(checkpoint['model'], strict=True)
-    history = checkpoint['history'].copy() if checkpoint else []
+    history = checkpoint['history'].copy() if args.resume else []
     if not args.evaluate:
         optimizer = torch.optim.Adam(model.parameters(), lr=config['learning_rate'], weight_decay=config['weight_decay'])
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=.3, patience=5)
@@ -282,8 +293,11 @@ def run(default_model=None):
             best_score, counter, best_epoch = checkpoint['best_score'], checkpoint['counter'], checkpoint['best_epoch']
             best_path = Path(checkpoint['best_path'])
             restore_rng(checkpoint['rng'])
-        (output / 'checkpoints').mkdir()
-        start = checkpoint['epoch'] + 1 if checkpoint else 0
+            start = checkpoint['epoch'] + 1
+            del checkpoint
+        else:
+            start = 0
+        (output / 'checkpoints').mkdir(exist_ok=True)
         state = None
         for epoch in range(start, config['epochs']):
             if counter >= config['patience']:
@@ -317,7 +331,8 @@ def run(default_model=None):
                          counter=counter, best_path=str(best_path), config=config, data_manifest=data_manifest,
                          selected_metrics=val_metrics, history=history, rng=rng_state())
             if improved:
-                save_checkpoint(best_path, state)
+                save_checkpoint(best_path, {key: state[key] for key in
+                                            ('model', 'epoch', 'best_epoch', 'config', 'data_manifest', 'selected_metrics')})
             save_checkpoint(output / 'checkpoints/last.pt', state)
             row['seconds_with_checkpoint'] = time.monotonic() - epoch_started
             with (output / 'history.csv').open('w', newline='') as handle:

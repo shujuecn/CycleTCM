@@ -3,23 +3,24 @@
     "model": "B",
     "seeds": [
       42,
-      43
+      43,
+      44
     ],
     "syndrome_acc_percent": {
-      "mean": 85.26536312849163,
-      "std_sample": 0.05925475819998929
+      "mean": 84.93016759776536,
+      "std_sample": 0.5820856420160584
     },
     "syndrome_f1_percent": {
-      "mean": 70.83604949188782,
-      "std_sample": 0.06315688654121282
+      "mean": 70.29463884573447,
+      "std_sample": 0.9388135381764494
     },
     "organ_acc_percent": {
-      "mean": 78.7262569832402,
-      "std_sample": 0.09480761311998487
+      "mean": 78.68901303538173,
+      "std_sample": 0.09303535193144241
     },
     "organ_f1_percent": {
-      "mean": 81.16373775788425,
-      "std_sample": 0.21854491423826636
+      "mean": 81.00021354054523,
+      "std_sample": 0.32264756118515586
     }
   },
   {
@@ -43,6 +44,29 @@
     "organ_f1_percent": {
       "mean": 82.07735236555062,
       "std_sample": 0.01636077139054085
+    }
+  },
+  {
+    "model": "full",
+    "seeds": [
+      42,
+      43
+    ],
+    "syndrome_acc_percent": {
+      "mean": 83.0377094972067,
+      "std_sample": 0.28639799796662657
+    },
+    "syndrome_f1_percent": {
+      "mean": 67.77422552193556,
+      "std_sample": 0.5366983101460576
+    },
+    "organ_acc_percent": {
+      "mean": 76.9608938547486,
+      "std_sample": 0.22121776394663137
+    },
+    "organ_f1_percent": {
+      "mean": 79.88551662206875,
+      "std_sample": 0.2652765196602909
     }
   }
 ]

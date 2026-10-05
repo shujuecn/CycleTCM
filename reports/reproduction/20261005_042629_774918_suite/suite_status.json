@@ -96,12 +96,18 @@
     {
       "model": "full",
       "seed": 43,
-      "status": "pending"
+      "status": "complete",
+      "returncode": 0,
+      "seconds": 7137.2336246190025,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_163636_597466_code_compat_full_seed43"
     },
     {
       "model": "B",
       "seed": 44,
-      "status": "pending"
+      "status": "complete",
+      "returncode": 0,
+      "seconds": 1610.6491450060057,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_183541_301023_code_compat_B_seed44"
     },
     {
       "model": "visual",
