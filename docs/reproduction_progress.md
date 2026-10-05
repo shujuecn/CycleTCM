@@ -38,7 +38,7 @@ P5 的外部 SOTA 实现和同 split 逐图预测、Sankey 的 8×5 提取公式
 
 ## 2026-10-05 下午续跑记录
 
-原固定 suite 父进程在 `visual seed=43` 第 71 轮后退出；该运行的 `last.pt` 可读且状态完整，没有使用测试集选择模型。已从该 checkpoint 续跑至原定 patience=50，续跑目录为 `outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43/`，best epoch=81，测试集 895 张完整评估：证候 Acc/F1=84.86%/70.60%，脏腑 Acc/F1=79.55%/82.07%。旧中断目录 `20261005_132817_358044_code_compat_visual_seed43` 的日志、配置和 best checkpoint 保留为 provenance；续跑完成后删除其过时的 `last.pt`，不计入报告。该目录已于当日晚间被误删，损失与留存范围见下文「中断目录误删与提交信息更正」。
+原固定 suite 父进程在 `visual seed=43` 第 71 轮后退出；该运行的 `last.pt` 可读且状态完整，没有使用测试集选择模型。已从该 checkpoint 续跑至原定 patience=50，续跑目录为 `outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43/`，best epoch=81，测试集 895 张完整评估：证候 Acc/F1=84.86%/70.60%，脏腑 Acc/F1=79.55%/82.07%。旧中断目录 `20261005_132817_358044_code_compat_visual_seed43` 原本保留作 provenance，随后于当日晚间被误删；损失与留存范围见下文「并发改动核查与修正」。
 
 新增 `scripts/continue_reproduction_suite.py` 用于按 suite 状态恢复：已完成目录复用，未完成项顺序执行，每项结束更新报告，成功后删除 `last.pt` 以保留 best checkpoint。该恢复队列当前已启动 `full seed=43`；报告和 `suite_status.json` 会随队列推进更新。当前报告已收录 10 个实际完成运行（global、mllm、visual/full seed=42、B/BA/BU/BM seed=42、B/visual seed=43），未将 full seed=43 及 seed=44 运行提前计入。
 
@@ -54,30 +54,39 @@ full/43 证候 Acc/F1=82.84%/67.39%，脏腑 Acc/F1=77.12%/80.07%；B 的 seeds 
 
 续跑脚本本身没有自动发布；`scripts/track_reproduction_suite.py` 跟踪现有控制器，待报告与完成队列一致后将报告单独提交并推送 fork/shujuecn，最终标记跟踪完成。跟踪记录使用新的时间戳目录 `outputs/tracking/`；失败时记录明确错误，不将未完成运行提前计入。
 
-## 2026-10-05 晚间中断目录误删与提交信息更正
+## 2026-10-05 并发改动核查与修正
 
-### 续跑事实的确认与此前推断的更正
+20:05 核查依据为 OpenCode 会话 `docs/session-ses_ef46.md`、实际 Git diff、留存的命令、日志和训练历史。会话中的推断不直接作为执行事实；以下结论由本地文件核验。
 
-`visual seed=43` 的续跑是真实发生的续跑，不是从零重训。证据：`20261005_154605_393374_code_compat_visual_seed43/command.json` 记录了 `["src/train/reproduce.py", "--resume", ".../20261005_132817_358044_code_compat_visual_seed43/checkpoints/last.pt", "--output-dir", "..."]`；其 `history.csv` 为 epoch 0–131 连续无缺口，其中 epoch 71 行的 `best_epoch=55`、`early_stop_counter=16` 与被中断运行 `status.json` 记录的状态完全一致，epoch 72 行 `best_epoch=72`、`early_stop_counter=0` 表明早停计数自续跑点重新开始。因此中断前 72 轮的训练轨迹被完整继承，没有被丢弃或重复计算。此前基于时间线推断的「71 轮白跑」结论不成立，特此更正。
+### visual/43 的真实续训与误删范围
 
-同时确认：`--resume` 当时是手动从 shell 调用的，全部脚本中均无调用点。因此「中断的 run 不会被自动续训」这一控制器缺陷仍然成立，只是它并未导致 visual/43 的损失。
+`20261005_154605_393374_code_compat_visual_seed43/command.json` 记录了从 `20261005_132817_358044_code_compat_visual_seed43/checkpoints/last.pt` 手动续训。其 `history.csv` 为 epoch 0–131 连续无缺口。套件根目录的 `visual_seed43.log` 仍保存原始启动 RUN/PARAMETERS 记录及 epoch 0–71 的全部控制台输出；本次把这 72 轮的每个数值字段与续训历史比较，全部相同。
 
-### 中断目录误删
+epoch 71 的 best_epoch=55、early_stop_counter=16；epoch 72 的验证选择分数超过此前最优分数与 min_delta=.001 之和，因此 best_epoch 更新为 72，counter 才归零。计数归零由验证改善触发，不能解释为恢复时自动重置。中断前 72 轮确已继承，「从零重训」「71 轮白跑」和「原始启动日志全部丢失」均不成立。
 
-在上述更正之前，依据「该 run 与续跑 run 的 `config.json` 完全一致、无进程占用、且状态停留在 training」判定 `20261005_132817_358044_code_compat_visual_seed43` 为无价值残留并执行了删除。该判定不成立：该目录是上节声明保留的 provenance。删除造成的实际损失与留存如下。
+OpenCode 清理时删除了原中断目录。最终 best、全部 132 轮指标、895 图测试指标与逐图预测仍在续训目录内；原始控制台日志仍在套件根目录。实际缺失的是原目录的 environment、command、status、data_manifest、config 等元数据副本及旧 checkpoint。原始 environment.json 已删除，不能把根据提交时间推测的 revision 写成已记录事实。续训执行时的代码要求 checkpoint 的 data_manifest 与当前输入一致，但如今无法重新比较已删除的原始文件。保留这一 provenance 缺口，不伪造原目录。
 
-已留存（无实质损失）：epoch 0–131 全部逐轮指标（train/val loss、两任务 acc/f1、lr、耗时）完整保存于续跑目录的 `history.csv`；续跑来源路径记录于其 `command.json`；最终最优权重、`metrics/` 与逐图 `predictions/` 均在续跑目录内；数据与特征一致性由 `src/train/reproduce.py` 的 `data_manifest` 严格比对保证，续跑能通过即证明两目录的 manifest 相同；`config.json` 删除前已比对为一致。
+本次核验和原始 stdout 的字节相同副本保存在 [audit.json](../outputs/audit/20261005_200511_332975_concurrent_edit_reconciliation/audit.json)；比较结果没有改变已报告的量化指标。
 
-已丢失：中断目录的 `train.log`（其中 epoch 0–71 的控制台记录与 `history.csv` 指标重复，仅启动阶段的初始化日志不再留存）、`environment.json`（该次启动时的 git revision 与依赖版本；续跑目录记录的是 14:05 提交 `531bed7`，被中断运行对应的是 13:28 提交 `ca54175`）、`command.json`、`status.json`（其内容已由 `history.csv` epoch 71 行等价覆盖）、`data_manifest.json` 与 `config.json` 副本。
+### 统一续训与失败行为
 
-结论：科学结论与全部量化结果不受影响，损失限于中断时段的启动日志与环境记录。审计链上以本节作为断点说明，不再尝试重建已删除目录。
+并发改动曾把训练 resume 改为原地覆盖目录，启动时会重写 config/environment/command 等文件，违反每次执行创建时间戳目录的要求。本次恢复为每次续训新建目录，写入 resume.json 记录来源与哈希，继承模型、优化器、调度器、scaler、RNG、history、best 与早停计数；原目录保持不变。此前 best 复制到新目录，即使续训没有新的改善，最终结果仍有自己的可独立评价权重。best.pt 继续只存模型及评价元信息，last.pt 才支持续训。
 
-### 两处控制器缺陷及其修复
+继续队列启动时自动寻找最新未完成且有 last.pt 的目录，核对特征缓存与固定配置。运行归属以启动前后新增的目录判断，成功同时要求 summary.json 与 status=complete；历史孤儿目录只记录并告警，不再影响新增目录计数。非零退出、无新目录或缺失完成记录均写入 suite/report 的 failed 状态再退出。套件 stdout 追加保留，训练自身的日志位于新的执行目录。
 
-`src/train/reproduce.py` 的 `--resume` 从未被任何脚本调用，控制器重启后会把无 `summary.json` 的中断 run 一律判为 pending 并从零重训。同时 `scripts/continue_reproduction_suite.py` 以「新增目录」判定本次启动产生的 run，一旦该 cell 存在任何无 `summary.json` 的历史目录，运行成功后即因目录数不为 1 而抛 `RuntimeError` 并终止整个队列。二者均为潜在缺陷，未在本次 visual/43 上触发。
+实际 CPU 验证命令：
 
-修复内容：`--resume` 改为原地复用被中断的 run 目录（校验 checkpoint 位于 `--output-dir` 内、目录名后缀与 `profile/model/seed` 一致），`train.log` 改为追加模式，`checkpoints` 目录创建改为幂等，并在恢复后释放不再需要的 checkpoint 副本；控制器启动扫描会定位最新可续训目录并传入 `--resume`，run 判定改为「该 cell 下具有 `summary.json` 的目录」，孤儿目录不再静默忽略而是写入队列状态并告警。
+```bash
+uv run --no-sync python scripts/verify_resume.py \
+  --features data/features/20261005_041211_284070_qwen_features/all_features.json
+```
 
-### 提交信息与内容不符
+验证结果见 [verification.json](../outputs/verification/20261005_200827_948865_resume_reconciliation/verification.json)：2 轮训练后续到第 3 轮与连续 3 轮的 model/Adam/scheduler/scaler/选优和早停状态完全一致；来源全部文件哈希不变；新增时间戳目录且无新改善时 best 仍独立保留。恢复时若已达到 epoch 上限，仍保存继承的 history 并完成评价。控制器成功续训发现新目录、历史孤儿目录并存、失败时保存 failed 状态均通过。这些小样本工程验证不进入正式结果表。
 
-`571ac62`（`results: record twelve completed runs and track remaining suite`）同时包含 `src/train/reproduce.py` 的存盘语义变更；`d43acda`（`fix: track completed reports while next training runs`）同时包含 `scripts/continue_reproduction_suite.py` 的续训修复。两处代码内容均已验证正确并推送至 `fork/shujuecn`，但提交标题未反映其中的 checkpoint 语义变更（`best.pt` 改为仅保存可独立评价的权重、`--resume` 改为原地续训）。因历史已发布，不做重写推送，以本节作为对照说明。
+### Git 记录与持续跟踪
+
+`571ac62` 同时收录了仅存模型的 best checkpoint 修改与 OpenCode 的原地续训修改；`d43acda` 同时收录了报告跟踪修改与已暂存的 OpenCode 控制器修改。问题分别涉及共享文件并发编辑，以及普通 git commit 包含整个暂存区；仅指定 git add 文件仍不足以隔离提交。会话中的「使用 git add -A」是推断，本次没有证据支持。
+
+保留这些历史 revision，新增明确说明续训、状态与 provenance 修正的提交，避免改变已有 environment.json 中引用的 revision。所有发布入口均列出具体文件路径，并用 git commit --only 提交指定文件；本次也按此执行。原始 OpenCode 会话与无关 HTML 不纳入修复提交。
+
+现有 GPU visual/44 与控制器继续运行，不为代码核查重启。20:04 已到 epoch 76，已完成正式运行仍为 12/14，之后按固定队列启动 full/44。运行中的进程保持启动时的代码；后续新进程读取修正后的源码。报告跟踪器只在报告与完成队列一致后提交并推送明确列出的报告文件。完成后的权重继续只保留 best，日志、配置和元数据保留。

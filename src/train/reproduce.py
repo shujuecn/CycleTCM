@@ -9,6 +9,7 @@ import logging
 import os
 from pathlib import Path
 import random
+import shutil
 import subprocess
 import sys
 import time
@@ -37,6 +38,14 @@ DEFAULTS = dict(model='visual', profile='code_compat', seed=42, epochs=200, batc
                 data_dir=str(PROCESSED_DATA_DIR), feature_file=str(FEATURE_FILE),
                 label_dir=str(LABEL_DIR), mllm_features_file=str(MLLM_FEATURES_FILE))
 ACTIVE_RUN = None
+
+
+def write_history(output, history):
+    if history:
+        with (output / 'history.csv').open('w', newline='') as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(dict.fromkeys(key for row in history for key in row)))
+            writer.writeheader()
+            writer.writerows(history)
 
 
 class GlobalBackbone(nn.Module):
@@ -239,6 +248,9 @@ def run(default_model=None):
         changed = {key for key in DEFAULTS if config[key] != checkpoint['config'][key]}
         if changed - allowed:
             parser.error(f'Resume cannot change scientific config: {changed - allowed}')
+        source_best = Path(checkpoint['best_path']).resolve()
+        if not source_best.is_file():
+            parser.error(f'Resume requires the selected best checkpoint: {source_best}')
     random.seed(config['seed'])
     np.random.seed(config['seed'])
     torch.manual_seed(config['seed'])
@@ -246,17 +258,10 @@ def run(default_model=None):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     label = f'{config["profile"]}_{config["model"]}_seed{config["seed"]}'
-    if args.resume:
-        output = args.resume.resolve().parent.parent
-        if not args.resume.resolve().is_relative_to(args.output_dir.resolve()):
-            parser.error(f'Resume checkpoint {args.resume} is outside --output-dir {args.output_dir}')
-        if output.name.split('_', 3)[-1] != label:
-            parser.error(f'Resume directory {output.name} does not match requested {label}')
-    else:
-        output = run_directory(args.output_dir, label + ('_eval' if args.evaluate else ''))
+    output = run_directory(args.output_dir, label + ('_eval' if args.evaluate else ''))
     ACTIVE_RUN = output
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s',
-                        handlers=[logging.FileHandler(output / 'train.log', mode='a' if args.resume else 'w'),
+                        handlers=[logging.FileHandler(output / 'train.log'),
                                   logging.StreamHandler()])
     logging.info('RUN %s', output)
     write_json(output / 'status.json', {'status': 'initializing'})
@@ -264,6 +269,12 @@ def run(default_model=None):
     write_json(output / 'environment.json', environment(config))
     (output / 'source.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT, text=True))
     (output / 'command.json').write_text(json.dumps(sys.argv) + '\n')
+    if args.resume:
+        write_json(output / 'resume.json', {
+            'checkpoint': str(args.resume.resolve()), 'checkpoint_sha256': sha256(args.resume),
+            'best_checkpoint': str(source_best), 'best_checkpoint_sha256': sha256(source_best),
+            'start_epoch': checkpoint['epoch'] + 1, 'best_epoch': checkpoint['best_epoch'],
+            'early_stop_counter': checkpoint['counter']})
     data_loaders, weights = loaders(config)
     data_manifest = {'feature_manifest_sha256': sha256(config['feature_file']),
                      'splits': {split: {'images': len(loader.dataset),
@@ -280,24 +291,25 @@ def run(default_model=None):
     if checkpoint:
         model.load_state_dict(checkpoint['model'], strict=True)
     history = checkpoint['history'].copy() if args.resume else []
+    write_history(output, history)
     if not args.evaluate:
         optimizer = torch.optim.Adam(model.parameters(), lr=config['learning_rate'], weight_decay=config['weight_decay'])
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=.3, patience=5)
         scaler = torch.amp.GradScaler('cuda', enabled=config['precision'] == 'fp16')
         best_score, counter, best_epoch = -1., 0, None
         best_path = output / 'checkpoints/best.pt'
+        best_path.parent.mkdir()
         if checkpoint:
             optimizer.load_state_dict(checkpoint['optimizer'])
             scheduler.load_state_dict(checkpoint['scheduler'])
             scaler.load_state_dict(checkpoint['scaler'])
             best_score, counter, best_epoch = checkpoint['best_score'], checkpoint['counter'], checkpoint['best_epoch']
-            best_path = Path(checkpoint['best_path'])
+            shutil.copyfile(source_best, best_path)
             restore_rng(checkpoint['rng'])
             start = checkpoint['epoch'] + 1
             del checkpoint
         else:
             start = 0
-        (output / 'checkpoints').mkdir(exist_ok=True)
         state = None
         for epoch in range(start, config['epochs']):
             if counter >= config['patience']:
@@ -335,10 +347,7 @@ def run(default_model=None):
                                             ('model', 'epoch', 'best_epoch', 'config', 'data_manifest', 'selected_metrics')})
             save_checkpoint(output / 'checkpoints/last.pt', state)
             row['seconds_with_checkpoint'] = time.monotonic() - epoch_started
-            with (output / 'history.csv').open('w', newline='') as handle:
-                writer = csv.DictWriter(handle, fieldnames=row.keys())
-                writer.writeheader()
-                writer.writerows(history)
+            write_history(output, history)
             write_json(output / 'status.json', {'status': 'training', 'epoch': epoch, 'best_epoch': best_epoch,
                                                'early_stop_counter': counter, 'output_dir': str(output)})
             logging.info('EPOCH %s', json.dumps(row))
