@@ -33,5 +33,12 @@
     "engineering_only": false,
     "best_epoch": 108,
     "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_085328_046404_code_compat_BA_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 81,
+    "stop_reason": "patience"
   }
 ]
