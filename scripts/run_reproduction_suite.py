@@ -34,6 +34,11 @@ def main():
     output=run_directory(ROOT/'outputs/reproduction','suite')
     report=ROOT/'reports/reproduction'/output.name
     report.mkdir(parents=True)
+    report_paths = [str((report / name).relative_to(ROOT)) for name in (
+        'fixed_config.json', 'ablations.csv', 'main_results.csv', 'multi_seed.json',
+        'paired_bootstrap.json', 'reproduction_report.md', 'run_status.json',
+        'suite_status.json', 'figures/macro_f1.png', 'figures/per_class_f1.png',
+        'figures/training_curves.png')]
     state={'status':'running','pid':os.getpid(),'started_at':output.name.split('_suite')[0],
            'output_dir':str(output),'report_dir':str(report),'queue':[
                {'model':model,'seed':seed,'status':'pending'} for model,seed in QUEUE]}
@@ -72,8 +77,8 @@ def main():
         build_report(run_paths,report)
         write_json(report/'suite_status.json',state)
         if args.publish:
-            subprocess.run(['git','add','--',str(report.relative_to(ROOT))],cwd=ROOT,check=True)
-            subprocess.run(['git','commit','-m',f'results: {entry["model"]} seed {entry["seed"]} reproduction milestone'],cwd=ROOT,check=True)
+            subprocess.run(['git','add','--',*report_paths],cwd=ROOT,check=True)
+            subprocess.run(['git','commit','--only','-m',f'results: {entry["model"]} seed {entry["seed"]} reproduction milestone','--',*report_paths],cwd=ROOT,check=True)
             subprocess.run(['git','push','fork','shujuecn'],cwd=ROOT,check=True)
         print(f'{entry["status"].upper()} {entry["model"]} seed={entry["seed"]} seconds={entry["seconds"]:.1f}',flush=True)
         if returncode:
@@ -85,8 +90,8 @@ def main():
     write_json(output/'suite_status.json',state)
     write_json(report/'suite_status.json',state)
     if args.publish:
-        subprocess.run(['git','add','--',str(report.relative_to(ROOT))],cwd=ROOT,check=True)
-        subprocess.run(['git','commit','-m','results: complete primary, six ablation and three-seed suite'],cwd=ROOT,check=True)
+        subprocess.run(['git','add','--',*report_paths],cwd=ROOT,check=True)
+        subprocess.run(['git','commit','--only','-m','results: complete primary, six ablation and three-seed suite','--',*report_paths],cwd=ROOT,check=True)
         subprocess.run(['git','push','fork','shujuecn'],cwd=ROOT,check=True)
     print(f'COMPLETE SUITE {report}',flush=True)
 

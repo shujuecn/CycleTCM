@@ -24,6 +24,10 @@ def main():
     args = parser.parse_args()
     suite = args.suite.resolve()
     report = ROOT / 'reports/reproduction' / suite.name
+    report_paths = [str((report / name).relative_to(ROOT)) for name in (
+        'ablations.csv', 'main_results.csv', 'multi_seed.json', 'paired_bootstrap.json',
+        'reproduction_report.md', 'run_status.json', 'suite_status.json',
+        'figures/macro_f1.png', 'figures/per_class_f1.png', 'figures/training_curves.png')]
     output = run_directory(ROOT / 'outputs/tracking', 'suite_tracker')
     state = {'pid': os.getpid(), 'controller_pid': args.controller_pid,
              'suite': str(suite), 'status': 'tracking'}
@@ -48,12 +52,11 @@ def main():
                 ready = ready and report_state['status'] == 'complete'
             if ready and (completed != published or queue_state['status'] == 'complete'):
                 if args.publish:
-                    relative = str(report.relative_to(ROOT))
-                    subprocess.run(['git', 'add', '--', relative], cwd=ROOT, check=True)
-                    changed = subprocess.run(['git', 'diff', '--cached', '--quiet', '--', relative], cwd=ROOT)
+                    subprocess.run(['git', 'add', '--', *report_paths], cwd=ROOT, check=True)
+                    changed = subprocess.run(['git', 'diff', '--cached', '--quiet', '--', *report_paths], cwd=ROOT)
                     if changed.returncode == 1:
                         message = f'results: reproduction suite {len(completed)}/{len(queue_state["queue"])} {queue_state["status"]}'
-                        subprocess.run(['git', 'commit', '--only', '-m', message, '--', relative], cwd=ROOT, check=True)
+                        subprocess.run(['git', 'commit', '--only', '-m', message, '--', *report_paths], cwd=ROOT, check=True)
                     elif changed.returncode != 0:
                         raise RuntimeError('Unable to inspect staged report')
                     subprocess.run(['git', 'push', 'fork', 'shujuecn'], cwd=ROOT, check=True)
