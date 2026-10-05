@@ -2,7 +2,7 @@
 
 本仓库复现论文 **MLLM-Enhanced Region-Aware Bidirectional Evidence-Based Model for Tongue Diagnosis**。模型联合预测舌图的 8 项证候属性和 5 项脏腑属性，包含全局与区域视觉分支、AGLFF 特征融合、UWBMoE 双向专家交互，以及冻结的 Qwen3-VL-4B-Instruct 语义特征。
 
-当前分支 `shujuecn` 保存复现实现、固定配置和实测报告。模型用于研究性多标签分类，输出不是临床诊断结论。
+当前分支 `main` 保存复现实现、固定配置和实测报告。模型用于研究性多标签分类，输出不是临床诊断结论。
 
 ![原论文模型框架](figures/framework.png)
 
@@ -99,6 +99,25 @@ uv run --no-sync python scripts/cleanup_reproduction_weights.py --run-root /path
 `best.pt` 只保存模型及评价元信息，可独立评价；`last.pt` 还包含优化器、调度器、随机状态和早停计数，才能完整续训。队列中断时，可用 `scripts/continue_reproduction_suite.py --suite /path/to/suite --features "$FEATURES"` 继续。
 
 如需自动提交并推送阶段结果，队列脚本可附加 `--publish`；它要求当前分支为 `shujuecn`，推送目标为 `fork/shujuecn`。所有发布入口仅提交明确列出的报告文件。
+
+## VS Code 调试训练
+
+安装 VS Code 的 Python 与 Python Debugger 扩展，执行 `uv sync --locked` 后，在「运行和调试」面板选择 [launch.json](.vscode/launch.json) 中的配置，按 F5 启动。八个配置覆盖 `global`、`mllm`、`B`、`BA`、`BU`、`BM`、`visual`、`full`，统一 seed 42。解释器固定为本仓库 `.venv/bin/python`，直接调试共享训练入口。
+
+默认保留 `code_compat` 的 batch 32、FP32、CUDA 和初始化方式，但只训练 1 个 epoch、每个 split 取前 64 个样本，并设 `workers=0`，便于在主进程中逐步查看数据加载。多模态配置显式使用本次核查过的特征缓存。输出为 `outputs/debug/YYYYMMDD_HHMMSS_microseconds_code_compat_<model>_seed42/`，`summary.json` 标记 `engineering_only=true`，不属于正式复现结果。想观察多轮训练可修改 `--epochs`；恢复全量样本时将 `--limit` 改为 `0`。
+
+建议按下面顺序设置断点（F9），再用 F10 单步、F11 进入函数，查看变量和张量形状：
+
+| 位置 | 观察内容 |
+| --- | --- |
+| `src/train/reproduce.py` 的 `build_model()` | 消融开关、模型构建与预训练权重加载 |
+| `src/train/data.py` 的 `TongueDataset.__getitem__()` | 七视图增强、13 维标签、2560 维语义特征 |
+| `src/train/reproduce.py` 的 `epoch_pass()` | batch 搬运、前向、两任务 BCE、反向传播和 Adam 更新 |
+| `src/models/model_visual.py` 的 `CycleTCM.forward()` | 三分支特征、AGLFF、UWBMoE 与分类头；关闭的模块不会执行 |
+| `src/models/model_mllm.py` 的 `MLLM_Model.forward()` | MLLM-only 的 Adapter 与分类头 |
+| `src/train/reproduce.py` 的 epoch 循环 | 验证指标、学习率调度、选优与早停、权重保存 |
+
+需要进入 PyTorch 内部时，把对应配置的 `justMyCode` 改为 `false`。调试完成后可用 `uv run --no-sync python scripts/cleanup_reproduction_weights.py --run-root outputs/debug` 清理已完成短跑的 `last.pt`；不再需要的调试目录可整体删除。
 
 ## 图表与报告生成
 
