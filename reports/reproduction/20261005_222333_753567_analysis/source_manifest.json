@@ -1,0 +1,1002 @@
+{
+  "suite": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite",
+  "queue_snapshot": {
+    "status": "complete",
+    "started_at": "20261005_042629_774918",
+    "output_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite",
+    "report_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/reports/reproduction/20261005_042629_774918_suite",
+    "queue": [
+      {
+        "model": "global",
+        "seed": 42,
+        "status": "complete",
+        "pid": 585750,
+        "returncode": 0,
+        "seconds": 992.2540611719996,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_042631_378427_code_compat_global_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "mllm",
+        "seed": 42,
+        "status": "complete",
+        "pid": 634460,
+        "returncode": 0,
+        "seconds": 39.037019969999164,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044306_337121_code_compat_mllm_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "visual",
+        "seed": 42,
+        "status": "complete",
+        "pid": 642421,
+        "returncode": 0,
+        "seconds": 4752.183562598,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044348_211957_code_compat_visual_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "full",
+        "seed": 42,
+        "status": "complete",
+        "pid": 658002,
+        "returncode": 0,
+        "seconds": 6935.5841868729985,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_060302_935549_code_compat_full_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "B",
+        "seed": 42,
+        "status": "complete",
+        "pid": 681037,
+        "returncode": 0,
+        "seconds": 3278.097474858998,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_075843_252020_code_compat_B_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "BA",
+        "seed": 42,
+        "status": "complete",
+        "pid": 700293,
+        "returncode": 0,
+        "seconds": 3794.279673899,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_085328_046404_code_compat_BA_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "BU",
+        "seed": 42,
+        "status": "complete",
+        "pid": 717592,
+        "returncode": 0,
+        "seconds": 6921.135930597,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_095648_193124_code_compat_BU_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "BM",
+        "seed": 42,
+        "status": "complete",
+        "pid": 744233,
+        "returncode": 0,
+        "seconds": 2802.839704222002,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_115215_461901_code_compat_BM_seed42",
+        "orphaned": []
+      },
+      {
+        "model": "B",
+        "seed": 43,
+        "status": "complete",
+        "pid": 760365,
+        "returncode": 0,
+        "seconds": 2945.503690495003,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_123905_180614_code_compat_B_seed43",
+        "orphaned": []
+      },
+      {
+        "model": "visual",
+        "seed": 43,
+        "status": "complete",
+        "pid": 777719,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43",
+        "returncode": 0,
+        "orphaned": []
+      },
+      {
+        "model": "full",
+        "seed": 43,
+        "status": "complete",
+        "returncode": 0,
+        "seconds": 7137.2336246190025,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_163636_597466_code_compat_full_seed43",
+        "orphaned": []
+      },
+      {
+        "model": "B",
+        "seed": 44,
+        "status": "complete",
+        "returncode": 0,
+        "seconds": 1610.6491450060057,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_183541_301023_code_compat_B_seed44",
+        "orphaned": []
+      },
+      {
+        "model": "visual",
+        "seed": 44,
+        "status": "complete",
+        "returncode": 0,
+        "seconds": 5282.970320909997,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_190239_006766_code_compat_visual_seed44",
+        "orphaned": []
+      },
+      {
+        "model": "full",
+        "seed": 44,
+        "status": "complete",
+        "resume": null,
+        "orphaned": [
+          "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_203049_001784_code_compat_full_seed44"
+        ],
+        "returncode": 0,
+        "seconds": 293.88341236900305,
+        "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_221822_932720_code_compat_full_seed44"
+      }
+    ]
+  },
+  "script_sha256": "2be903476d88da5bf7c0fb5285eafae6fa0b6fd37d4fcc876c7cc182da7796da",
+  "runs": [
+    {
+      "model": "global",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_042631_378427_code_compat_global_seed42",
+      "checkpoint_sha256_recorded": "48910de538bdb85dd506fa993108dac8fb80960ed41c7c5506149fa6b6b8075d",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "8b6bd718bd933b8d5d0fc63250f1031951d6314a",
+        "git_status": "?? reports/",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "e6545d50538b39237bbc775d93a12814d19da92d6f3fb8ef02903eb4adeb8082",
+        "metrics/test.json": "5a3bf96a36ea118973e9881492387b1939a574b466f35b94a3c2dc33e713c828",
+        "predictions/test.jsonl": "135a4741efe00649bb15e522a380bcee318c72c52289bb49b72b191913e7cc18",
+        "config.json": "16acabea89ef4da322c269f32111f8d49121f10e9b1c19d5e6b41ff77d5aab07",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "091b304107ed2946064164957607a90e361ed2a47c9e34da47c04731c30fac60",
+        "environment.json": "a668763e718a5c567d09fd376b7df6c6ffd11149a5059387f137abd45619913f"
+      }
+    },
+    {
+      "model": "mllm",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044306_337121_code_compat_mllm_seed42",
+      "checkpoint_sha256_recorded": "5e879b59da45838d7f3cf915489fbdcd90e50f3b44ecf2a042fdb1624db4f298",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "1f3cf4dfadc6a4e0b3ecae8a5df89887adeede0c",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB"
+      },
+      "files_sha256": {
+        "summary.json": "aadfef6f35d185b95ea9e28106ea3220ff9edad198647d1a545bcf1dc9ef6897",
+        "metrics/test.json": "f8d7475285c957d0fdd6e4bab0d86520e6e4df6d16c033bbb66cb794a1bff8ee",
+        "predictions/test.jsonl": "8ef777a1c1791734f583ff163743cb3af47444cd3a4b1ebd53ac313104aa0436",
+        "config.json": "b5419c1a53276960f54e5ca21469d06997d10f3f85b7c48bb2e1c3f43f822c12",
+        "data_manifest.json": "a1c9a14b1fbc22ac7e49407eaaae23f8485904a693a4b1d5e955ed2495c2e636",
+        "history.csv": "f2d5013632209368bf830be32c4d5319435f10553be24f8643bf877b48db1b5a",
+        "environment.json": "484fe9ec48e2c05cedc837250ee8fa3e3244ec9eb79c13cc979e6864f36a8dce"
+      }
+    },
+    {
+      "model": "visual",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044348_211957_code_compat_visual_seed42",
+      "checkpoint_sha256_recorded": "9f96a375857787b238facc9ff6cdb4b4bfa2f287d64ecef27a4ad9a5c1e2aa18",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "baf940d2b5a1ad2db85cf8bffd769a80d21eb479",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "2da5de986a9328b41d49c400dfac544510d0ebcd93e8fa4e254f74cdd0652862",
+        "metrics/test.json": "fc61f891f2687825a05c5c85df76688a4c67141c33ea65db851a7cfaf717e27a",
+        "predictions/test.jsonl": "54d764307a08e78077a7a6180cc9ef1b49a6d341a314ead48b8b8aa9074964a1",
+        "config.json": "9d0e98daabdfaa85f6c02b14f9a505d270979bba799c0ae9a3bc83925c62aa06",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "2772de6683cc789b9055206c390f839241489686a0e4bf58dae8f56bd9fafc0a",
+        "environment.json": "4b2487d99824114b362bb68d3762b3b4e358a3b18860cafcfe3266ca6a642fdb"
+      }
+    },
+    {
+      "model": "full",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_060302_935549_code_compat_full_seed42",
+      "checkpoint_sha256_recorded": "e6fc8234190aed4ed96657828995f5a58368426ce6bf4e74d7d8a8dddee963f0",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "09db232336a15a09d629a13cff0a9f5607c2567b",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "dfc7942a05f9f27b58c309434a6b3c07a5672956c86ea664288ec2007899073e",
+        "metrics/test.json": "8129555be76b5d335f4d0d6ffe0baa45e36a1afbf211e71bc86368560e8d9f8e",
+        "predictions/test.jsonl": "e45c3280efb2a3226e6107ae005b119d10780a1735997a06d31030aac05c68c6",
+        "config.json": "d0910a86c5405125329a239929dc98f730487a637f0862129d2cec13dd12c6a1",
+        "data_manifest.json": "a1c9a14b1fbc22ac7e49407eaaae23f8485904a693a4b1d5e955ed2495c2e636",
+        "history.csv": "ee8e43be27c887a87231276fcb12d6a06052e32e2d49c5d70fcdf3566699a46f",
+        "environment.json": "632aca7de1469f6208860198b8afee05991affa60b88719b9b25a6e3fc28fef9"
+      }
+    },
+    {
+      "model": "B",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_075843_252020_code_compat_B_seed42",
+      "checkpoint_sha256_recorded": "9daef8091b9dece01bfc68fb294a5c7a23d00e6deaf7a77dd01c46f82446f4ce",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "e40b32d5b6f60f71ac98e178eea62a3bbce39b07",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "7df42305670174eb507b08c554ef2e535de9ee91f70dbd4c9c72a42faef25d20",
+        "metrics/test.json": "59582d9dfb47eb477abeb96200fc4b33267d16caf7577508fb715bf125fa8470",
+        "predictions/test.jsonl": "dadaf5bcd1417b942ac8319e897e2631e5577e229e60703beb5b9c58ad3e83aa",
+        "config.json": "1a0d5e6a1893eb015b60fad4c764f08ba4d842c012c39572d4e2e37c069aabab",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "a3d9024f5deb242772fe74427dc4b27e3f48834037b0f13b4e3b133252ce99f2",
+        "environment.json": "3b65947aace0d2f782d13d48c273cca71a3d1f93b1d345343beb67f11cf6cf33"
+      }
+    },
+    {
+      "model": "BA",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_085328_046404_code_compat_BA_seed42",
+      "checkpoint_sha256_recorded": "49ba545fec5d2a6c6a8ff562d1fa270658034d4668adf833ff95c3daef88c17e",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "3a7ad4c9431d719ef5135a50a152e71625b79e9e",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "82d5b822b0cca1a9e784a45e63b261e2a4a3519756e51a277a76f0362cd388db",
+        "metrics/test.json": "db621c1b7e7e05c9e3002bf5d6435a2a0edcd34ef9d07a1738e814ae01a85956",
+        "predictions/test.jsonl": "52e8d704a7641990313e76864b2b04a559db38be717dc0efe92374c32d324f1e",
+        "config.json": "2dbba299de899aec4fdb145b63c2bf434d792fd799d587b823faf19e32edaa81",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "e637cad277d28a6006aaabe04a170e357f67417c2a324a388b6606e8f9cdc14b",
+        "environment.json": "f84e4ca83116efa0235b1c682229393dda52e22f15f0893a962baada5090aafb"
+      }
+    },
+    {
+      "model": "BU",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_095648_193124_code_compat_BU_seed42",
+      "checkpoint_sha256_recorded": "c6e001cea35494c0d43f113a9ee108d1e4aacf78fb90f2075e8d40298fdb430e",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "2443ae1bb7fb281c44f9b225d4f4a016235fb9ec",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "e05db7fa526f75622830b83be4df12997193e299271c48b7953d5c7ba740d773",
+        "metrics/test.json": "28db7541c5f610143547a6587b25879a03e2688f932e46451052fb6e3ade2933",
+        "predictions/test.jsonl": "792142b80a1ee0f75352d18764dbf2d8a8c28d7071e9ad6d019019321540612f",
+        "config.json": "c4c0cc07a634b453b7bebba64e8c91be106c80b17e7cecf53c3223f3118e508d",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "3b75cc48ed553ae0e94fcd87c9ba22529ae47611c659ebb9ebfbe7694109545d",
+        "environment.json": "1a171ef372c676b7e293de117ed904bcc496e265b52aa82cb8880975110ac536"
+      }
+    },
+    {
+      "model": "BM",
+      "seed": 42,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_115215_461901_code_compat_BM_seed42",
+      "checkpoint_sha256_recorded": "811f2e497fddbf10cd680a9192237fd9ad5a9c4b7f9c4489b86a11dc22f41c15",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "0b22728c74468106349e3c69d69a440fc27c8790",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "f1a23e0c9e397be65368198cdce7d8af2e38a522a8ae3d429d1398c1d541484a",
+        "metrics/test.json": "3253f7e6d087e654880097692d367b0cdebce3d577faecee432a572f02c944bd",
+        "predictions/test.jsonl": "cb8558608f8e389c9d45e0038456bf78d4eeb90d5453eac06d74c7ddbff825b7",
+        "config.json": "87a1e30c5c90be367e9fd00ae3b78b7923ff8eb62cd5592acfb2940115e0380c",
+        "data_manifest.json": "a1c9a14b1fbc22ac7e49407eaaae23f8485904a693a4b1d5e955ed2495c2e636",
+        "history.csv": "96ef74feea4c1ac272a008bfbf1375a376d46145e7fa96d4ec723aad4dc12dda",
+        "environment.json": "5e375186350f284a65457dd045a0277aa235a2571d91310b0540063f2fdc0c7b"
+      }
+    },
+    {
+      "model": "B",
+      "seed": 43,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_123905_180614_code_compat_B_seed43",
+      "checkpoint_sha256_recorded": "574b64ed8fb7f04720bf5f42ae4896d5d52f41adcee248f003863e4576848f24",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "d6fa11418029c8754e0b243571f96f492a8a37e1",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "ca55820f0715a38a1bc93784249e30cde8aca74a2324e07d759aec36a35d9fc5",
+        "metrics/test.json": "b2164a8864b36b766bbdc0a099cfef804486b07069f342017046d21ff197b83a",
+        "predictions/test.jsonl": "fbe9341025991c17a8e5f37aaa0decd95c63190e9136d9d723b423f25f575549",
+        "config.json": "6d998af3c8394172b5ba3bd03a2de577d14e300a498764f061c049cf43757778",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "0c0d5e2863048049514f01948372a006a7df7cb8b50f5b250fe1767aa9f9721d",
+        "environment.json": "ac03f758400b8fd6e814b08b877b518e9fae9fa1b458db418057529a7dc5a1d5"
+      }
+    },
+    {
+      "model": "visual",
+      "seed": 43,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43",
+      "checkpoint_sha256_recorded": "cfef881f216f27d6dfd37baca5a8afcd28dedcb0f792b74cd06c02846f5a5787",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "531bed751a1097d196dfa24546d13c1c18916340",
+        "git_status": "",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "bf1ca635d0523c747b6533f91022300dce5ec8390be5644334ea5038fddd695d",
+        "metrics/test.json": "700ad38e88cebb6ba0409d3f36c1b7e13d5d570a86f8900a23d10bd5cb1c48bc",
+        "predictions/test.jsonl": "517dff7685a00f2c428c50568a8ea06cff4776b363503a6e8e1042ef2abab0db",
+        "config.json": "c446501e3b8e84067b89d90f629cd0604c0c5f5b1fc9059f5e2c81c999f44775",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "4da8519c2b752fab34483d39926059ef001b4fd42e079f31cbcb4d79a5f815a8",
+        "environment.json": "deae7d07f6ce0d3ed75e15ee2ddbe4db5f630bee6016ed2c555ec1fdc9f26abb"
+      }
+    },
+    {
+      "model": "full",
+      "seed": 43,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_163636_597466_code_compat_full_seed43",
+      "checkpoint_sha256_recorded": "3076e6ebc94b642769c7ac236a6574f1d7b6ccbc3f373dd899385dd422ae66ee",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "531bed751a1097d196dfa24546d13c1c18916340",
+        "git_status": "M reports/reproduction/20261005_042629_774918_suite/figures/macro_f1.png\n M reports/reproduction/20261005_042629_774918_suite/figures/per_class_f1.png\n M reports/reproduction/20261005_042629_774918_suite/figures/training_curves.png\n M reports/reproduction/20261005_042629_774918_suite/main_results.csv\n M reports/reproduction/20261005_042629_774918_suite/multi_seed.json\n M reports/reproduction/20261005_042629_774918_suite/reproduction_report.md\n M reports/reproduction/20261005_042629_774918_suite/run_status.json\n M reports/reproduction/20261005_042629_774918_suite/suite_status.json\n?? scripts/continue_reproduction_suite.py",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "68aead2951cba1e9d37f59a3648ea3f0375b9634415c7aecf67aadd46312f311",
+        "metrics/test.json": "b1b6747e53f5305258663961963d42fa4aafe7478ac56b4fd6b1bb6a851ba3e5",
+        "predictions/test.jsonl": "f5204efbf443f6bfafafc19d811fa3e1d2838db582cf72545b132b55bd315914",
+        "config.json": "d119b4a3e431ea7802d6f20ef850720d452384e92166cec95e3fb36748ff537a",
+        "data_manifest.json": "a1c9a14b1fbc22ac7e49407eaaae23f8485904a693a4b1d5e955ed2495c2e636",
+        "history.csv": "77bd5f084c8e193a2a742770e81a3c3c0ec8f2cf6439c54f6907a0254e3b7415",
+        "environment.json": "637eebe507d7df5210b980c308fe836228e74ec739799d81955b7122de1d023b"
+      }
+    },
+    {
+      "model": "B",
+      "seed": 44,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_183541_301023_code_compat_B_seed44",
+      "checkpoint_sha256_recorded": "86538074d4e99e8dc5fac288c5132f12df21bc440aecc3507a9f9dfc05011682",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "4f79aae1a76e4cb8e64ae07667188623d20d3c4d",
+        "git_status": "M reports/reproduction/20261005_042629_774918_suite/figures/macro_f1.png\n M reports/reproduction/20261005_042629_774918_suite/figures/per_class_f1.png\n M reports/reproduction/20261005_042629_774918_suite/figures/training_curves.png\n M reports/reproduction/20261005_042629_774918_suite/main_results.csv\n M reports/reproduction/20261005_042629_774918_suite/multi_seed.json\n M reports/reproduction/20261005_042629_774918_suite/paired_bootstrap.json\n M reports/reproduction/20261005_042629_774918_suite/reproduction_report.md\n M reports/reproduction/20261005_042629_774918_suite/run_status.json\n M reports/reproduction/20261005_042629_774918_suite/suite_status.json",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "941ae97f83cb455d93d17900dba29d652c406d9c1e55724b51c56b4756f23576",
+        "metrics/test.json": "8a79752705f4a644e5ceeee4913cf9a40bbea74ac5d11c7753b62b6893f46510",
+        "predictions/test.jsonl": "340e2a5c33d38ababddd1e9bc1189c5213711e344020d0c31afb323f875b5f5a",
+        "config.json": "196ba34d3ef2887bb87f53c58916e9b53be7b7c04e0d01156f29d3153b550cce",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "ed2d06e0ea0ed3537d14006f42562dcd05f0bb89c70636bcddc07f88c56de914",
+        "environment.json": "6912989a345a602519fe72ddd8803e4a5ac8553384cc5496dd3a43b895cacb51"
+      }
+    },
+    {
+      "model": "visual",
+      "seed": 44,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_190239_006766_code_compat_visual_seed44",
+      "checkpoint_sha256_recorded": "498cfd956bf74e9339a7856ad161ab4953ff680cb30d41d7f3c060629b766890",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "4f79aae1a76e4cb8e64ae07667188623d20d3c4d",
+        "git_status": "M README.md\n M reports/reproduction/20261005_042629_774918_suite/ablations.csv\n M reports/reproduction/20261005_042629_774918_suite/figures/macro_f1.png\n M reports/reproduction/20261005_042629_774918_suite/figures/per_class_f1.png\n M reports/reproduction/20261005_042629_774918_suite/figures/training_curves.png\n M reports/reproduction/20261005_042629_774918_suite/main_results.csv\n M reports/reproduction/20261005_042629_774918_suite/multi_seed.json\n M reports/reproduction/20261005_042629_774918_suite/paired_bootstrap.json\n M reports/reproduction/20261005_042629_774918_suite/reproduction_report.md\n M reports/reproduction/20261005_042629_774918_suite/run_status.json\n M reports/reproduction/20261005_042629_774918_suite/suite_status.json\n M src/train/reproduce.py\n?? docs/session-ses_ef46.md",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "9179b860fdc6233a1500af1d4271fcae5ac48eaeedd5012ac15050f20300abfc",
+        "metrics/test.json": "cba19cce53a90b1c68dc9669988c4e23e803fdba3aa59a50f47e09ce4355528c",
+        "predictions/test.jsonl": "c71921f15990896ae997e6154059fb9e9806a3a4638c9258a5e83f9ef5f067bf",
+        "config.json": "58e595fc131bb92a89e85326730790732691ed8bf5970e9e9e4c59bbec19053c",
+        "data_manifest.json": "0f7cab2a4886daa7db7e9d5c800ec4d0052834e82d513c52af4c6c17c997f71b",
+        "history.csv": "6fb8ba7abf9a7dfd35db233c6cddf4224206c49f12c71237dbf74b81715961ba",
+        "environment.json": "3c670b44698b1bc8abf896131946ba3adb52e3343ac351f43e012468e354fb7c"
+      }
+    },
+    {
+      "model": "full",
+      "seed": 44,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_221822_932720_code_compat_full_seed44",
+      "checkpoint_sha256_recorded": "70f31d760ef40dd36d9e68d39cc7ce90195d0a2cadbe4991039ef1c5e6e7a6a5",
+      "environment": {
+        "python": "3.12.14 (main, Sep 24 2026, 17:57:43) [Clang 22.1.3 ]",
+        "git_revision": "e38d3a6bb226eef11e0223fe883d7a0a8e0ee58c",
+        "git_status": "M reports/reproduction/20261005_042629_774918_suite/suite_status.json\n?? docs/session-ses_ef46.md\n?? materials/pelican-bicycle.html",
+        "lock_sha256": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6",
+        "versions": {
+          "torch": "2.6.0+cu124",
+          "torchvision": "0.21.0+cu124",
+          "transformers": "4.57.6",
+          "numpy": "2.5.3",
+          "scikit-learn": "1.9.1",
+          "Pillow": "12.3.0"
+        },
+        "cuda_build": "12.4",
+        "cudnn": 90100,
+        "deterministic_cudnn": true,
+        "matmul_tf32": false,
+        "cudnn_tf32": true,
+        "precision": "fp32",
+        "physical_batch": 32,
+        "effective_batch": 32,
+        "labels": [
+          "TonguePale",
+          "TipSideRed",
+          "Spot",
+          "Ecchymosis",
+          "Crack",
+          "Toothmark",
+          "FurThick",
+          "FurYellow",
+          "Heart",
+          "Lung",
+          "Spleen",
+          "Liver",
+          "Kidney"
+        ],
+        "table3_B_definition": "Three branches; raw global/local pooled vectors; A/U/M removed when disabled",
+        "table3_B_evidence": "Working assumption; upstream provides only a separate single-global diagnostic model",
+        "gpu": "NVIDIA L20",
+        "gpu_memory_gib": 47.5001220703125,
+        "nvidia_smi": "NVIDIA L20, 550.90.07, 49140 MiB",
+        "imagenet": {
+          "weights": "ResNet50_Weights.IMAGENET1K_V1",
+          "sha256": "0676ba61b6795bbe1773cffd859882e5e297624d384b6993f7c9e683e722fb8a"
+        }
+      },
+      "files_sha256": {
+        "summary.json": "e9a089fb9ae59d12ab864afddcb76cc615c5d876188203555f452a4e66a9d42b",
+        "metrics/test.json": "81bedfea69e52e4f2cfba3d1ea9beeef5b8f7b8746d3d40fde75de40f1422539",
+        "predictions/test.jsonl": "ddeeb808077caa0cda58fa70bb83ab98bbb6078e249a15cc69e8755753a2f2d0",
+        "config.json": "83587c9f2443b8c4a3fd706660358070ad06d0300f86469058698c5f718ad077",
+        "data_manifest.json": "a1c9a14b1fbc22ac7e49407eaaae23f8485904a693a4b1d5e955ed2495c2e636",
+        "history.csv": "a973822cbaa8d4c17b4ed84ae6d29d969a468728b341db4573a2e3bd07a485c1",
+        "environment.json": "ebb453188d66d705d0934ef940cec42ffb11df888bca30f613435e1f2f49c23d"
+      }
+    }
+  ]
+}

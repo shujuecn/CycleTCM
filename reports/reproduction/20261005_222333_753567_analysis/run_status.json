@@ -1,0 +1,100 @@
+[
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_042631_378427_code_compat_global_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 104,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044306_337121_code_compat_mllm_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 30,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_044348_211957_code_compat_visual_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 49,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_060302_935549_code_compat_full_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 96,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_075843_252020_code_compat_B_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 108,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_085328_046404_code_compat_BA_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 81,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_095648_193124_code_compat_BU_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 130,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_115215_461901_code_compat_BM_seed42",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 83,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_123905_180614_code_compat_B_seed43",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 92,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 81,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_163636_597466_code_compat_full_seed43",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 99,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_183541_301023_code_compat_B_seed44",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 26,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_190239_006766_code_compat_visual_seed44",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 60,
+    "stop_reason": "patience"
+  },
+  {
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_221822_932720_code_compat_full_seed44",
+    "status": "complete",
+    "engineering_only": false,
+    "best_epoch": 80,
+    "stop_reason": "patience"
+  }
+]
