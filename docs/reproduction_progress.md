@@ -38,6 +38,6 @@ P5 的外部 SOTA 实现和同 split 逐图预测、Sankey 的 8×5 提取公式
 
 ## 2026-10-05 下午续跑记录
 
-原固定 suite 父进程在 `visual seed=43` 第 71 轮后退出；该运行的 `last.pt` 可读且状态完整，没有使用测试集选择模型。已从该 checkpoint 续跑至原定 patience=50，续跑目录为 `outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43/`，best epoch=81，测试集 895 张完整评估：证候 Acc/F1=84.86%/70.60%，脏腑 Acc/F1=79.55%/82.07%。旧中断目录保留为 provenance，不计入报告。
+原固定 suite 父进程在 `visual seed=43` 第 71 轮后退出；该运行的 `last.pt` 可读且状态完整，没有使用测试集选择模型。已从该 checkpoint 续跑至原定 patience=50，续跑目录为 `outputs/reproduction/20261005_042629_774918_suite/20261005_154605_393374_code_compat_visual_seed43/`，best epoch=81，测试集 895 张完整评估：证候 Acc/F1=84.86%/70.60%，脏腑 Acc/F1=79.55%/82.07%。旧中断目录的日志、配置和 best checkpoint 保留为 provenance；续跑完成后删除其过时的 `last.pt`，不计入报告。
 
 新增 `scripts/continue_reproduction_suite.py` 用于按 suite 状态恢复：已完成目录复用，未完成项顺序执行，每项结束更新报告，成功后删除 `last.pt` 以保留 best checkpoint。该恢复队列当前已启动 `full seed=43`；报告和 `suite_status.json` 会随队列推进更新。当前报告已收录 10 个实际完成运行（global、mllm、visual/full seed=42、B/BA/BU/BM seed=42、B/visual seed=43），未将 full seed=43 及 seed=44 运行提前计入。
