@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "model": "B",
+    "seeds": [
+      42,
+      43
+    ],
+    "syndrome_acc_percent": {
+      "mean": 85.26536312849163,
+      "std_sample": 0.05925475819998929
+    },
+    "syndrome_f1_percent": {
+      "mean": 70.83604949188782,
+      "std_sample": 0.06315688654121282
+    },
+    "organ_acc_percent": {
+      "mean": 78.7262569832402,
+      "std_sample": 0.09480761311998487
+    },
+    "organ_f1_percent": {
+      "mean": 81.16373775788425,
+      "std_sample": 0.21854491423826636
+    }
+  }
+]

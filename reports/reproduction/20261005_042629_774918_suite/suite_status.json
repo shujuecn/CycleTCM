@@ -80,7 +80,11 @@
     {
       "model": "B",
       "seed": 43,
-      "status": "pending"
+      "status": "complete",
+      "pid": 760365,
+      "returncode": 0,
+      "seconds": 2945.503690495003,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/reproduction/20261005_042629_774918_suite/20261005_123905_180614_code_compat_B_seed43"
     },
     {
       "model": "visual",
