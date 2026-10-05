@@ -41,7 +41,11 @@ def main():
             with (report / 'main_results.csv').open(newline='') as handle:
                 reported = {(row['model'], int(row['seed'])) for row in csv.DictReader(handle)}
             report_state = json.loads((report / 'suite_status.json').read_text())
-            ready = reported == completed and report_state == queue_state
+            report_completed = {(item['model'], item['seed']) for item in report_state['queue']
+                                if item['status'] == 'complete'}
+            ready = reported == completed == report_completed
+            if queue_state['status'] == 'complete':
+                ready = ready and report_state['status'] == 'complete'
             if ready and (completed != published or queue_state['status'] == 'complete'):
                 if args.publish:
                     relative = str(report.relative_to(ROOT))

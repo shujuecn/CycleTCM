@@ -23,6 +23,17 @@ def run_dirs(suite, model, seed):
     return sorted(suite.glob(f'*_code_compat_{model}_seed{seed}'))
 
 
+def resumable_run(suite, model, seed):
+    """Newest run for this cell that stopped without summary.json but kept a resumable last.pt."""
+    interrupted = [path for path in run_dirs(suite, model, seed)
+                   if not (path / 'summary.json').is_file() and (path / 'checkpoints/last.pt').is_file()]
+    return interrupted[-1] if interrupted else None
+
+
+def orphaned_runs(suite, model, seed, known):
+    return [str(path) for path in run_dirs(suite, model, seed) if path not in known]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--suite', type=Path, required=True)
@@ -35,6 +46,7 @@ def main():
     state['status'] = 'running'
     state.pop('pid', None)
     run_paths = []
+    orphans = []
     for item in state['queue']:
         paths = run_dirs(suite, item['model'], item['seed'])
         complete = [path for path in paths if (path / 'summary.json').is_file()]
@@ -42,8 +54,14 @@ def main():
             chosen = complete[-1]
             item.update(status='complete', run=str(chosen), returncode=0)
             run_paths.append(chosen)
+            orphans += orphaned_runs(suite, item['model'], item['seed'], run_paths)
         else:
             item.update(status='pending')
+            resume = resumable_run(suite, item['model'], item['seed'])
+            item.update(resume=str(resume / 'checkpoints/last.pt') if resume else None,
+                        orphaned=orphaned_runs(suite, item['model'], item['seed'], run_paths))
+    if orphans:
+        print(f'WARNING {len(orphans)} orphaned run directories need review: {orphans}', flush=True)
     write_json(suite / 'suite_status.json', state)
     write_json(report / 'suite_status.json', state)
     build_report(run_paths, report)
@@ -54,25 +72,30 @@ def main():
             continue
         if shutil.disk_usage(ROOT).free < 20 * 2**30:
             raise OSError('Less than 20 GiB free; cannot safely write full training checkpoints')
-        item['status'] = 'running'
-        log_path = suite / f'{item["model"]}_seed{item["seed"]}.log'
         command = [sys.executable, str(ROOT / 'src/train/reproduce.py'),
                    '--config', str(fixed_config), '--model', item['model'],
                    '--seed', str(item['seed']), '--output-dir', str(suite)]
+        if item.get('resume'):
+            command += ['--resume', item['resume']]
+            print(f'RESUME {item["model"]} seed={item["seed"]} from {item["resume"]}', flush=True)
+        item['status'] = 'running'
+        log_path = suite / f'{item["model"]}_seed{item["seed"]}.log'
         started = time.monotonic()
         write_json(suite / 'suite_status.json', state)
         with log_path.open('w') as log:
             returncode = subprocess.run(command, cwd=ROOT, stdout=log,
                                         stderr=subprocess.STDOUT).returncode
         paths = run_dirs(suite, item['model'], item['seed'])
-        created = [path for path in paths if path not in run_paths]
-        if len(created) != 1:
-            raise RuntimeError(f'Expected one new run for {item["model"]}/{item["seed"]}: {created}')
-        path = created[0]
+        resumed = Path(item['resume']).parent.parent if item.get('resume') else None
+        done = [path for path in paths if (path / 'summary.json').is_file()
+                and (path not in run_paths or path == resumed)]
+        if len(done) != 1:
+            raise RuntimeError(f'Expected one completed run for {item["model"]}/{item["seed"]}: {done}')
+        path = done[0]
         run_paths.append(path)
         item.update(status='complete' if returncode == 0 else 'failed',
                     returncode=returncode, seconds=time.monotonic() - started,
-                    run=str(path))
+                    run=str(path), resume=None, orphaned=[])
         if returncode == 0 and (path / 'checkpoints/last.pt').exists():
             (path / 'checkpoints/last.pt').unlink()
         write_json(suite / 'suite_status.json', state)
