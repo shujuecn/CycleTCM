@@ -85,12 +85,17 @@ def main():
                for p in args.baseline_suite.iterdir() if p.is_dir() and (p/'config.json').exists()
                and json.loads((p/'config.json').read_text())['model'] == 'full'] + state['queue']
     runs, tables, per_class, manifest = [], [], [], []
-    reference = None
+    reference = reference_data = None
     for entry in entries:
         path = Path(entry['run'])
         summary = json.loads((path/'summary.json').read_text())
         config = summary['config']
         assert not summary['engineering_only'] and config['limit'] == 0 and config['model'] == 'full'
+        assert config.get('loss', 'bce') == 'bce' and config.get('mllm_input_dim', 2560) == 2560
+        data = json.loads((path/'data_manifest.json').read_text())
+        shared_data = {k:v for k,v in data.items() if k != 'mllm_features_sha256'}
+        if reference_data is None: reference_data = shared_data
+        assert shared_data == reference_data
         assert json.loads((path/'status.json').read_text())['status'] == 'complete'
         indexed = predictions(path/'predictions/test.jsonl')
         identity = {name:(r['subject_id'], r['labels']) for name,r in indexed.items()}
@@ -188,7 +193,7 @@ def main():
     spleen = grouped['P0'][0]['metrics']['per_class'][10]
     lines += [f'Spleen 的测试支持度为阳性 {spleen["positive"]}、阴性 {spleen["negative"]}，严重不平衡；其 F1 不应独立用来说明提示词的临床知识价值。','',
               '## 复现与产物','', '完整 feature JSON、逐图预测和权重保留在本地 data/ 与 outputs/，不推送受试者级资料。此目录保存完整汇总、逐类结果、prompt 原文与哈希、训练来源清单、配对区间以及图表。','',
-              '```bash', 'uv run --no-sync python scripts/run_prompt_ablation.py \\', '  --features data/features/prompt_20261007_A0/all_features.json \\', '             data/features/prompt_20261007_A1/all_features.json \\', '             data/features/prompt_20261007_A2/all_features.json',
+              '```bash', 'for variant in A0 A1 A2; do', '  uv run --no-sync python scripts/extract_prompt_features.py \\', '    --variant "$variant" --model-dir /path/to/Qwen3-VL-4B-Instruct \\', '    --images-dir data/processed/CycleTCM/images \\', '    --output-dir "data/features/prompt_20261007_$variant" --resume', 'done', 'uv run --no-sync python scripts/run_prompt_ablation.py \\', '  --features data/features/prompt_20261007_A0/all_features.json \\', '             data/features/prompt_20261007_A1/all_features.json \\', '             data/features/prompt_20261007_A2/all_features.json',
               'uv run --no-sync python scripts/report_prompt_ablation.py --suite '+str(suite.relative_to(ROOT)), '```','']
     (output/'prompt_ablation_report.md').write_text('\n'.join(lines))
     print(f'REPORT {output}', flush=True)

@@ -1,11 +1,13 @@
 """Extract Qwen features for the archived TongueBench A0/A1/A2 prompts."""
 from __future__ import annotations
-import argparse, hashlib, json, logging, time
+import argparse, hashlib, importlib.metadata, json, logging, sys, time
 from pathlib import Path
 import torch
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'src'))
+from utils.experiment import sha256, write_json
 
 def archived_prompts(path: Path):
     text = path.read_text()
@@ -58,6 +60,20 @@ def main():
         if json.loads(metadata_path.read_text()) != metadata:
             raise ValueError('Prompt or input metadata changed; use a new output directory')
     metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
+    model_files = {p.name: sha256(p) for p in sorted(args.model_dir.resolve().iterdir())
+                   if p.is_file() and p.suffix in {'.json', '.txt', '.safetensors'}}
+    versions = {name: importlib.metadata.version(name) for name in ['torch', 'transformers', 'Pillow']}
+    provenance_path = output / 'extraction_provenance.json'
+    if args.resume and provenance_path.exists():
+        previous = json.loads(provenance_path.read_text())
+        if any(previous['model_files'].get(k) != v for k,v in model_files.items()) or previous['versions'] != versions:
+            raise ValueError('Weights, processor or library versions changed; use a new output directory')
+    else:
+        write_json(provenance_path, {'model_files':model_files, 'versions':versions,
+                   'source_files_sha256':{'extractor':sha256(__file__), 'prompt_doc':sha256(args.prompt_doc), 'uv.lock':sha256(ROOT/'uv.lock')},
+                   'execution_protocol':{'model_eval':True, 'frozen_parameters':True, 'inference_mode':True,
+                                         'use_cache':False, 'add_generation_prompt':True, 'image_before_text':True,
+                                         'torch_manual_seed':42, 'torch_num_threads':8}})
     pending = []
     for image_path in paths:
         record_path = records_dir / (image_path.name + '.json')
