@@ -119,6 +119,7 @@ def main():
         with (path/'history.csv').open() as f: history = list(csv.DictReader(f))
         manifest.append({'variant':entry['variant'], 'seed':entry['seed'], 'run':str(path),
                          'config':config, 'checkpoint_sha256':summary['checkpoint_sha256'],
+                         'resume':json.loads((path/'resume.json').read_text()) if (path/'resume.json').exists() else None,
                          'epochs':len(history), 'training_seconds_recorded':sum(float(r['seconds_with_checkpoint']) for r in history if r.get('seconds_with_checkpoint')),
                          'epochs_missing_wall_time':sum(not r.get('seconds_with_checkpoint') for r in history),
                          'files_sha256':{name:sha256(path/name) for name in ('summary.json','config.json','data_manifest.json','metrics/test.json','predictions/test.jsonl','history.csv','environment.json')}})
@@ -164,6 +165,7 @@ def main():
     plt.close(fig)
     lines = ['# CycleTCM E5a 提示词替换实验结果','',f'生成时间：{datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")}。完成 A0/A1/A2 各 3 个种子，共 9 个正式运行；P0 复用既有 3 种子。','',
              '## 协议','', '固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 原有图像与受试者划分。所有全量特征含 5109 张图；full 模型继续使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。训练 seeds=42/43/44，除提示词产生的特征外，模型和训练配置相同。','',
+             f'队列最大并行任务数为 {state.get("jobs", 1)}，每个任务仍为同一 GPU 上的独立训练进程。续训来源、起始 epoch 和 checkpoint 哈希保存在 source_manifest.json；续训使用完整优化器、调度器和随机状态。并行任务的训练耗时包含资源争用，不用于独立推理效率比较。','',
              'A0/A1/A2 的 system/user 文本逐字取自验证方案附录 B。图片均在 user 消息内、位于文本之前，与原提取器顺序一致。没有生成 JSON 或执行显式反思，因此本实验衡量的是提示词对隐状态特征与下游分类的影响，不能代表 TongueBench 的生成判读指标。','',
              '归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句；A1/A2 的开头目标句也不同。保留原文使其符合方案的归档复用要求，但存在这些伴随变化；A1−A0 应理解为归档知识提示版本效应，A2−A1 为归档反思提示版本效应，不能完全排除措辞或长度效应。P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。脏腑标签未出现在 A 组提示词，脏腑变化仅为次级读出。','',
              '## 三种子结果','', '| 提示词 | 证候 Acc (%) | 证候 F1 (%) | 脏腑 Acc (%) | 脏腑 F1 (%) |','| --- | ---: | ---: | ---: | ---: |']
