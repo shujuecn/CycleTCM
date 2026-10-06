@@ -1,6 +1,7 @@
 """Extract Qwen features for the archived TongueBench A0/A1/A2 prompts."""
 from __future__ import annotations
 import argparse, hashlib, importlib.metadata, json, logging, sys, time
+from datetime import datetime
 from pathlib import Path
 import torch
 from PIL import Image
@@ -69,7 +70,7 @@ def main():
         if any(previous['model_files'].get(k) != v for k,v in model_files.items()) or previous['versions'] != versions:
             raise ValueError('Weights, processor or library versions changed; use a new output directory')
     else:
-        write_json(provenance_path, {'model_files':model_files, 'versions':versions,
+        write_json(provenance_path, {'created_at':datetime.now().astimezone().isoformat(), 'model_files':model_files, 'versions':versions,
                    'source_files_sha256':{'extractor':sha256(__file__), 'prompt_doc':sha256(args.prompt_doc), 'uv.lock':sha256(ROOT/'uv.lock')},
                    'execution_protocol':{'model_eval':True, 'frozen_parameters':True, 'inference_mode':True,
                                          'use_cache':False, 'add_generation_prompt':True, 'image_before_text':True,
