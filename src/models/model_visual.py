@@ -374,7 +374,7 @@ def uncertainty_confidence(first, second, eps=1e-8):
 # CycleTCM network
 class CycleTCM(nn.Module):
     def __init__(self, num_classes1=8, num_classes2=5, pretrained=False,
-                 aglff=True, uwbmoe=True, mllm=False, **kwargs):
+                 aglff=True, uwbmoe=True, mllm=False, mllm_input_dim=2560, **kwargs):
         super(CycleTCM, self).__init__()
         self.backbone_whole = resnet50_backbone(pretrained=pretrained, **kwargs)
         self.backbone_syndrome = resnet50_backbone_6ch(pretrained=pretrained, **kwargs)
@@ -441,7 +441,7 @@ class CycleTCM(nn.Module):
 
         if mllm:
             from models.model_mllm import MLLM_Adapter
-            self.mllm_adapter = MLLM_Adapter()
+            self.mllm_adapter = MLLM_Adapter(input_dim=mllm_input_dim)
         width = embedding_dim * (3 if mllm else 2)
 
         self.bn_syndrome = nn.BatchNorm1d(width)

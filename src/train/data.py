@@ -62,7 +62,7 @@ def transform_views(images, transform, synchronized):
 
 class TongueDataset(Dataset):
     def __init__(self, records, data_dir, model, features=None, training=False,
-                 profile='code_compat', normalize=False):
+                 profile='code_compat', normalize=False, feature_dim=2560):
         self.records = records
         self.data_dir = Path(data_dir).resolve()
         self.views = [] if model == 'mllm' else VIEWS[:1] if model == 'global' else VIEWS
@@ -73,7 +73,7 @@ class TongueDataset(Dataset):
         if features is not None:
             for row in records:
                 vector = features[row['image_file']]
-                assert vector.shape == (2560,) and torch.isfinite(vector).all()
+                assert vector.shape == (feature_dim,) and torch.isfinite(vector).all()
 
     def __len__(self):
         return len(self.records)

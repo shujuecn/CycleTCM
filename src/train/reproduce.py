@@ -36,7 +36,8 @@ DEFAULTS = dict(model='visual', profile='code_compat', seed=42, epochs=200, batc
                 weight_decay=1e-4, patience=50, min_delta=.001, init='global_only',
                 normalize=False, scheduler_monitor='train_loss', limit=0,
                 data_dir=str(PROCESSED_DATA_DIR), feature_file=str(FEATURE_FILE),
-                label_dir=str(LABEL_DIR), mllm_features_file=str(MLLM_FEATURES_FILE))
+                label_dir=str(LABEL_DIR), mllm_features_file=str(MLLM_FEATURES_FILE),
+                mllm_input_dim=2560, loss='bce', lovasz_alpha=0.7)
 ACTIVE_RUN = None
 
 
@@ -64,8 +65,9 @@ class GlobalBackbone(nn.Module):
 
 def build_model(config, initialize=False):
     name = config['model']
-    model = MLLM_Model() if name == 'mllm' else GlobalBackbone() if name == 'global' else CycleTCM(
-        aglff=MODULES[name][0], uwbmoe=MODULES[name][1], mllm=MODULES[name][2])
+    model = MLLM_Model(input_dim=config.get('mllm_input_dim', 2560)) if name == 'mllm' else GlobalBackbone() if name == 'global' else CycleTCM(
+        aglff=MODULES[name][0], uwbmoe=MODULES[name][1], mllm=MODULES[name][2],
+        mllm_input_dim=config.get('mllm_input_dim', 2560))
     if initialize and name != 'mllm' and config['init'] != 'none':
         # Never silently replace missing pretrained weights with random initialization.
         weight_file = Path(torch.hub.get_dir()) / 'checkpoints/resnet50-0676ba61.pth'
@@ -108,6 +110,10 @@ def epoch_pass(model, loader, config, weights, optimizer=None, scaler=None):
                 syn, org = model(*model_inputs(batch, config, device))
                 loss = (nn.functional.binary_cross_entropy_with_logits(syn, targets[:, :8], pos_weight=weights[:8])
                         + nn.functional.binary_cross_entropy_with_logits(org, targets[:, 8:], pos_weight=weights[8:]))
+                if config.get('loss', 'bce') == 'bce_lovasz':
+                    from train.losses import multilabel_lovasz
+                    loss = loss + config['lovasz_alpha'] * (
+                        multilabel_lovasz(syn, targets[:, :8]) + multilabel_lovasz(org, targets[:, 8:]))
             if not torch.isfinite(loss):
                 raise FloatingPointError(f'Nonfinite loss: {batch["image_file"]}')
             if training:
@@ -184,7 +190,8 @@ def loaders(config):
         if config['limit']:
             rows = rows[:config['limit']]
         dataset = TongueDataset(rows, config['data_dir'], config['model'], features,
-                                training=split == 'train', profile=config['profile'], normalize=config['normalize'])
+                                training=split == 'train', profile=config['profile'], normalize=config['normalize'],
+                                feature_dim=config.get('mllm_input_dim', 2560))
         output[split] = DataLoader(dataset, batch_size=config['batch_size'], shuffle=split == 'train',
                                    num_workers=config['workers'], pin_memory=config['device'].startswith('cuda'),
                                    generator=torch.Generator())
@@ -201,11 +208,11 @@ def run(default_model=None):
     parser.add_argument('--split', choices=['val', 'test', 'both'], default='both')
     for key, choices in [('model', ['global', 'mllm', *MODULES]), ('profile', ['code_compat', 'reviewed']),
                          ('precision', ['fp32', 'bf16', 'fp16']), ('init', ['none', 'global_only', 'all_branches']),
-                         ('scheduler_monitor', ['train_loss', 'val_loss'])]:
+                         ('scheduler_monitor', ['train_loss', 'val_loss']), ('loss', ['bce', 'bce_lovasz'])]:
         parser.add_argument('--' + key.replace('_', '-'), choices=choices)
-    for key in ['seed', 'epochs', 'batch_size', 'workers', 'patience', 'limit']:
+    for key in ['seed', 'epochs', 'batch_size', 'workers', 'patience', 'limit', 'mllm_input_dim']:
         parser.add_argument('--' + key.replace('_', '-'), type=int)
-    for key in ['learning_rate', 'weight_decay', 'min_delta']:
+    for key in ['learning_rate', 'weight_decay', 'min_delta', 'lovasz_alpha']:
         parser.add_argument('--' + key.replace('_', '-'), type=float)
     for key in ['device', 'data_dir', 'feature_file', 'label_dir', 'mllm_features_file']:
         parser.add_argument('--' + key.replace('_', '-'))
@@ -239,13 +246,15 @@ def run(default_model=None):
         parser.error('Protocol changes require profile=reviewed')
     if config['precision'] == 'fp16' and not config['device'].startswith('cuda'):
         parser.error('fp16 requires CUDA')
+    if config['mllm_input_dim'] < 1 or config['lovasz_alpha'] < 0:
+        parser.error('Require mllm-input-dim >=1 and lovasz-alpha >=0')
     if config['limit'] and config['limit'] % config['batch_size'] == 1:
         parser.error('Training tail batch cannot contain one sample (BatchNorm)')
     if args.resume:
         if not all(key in checkpoint for key in ('optimizer', 'scheduler', 'scaler', 'rng', 'history')):
             parser.error('Resume requires a full training checkpoint (last.pt); best.pt contains evaluation weights only')
         allowed = {'epochs', 'device', 'workers'}
-        changed = {key for key in DEFAULTS if config[key] != checkpoint['config'][key]}
+        changed = {key for key in DEFAULTS if config[key] != checkpoint['config'].get(key, DEFAULTS[key])}
         if changed - allowed:
             parser.error(f'Resume cannot change scientific config: {changed - allowed}')
         source_best = Path(checkpoint['best_path']).resolve()
