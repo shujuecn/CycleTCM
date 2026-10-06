@@ -134,6 +134,36 @@ uv run --no-sync python scripts/qualitative_report.py \
 
 对 full 使用同一个 visual 预测文件作为 `--selection-from /path/to/visual/run/predictions/test.jsonl`，即可固定对照样本。分析脚本附加 `--qualitative-metadata /path/to/visual/metadata.json /path/to/full/metadata.json` 可生成包含配对热图的报告；当前组合要求 seed 42 和默认四个标签。Grad-CAM 解释全局分支的正类响应，不能视为临床证据或全部分支的完整归因。
 
+## E5a 提示词替换实验
+
+补充实验使用 `supplemental-validation-20261007` 分支，逐字读取 [验证方案附录 B](docs/CycleTCM-质疑查证与消融验证方案.md) 的 A0/A1/A2。保持 Qwen 权重、图像顺序、BF16 单次前向和全序列 masked mean 不变；每组抽取 5109 个 2560 维特征，再按 `code_compat` 训练 full 模型的 seeds 42/43/44。P0 复用原正式复现的三个相同种子。A2 在此模式中只影响隐状态，不执行生成式反思。
+
+使用本次默认数据与本地 Qwen 权重：
+
+```bash
+QWEN_MODEL=/path/to/Qwen3-VL-4B-Instruct
+for variant in A0 A1 A2; do
+  uv run --no-sync python scripts/extract_prompt_features.py \
+    --variant "$variant" --model-dir "$QWEN_MODEL" \
+    --images-dir data/processed/CycleTCM/images \
+    --output-dir "data/features/prompt_20261007_$variant" --resume
+done
+uv run --no-sync python scripts/run_prompt_ablation.py \
+  --features data/features/prompt_20261007_A0/all_features.json \
+             data/features/prompt_20261007_A1/all_features.json \
+             data/features/prompt_20261007_A2/all_features.json
+```
+
+队列会打印 `SUITE` 路径。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite` 继续；只有九个正式运行全部完成后才能生成结果报告：
+
+```bash
+uv run --no-sync python scripts/report_prompt_ablation.py \
+  --suite /path/to/suite \
+  --baseline-suite outputs/reproduction/20261005_042629_774918_suite
+```
+
+报告保存三种子均值和样本标准差、逐类指标，以及 A1−A0、A2−A1 等配对受试者 bootstrap 95% CI。区间跨零不宣称有效提升；三个固定训练种子的测试 bootstrap 不代表重新训练的种子总体不确定性。归档版本还存在开头措辞和标签清单形式的伴随变化，结果按提示词版本效应解释。
+
 ## 仓库与产物
 
 | 路径 | 内容 |
