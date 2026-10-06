@@ -163,6 +163,7 @@ def main():
     fig.tight_layout()
     for suffix in ('png','pdf'): fig.savefig(figure_dir/f'prompt_f1.{suffix}',dpi=180)
     plt.close(fig)
+    launch_command = f'uv run --no-sync python scripts/run_prompt_ablation.py --jobs {state.get("jobs", 1)} ' + chr(92)
     lines = ['# CycleTCM E5a 提示词替换实验结果','',f'生成时间：{datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")}。完成 A0/A1/A2 各 3 个种子，共 9 个正式运行；P0 复用既有 3 种子。','',
              '## 协议','', '固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 原有图像与受试者划分。所有全量特征含 5109 张图；full 模型继续使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。训练 seeds=42/43/44，除提示词产生的特征外，模型和训练配置相同。','',
              f'队列最大并行任务数为 {state.get("jobs", 1)}，每个任务仍为同一 GPU 上的独立训练进程。续训来源、起始 epoch 和 checkpoint 哈希保存在 source_manifest.json；续训使用完整优化器、调度器和随机状态。并行任务的训练耗时包含资源争用，不用于独立推理效率比较。','',
@@ -195,7 +196,7 @@ def main():
     spleen = grouped['P0'][0]['metrics']['per_class'][10]
     lines += [f'Spleen 的测试支持度为阳性 {spleen["positive"]}、阴性 {spleen["negative"]}，严重不平衡；其 F1 不应独立用来说明提示词的临床知识价值。','',
               '## 复现与产物','', '完整 feature JSON、逐图预测和权重保留在本地 data/ 与 outputs/，不推送受试者级资料。此目录保存完整汇总、逐类结果、prompt 原文与哈希、训练来源清单、配对区间以及图表。','',
-              '```bash', 'for variant in A0 A1 A2; do', '  uv run --no-sync python scripts/extract_prompt_features.py \\', '    --variant "$variant" --model-dir /path/to/Qwen3-VL-4B-Instruct \\', '    --images-dir data/processed/CycleTCM/images \\', '    --output-dir "data/features/prompt_20261007_$variant" --resume', 'done', 'uv run --no-sync python scripts/run_prompt_ablation.py \\', '  --features data/features/prompt_20261007_A0/all_features.json \\', '             data/features/prompt_20261007_A1/all_features.json \\', '             data/features/prompt_20261007_A2/all_features.json',
+              '```bash', 'for variant in A0 A1 A2; do', '  uv run --no-sync python scripts/extract_prompt_features.py \\', '    --variant "$variant" --model-dir /path/to/Qwen3-VL-4B-Instruct \\', '    --images-dir data/processed/CycleTCM/images \\', '    --output-dir "data/features/prompt_20261007_$variant" --resume', 'done', launch_command, '  --features data/features/prompt_20261007_A0/all_features.json \\', '             data/features/prompt_20261007_A1/all_features.json \\', '             data/features/prompt_20261007_A2/all_features.json',
               'uv run --no-sync python scripts/report_prompt_ablation.py --suite '+str(suite.relative_to(ROOT)), '```','']
     (output/'prompt_ablation_report.md').write_text('\n'.join(lines))
     print(f'REPORT {output}', flush=True)

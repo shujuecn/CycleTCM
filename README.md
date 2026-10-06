@@ -154,7 +154,7 @@ uv run --no-sync python scripts/run_prompt_ablation.py \
              data/features/prompt_20261007_A2/all_features.json
 ```
 
-队列会打印 `SUITE` 路径。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite` 继续；只有九个正式运行全部完成后才能生成结果报告：
+队列会打印 `SUITE` 路径。显存足够时可附加 `--jobs 2`，让两个独立训练进程共享 GPU，仅改变调度。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite` 继续；只有九个正式运行全部完成后才能生成结果报告：
 
 ```bash
 uv run --no-sync python scripts/report_prompt_ablation.py \
