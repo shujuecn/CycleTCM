@@ -73,7 +73,7 @@ def main():
     parser.add_argument('--suite', type=Path, required=True)
     parser.add_argument('--baseline-suite', type=Path, default=ROOT/'outputs/reproduction/20261005_042629_774918_suite')
     parser.add_argument('--output-dir', type=Path)
-    parser.add_argument('--report-path', type=Path, default=ROOT/'reports/supplemental_validation_report.md')
+    parser.add_argument('--report-path', type=Path, default=ROOT/'reports/validation/20261007/report.md')
     args = parser.parse_args()
     suite = args.suite.resolve()
     state = json.loads((suite/'suite_status.json').read_text())
@@ -81,8 +81,13 @@ def main():
     assert selected_seeds and state['status'] == 'complete'
     assert all(entry['seed'] in selected_seeds for entry in state['queue'])
     variants = ['P0'] + list(state['features'])
-    output = args.output_dir.resolve() if args.output_dir else ROOT/'reports/prompt_ablation'/suite.name
+    first_metadata = json.loads((Path(next(iter(state['features'].values()))).parent/'metadata.json').read_text())
+    medgemma = first_metadata.get('model_type') == 'gemma3'
+    backbone = 'MedGemma-1.5-4B-IT' if medgemma else 'Qwen3-VL-4B-Instruct'
+    output = args.output_dir.resolve() if args.output_dir else ROOT/'reports/validation'/suite.name[:8]/'prompt_ablation'/suite.name
     output.mkdir(parents=True, exist_ok=True)
+    if medgemma and args.report_path == ROOT/'reports/validation/20261007/report.md':
+        args.report_path = output/'medgemma_prompt_ablation_report.md'
     entries = [{'variant':'P0','seed':json.loads((p/'config.json').read_text())['seed'],'run':str(p)}
                for p in args.baseline_suite.iterdir() if p.is_dir() and (p/'config.json').exists()
                and json.loads((p/'config.json').read_text())['model'] == 'full'
@@ -179,8 +184,10 @@ def main():
     seed_text = ','.join(map(str, selected_seeds))
     names = '/'.join(state['features'])
     lines = ['### E5a：提示词替换', '',
-             f'{names} 均完成 5109 张图像的 Qwen3-VL-4B-Instruct 特征抽取和 full 模型训练，训练 seeds={seed_text}；P0 复用既有对应种子的正式复现结果。固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 图像和原有受试者划分。full 模型使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。', '',
-             'A0/A1/A2 的 system/user 文本逐字取自验证方案附录 B，图片位于 user 消息内且在文本之前。本实验不执行生成 JSON 或显式反思，只衡量提示词对隐状态特征与下游分类的影响。归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句，A1/A2 的开头目标句也不同，因此 A1−A0 和 A2−A1 不能完全排除措辞或长度效应；P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。', '']
+             f'{names} 均完成 5109 张图像的 {backbone} 特征抽取和 full 模型训练，训练 seeds={seed_text}；P0 复用既有对应种子的正式复现结果。固定 {backbone} 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 图像和原有受试者划分。full 模型使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。', '',
+             'A0/A1/A2 的 system/user 文本逐字取自验证方案 plan.md 附录 B，图片位于 user 消息内且在文本之前。本实验不执行生成 JSON 或显式反思，只衡量提示词对隐状态特征与下游分类的影响。归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句，A1/A2 的开头目标句也不同，因此 A1−A0 和 A2−A1 不能完全排除措辞或长度效应；P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。', '']
+    if medgemma:
+        lines += ['本轮使用 MedGemma 原生聊天模板和图像预处理，保留图像 token_type_ids。默认 P0 基线来自既有 Qwen 正式复现，因此 P0 对比同时改变骨干与提示词，不能作为单独的提示词效应；A0/A1/A2/A3 内部对比固定 MedGemma 骨干。', '']
     if 'A3' in grouped:
         prompt = prompts['A3']['metadata']
         lines += ['A3 是用户指定的无关文本控制，完整替换 system/user 文本，不附加原有 TCM_PRIOR、标签清单或医学知识；图像输入和提取方式保持不变。系统提示词为：', '',
@@ -240,21 +247,26 @@ def main():
     lines += [f'Spleen 的测试支持度为阳性 {spleen["positive"]}、阴性 {spleen["negative"]}，严重不平衡；其 F1 不应独立用来说明提示词的临床知识价值。', '',
               f'完整 E5a 产物（主结果、逐类结果、配对 bootstrap、prompt 原文与哈希、来源清单和图表）保存在 `{output.relative_to(ROOT)}/`。完整特征、逐图预测和权重保留在本地 data/ 与 outputs/。', '']
     if 'A3' in grouped:
+        a3_feature_dir = 'data/features/medgemma_20261007_A3' if medgemma else 'data/features/prompt_20261007_A3'
         lines += ['在已有 A0/A1/A2 suite 上补充 A3 的复现命令：', '', '```bash',
                   'uv run --no-sync python scripts/extract_prompt_features.py \\',
                   '  --variant A3 --model-dir /path/to/Qwen3-VL-4B-Instruct \\',
                   '  --images-dir data/processed/CycleTCM/images \\',
-                  '  --output-dir data/features/prompt_20261007_A3 --resume',
+                  '  --output-dir '+a3_feature_dir+' --resume',
                   'uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 --jobs 1 \\',
-                  '  --variants A3 --features data/features/prompt_20261007_A3/all_features.json \\',
+                  '  --variants A3 --features '+a3_feature_dir+'/all_features.json \\',
                   '  --resume-suite '+str(suite.relative_to(ROOT)),
                   'uv run --no-sync python scripts/report_prompt_ablation.py --suite '+str(suite.relative_to(ROOT)),
                   '```', '']
-    report = args.report_path.read_text()
-    before, heading, after = report.partition('### E5a：提示词替换')
-    assert heading and '\n## ' in after, 'Unified report must contain an E5a section followed by another top-level section'
-    suffix = after[after.index('\n## '):]
-    args.report_path.write_text(before+'\n'.join(lines)+suffix)
+    if medgemma:
+        args.report_path.parent.mkdir(parents=True, exist_ok=True)
+        args.report_path.write_text('\n'.join(lines).replace('/path/to/Qwen3-VL-4B-Instruct', '/path/to/'+backbone))
+    else:
+        report = args.report_path.read_text()
+        before, heading, after = report.partition('### E5a：提示词替换')
+        assert heading and '\n## ' in after, 'Unified report must contain an E5a section followed by another top-level section'
+        suffix = after[after.index('\n## '):]
+        args.report_path.write_text(before+'\n'.join(lines)+suffix)
     print(f'REPORT {args.report_path}', flush=True)
 
 

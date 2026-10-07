@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-07",
+  "scope": "completed experiment outputs and report paths",
+  "removed": [
+    {
+      "path": "outputs/medgemma/20261007_171521_655675_P0_seed42/train/20261007_172828_749382_code_compat_full_seed42/checkpoints/last.pt",
+      "bytes": 6101040154,
+      "reason": "MedGemma P0 completed; retain verified best.pt, metrics and predictions; last.pt no longer needed"
+    },
+    {
+      "path": "outputs/verification/medgemma_cpu_smoke",
+      "bytes": 243594,
+      "reason": "One-image CPU feature caches superseded by full MedGemma P0; validation summary retained in report_checks.json"
+    },
+    {
+      "path": "outputs/verification/20261005_041043_731448_numerical",
+      "bytes": 1152,
+      "reason": "Byte-identical numerical verification; keep later canonical verification"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200436_502543_controller_failure",
+      "bytes": 1518,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200429_925854_code_compat_mllm_seed73",
+      "bytes": 154338,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/initial.log",
+      "bytes": 1775,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200436_296814_controller_resume",
+      "bytes": 1045,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/continuous.log",
+      "bytes": 2348,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200433_643622_code_compat_mllm_seed73",
+      "bytes": 154661,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/20261005_200425_921336_code_compat_mllm_seed73",
+      "bytes": 153881,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/resumed.log",
+      "bytes": 1191,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200424_389479_resume_reconciliation/reports",
+      "bytes": 2220,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/initial.log",
+      "bytes": 1775,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200829_456068_code_compat_mllm_seed73",
+      "bytes": 167559,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200833_363908_code_compat_mllm_seed73",
+      "bytes": 168016,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200843_385348_controller_failure",
+      "bytes": 1519,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/continuous.log",
+      "bytes": 2352,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/resumed.log",
+      "bytes": 1191,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200841_198959_code_compat_mllm_seed73",
+      "bytes": 167226,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/reports",
+      "bytes": 2222,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200843_184204_controller_resume",
+      "bytes": 1046,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/20261005_200837_063422_code_compat_mllm_seed73",
+      "bytes": 168347,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_200827_948865_resume_reconciliation/no_remaining_epochs.log",
+      "bytes": 613,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_220225_075009_analysis_tracker/20261005_220225_075107_success",
+      "bytes": 568,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_220225_075009_analysis_tracker/20261005_220225_078465_failure",
+      "bytes": 1329,
+      "reason": "Temporary engineering fixture or log; final verification.json retained"
+    },
+    {
+      "path": "outputs/verification/20261005_220558_589655_scientific_report",
+      "bytes": 414,
+      "reason": "Obsolete 13-run report check; retain final 14-run scientific verification"
+    }
+  ],
+  "removed_bytes": 6102442054,
+  "moved_output_logs": [
+    {
+      "from": "outputs/validation_supplement_constant.log",
+      "to": "outputs/validation_supplement/launcher_logs/validation_supplement_constant.log"
+    },
+    {
+      "from": "outputs/validation_supplement_random.log",
+      "to": "outputs/validation_supplement/launcher_logs/validation_supplement_random.log"
+    },
+    {
+      "from": "outputs/validation_supplement_qwen.log",
+      "to": "outputs/validation_supplement/launcher_logs/validation_supplement_qwen.log"
+    },
+    {
+      "from": "outputs/environment_check.log",
+      "to": "outputs/environment/launcher.log"
+    }
+  ],
+  "report_path_migration": {
+    "reports/supplemental_validation_report.md": "reports/validation/20261007/report.md",
+    "reports/supplemental_validation_results.json": "reports/validation/20261007/results.json",
+    "reports/efficiency_measurement.json": "reports/validation/20261007/efficiency.json",
+    "docs/CycleTCM-质疑查证与消融验证方案.md": "reports/validation/20261007/plan.md",
+    "reports/prompt_ablation/20261007_041101_955121_E5a_suite": "reports/validation/20261007/prompt_ablation/20261007_041101_955121_E5a_suite"
+  },
+  "retained": "Formal best.pt, predictions, summaries, training histories, extraction caches and provenance remain local; no datasets or weights staged",
+  "verified_medgemma_best_sha256": "1abc36ed7a16896bcd32c4a64bd0977423020d1732e799d860163363aac9893e"
+}

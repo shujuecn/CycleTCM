@@ -1,4 +1,4 @@
-"""Extract Qwen features for the archived A0/A1/A2 and unrelated A3 prompts."""
+"""Extract Qwen3-VL or MedGemma features for A0/A1/A2 and unrelated A3 prompts."""
 from __future__ import annotations
 import argparse, hashlib, importlib.metadata, json, logging, sys, time
 from datetime import datetime
@@ -9,6 +9,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from utils.experiment import sha256, write_json
+from utils.mllm_backbone import backbone_info, load_backbone, image_inputs, model_inputs
 
 def archived_prompts(path: Path):
     text = path.read_text()
@@ -28,7 +29,7 @@ def archived_prompts(path: Path):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--variant', choices=['A0', 'A1', 'A2', 'A3'], required=True)
-    p.add_argument('--prompt-doc', type=Path, default=ROOT / 'docs/CycleTCM-质疑查证与消融验证方案.md')
+    p.add_argument('--prompt-doc', type=Path, default=ROOT / 'reports/validation/20261007/plan.md')
     p.add_argument('--model-dir', type=Path, required=True)
     p.add_argument('--images-dir', type=Path, required=True)
     p.add_argument('--output-dir', type=Path, required=True)
@@ -39,6 +40,7 @@ def main():
         p.error('max-images must be >= 0')
     torch.set_num_threads(8)
     torch.manual_seed(42)
+    model_type, feature_dim = backbone_info(args.model_dir.resolve())
     if args.variant == 'A3':
         prompts = {'system': '喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼',
                    'A3': '别看我只是一只羊 羊儿的聪明难以想象'}
@@ -59,15 +61,26 @@ def main():
                 'pooling': 'last hidden state; attention-masked sequence mean', 'add_generation_prompt': True,
                 'dtype': 'torch.bfloat16' if torch.cuda.is_available() else 'torch.float32', 'seed': 42,
                 'target': len(paths)}
+    if model_type == 'gemma3':
+        metadata.update(model_type=model_type, feature_dim=feature_dim,
+                        input_protocol='native chat template; preserve image token_type_ids; pixels cast to model dtype')
     metadata_path = output / 'metadata.json'
     if metadata_path.exists():
         if not args.resume:
             p.error('Output already exists; use --resume or a new output directory')
-        if json.loads(metadata_path.read_text()) != metadata:
+        previous_metadata = json.loads(metadata_path.read_text())
+        # A moved archive may resume if its bytes and all extraction settings still match.
+        if previous_metadata['prompt_doc'] != metadata['prompt_doc'] and args.variant != 'A3':
+            provenance = json.loads((output / 'extraction_provenance.json').read_text())
+            source_hashes = provenance['source_files_sha256']
+            prompt_hash = source_hashes.get('prompt_doc') or source_hashes.get('docs/CycleTCM-质疑查证与消融验证方案.md')
+            if prompt_hash == sha256(prompt_source):
+                metadata['prompt_doc'] = previous_metadata['prompt_doc']
+        if previous_metadata != metadata:
             raise ValueError('Prompt or input metadata changed; use a new output directory')
     metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     model_files = {p.name: sha256(p) for p in sorted(args.model_dir.resolve().iterdir())
-                   if p.is_file() and p.suffix in {'.json', '.txt', '.safetensors'}}
+                   if p.is_file() and p.suffix in {'.json', '.txt', '.safetensors', '.jinja', '.model'}}
     versions = {name: importlib.metadata.version(name) for name in ['torch', 'transformers', 'Pillow']}
     provenance_path = output / 'extraction_provenance.json'
     if args.resume and provenance_path.exists():
@@ -76,7 +89,7 @@ def main():
             raise ValueError('Weights, processor or library versions changed; use a new output directory')
     else:
         write_json(provenance_path, {'created_at':datetime.now().astimezone().isoformat(), 'model_files':model_files, 'versions':versions,
-                   'source_files_sha256':{'extractor':sha256(__file__), 'prompt_doc':sha256(prompt_source), 'uv.lock':sha256(ROOT/'uv.lock')},
+                   'source_files_sha256':{'extractor':sha256(__file__), 'backbone':sha256(ROOT/'src/utils/mllm_backbone.py'), 'prompt_doc':sha256(prompt_source), 'uv.lock':sha256(ROOT/'uv.lock')},
                    'execution_protocol':{'model_eval':True, 'frozen_parameters':True, 'inference_mode':True,
                                          'use_cache':False, 'add_generation_prompt':True, 'image_before_text':True,
                                          'torch_manual_seed':42, 'torch_num_threads':8}})
@@ -90,24 +103,16 @@ def main():
         else:
             pending.append(image_path)
     if pending:
-        from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
-        processor = AutoProcessor.from_pretrained(str(args.model_dir.resolve()), local_files_only=True)
         dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
-        model = Qwen3VLForConditionalGeneration.from_pretrained(str(args.model_dir.resolve()), dtype=dtype,
-            device_map={'': 0} if torch.cuda.is_available() else None, local_files_only=True).eval()
-        for parameter in model.parameters(): parameter.requires_grad_(False)
-        device = next(model.parameters()).device
+        processor, model = load_backbone(args.model_dir.resolve(), dtype, 'cuda:0' if torch.cuda.is_available() else 'cpu')
         started = time.monotonic()
         logging.info('EXTRACT variant=%s pending=%d target=%d', args.variant, len(pending), len(paths))
         for index, image_path in enumerate(pending):
             with Image.open(image_path) as source: image = source.convert('RGB')
-            messages = [{'role':'system','content':[{'type':'text','text':prompts['system']}]},
-                        {'role':'user','content':[{'type':'image','image':image},{'type':'text','text':prompts[args.variant]}]}]
-            inputs = processor.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors='pt')
-            inputs.pop('token_type_ids', None)
+            inputs = image_inputs(processor, model_type, prompts['system'], prompts[args.variant], image)
             input_hash = hashlib.sha256(inputs['input_ids'].numpy().tobytes()).hexdigest()
             input_shapes = {k:list(v.shape) for k,v in inputs.items() if isinstance(v,torch.Tensor)}
-            inputs = {k:(v.to(device) if isinstance(v,torch.Tensor) else v) for k,v in inputs.items()}
+            inputs = model_inputs(inputs, model)
             with torch.inference_mode():
                 outputs = model(**inputs, output_hidden_states=True, use_cache=False)
                 hidden = outputs.hidden_states[-1]
@@ -117,7 +122,7 @@ def main():
                     mask = mask.to(hidden.dtype).unsqueeze(-1)
                     pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)
                 pooled = pooled.float().cpu()[0]
-            if pooled.shape != (2560,) or not torch.isfinite(pooled).all(): raise ValueError(f'Invalid feature {image_path}')
+            if pooled.shape != (feature_dim,) or not torch.isfinite(pooled).all(): raise ValueError(f'Invalid feature {image_path}')
             record = {'image_file':image_path.name, 'image_sha256':hashlib.sha256(image_path.read_bytes()).hexdigest(),
                       'qwen_feature':pooled.tolist(), 'input_ids_sha256':input_hash,
                       'input_shapes':input_shapes, 'hidden_shape':list(hidden.shape)}

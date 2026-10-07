@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-07",
+  "control_runs_verified": 5,
+  "backbone_runs_verified": 3,
+  "test_images_each": 895,
+  "checks": [
+    "Recomputed aggregate and per-class metrics from saved probabilities",
+    "Identical subject identities and labels within each comparison",
+    "Selected best checkpoint SHA-256 matches summary",
+    "P0 prompt, extraction settings and training protocol match across Qwen and MedGemma"
+  ],
+  "mllm_only_std_correction": {
+    "syndrome_old": 1.18,
+    "syndrome_correct": 1.1945837499824414,
+    "organ_old": 0.4,
+    "organ_correct": 0.41065230991239504
+  },
+  "medgemma_cpu_smoke": {
+    "P0": {
+      "status": "complete",
+      "count": 1,
+      "feature_sha256": "a94e5fb77c74b94a7d3d2d2946e8847b3213a0884db3fc6708a592ec830fb722",
+      "full_dataset": false
+    },
+    "A3": {
+      "status": "complete",
+      "variant": "A3",
+      "count": 1,
+      "full_dataset": false,
+      "feature_sha256": "7e24a89a9489779783c152c1c8c9f4c6c2cf1a0bac2c5a66f55810b57cee338e"
+    },
+    "scope": "One-image CPU feature extraction only; superseded by full BF16 GPU P0 extraction"
+  },
+  "archive_relocation_resume_verified": true,
+  "local_markdown_links_checked": 45,
+  "all_local_markdown_links_resolve": true,
+  "root_readme_research_sections_removed": true,
+  "changed_python_files_compile": true,
+  "medgemma_epochs_verified": 120,
+  "backbone_png_visually_checked": true
+}

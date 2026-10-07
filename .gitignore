@@ -7,11 +7,3 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
-
-# Legacy artifact locations (prevent accidental staging)
-/src/CycleTCM/
-/src/labels/
-/src/*features*.json
-/src/feature_all_encoded*.json
-/src/*.log
-/src/temp/

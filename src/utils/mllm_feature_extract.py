@@ -1,5 +1,5 @@
 """
-Extract features from processed whole-tongue images using Qwen3-VL-4B-Instruct.
+Extract features from processed whole-tongue images using local Qwen3-VL or MedGemma.
 """
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from utils.paths import MLLM_FEATURES_FILE, PROCESSED_DATA_DIR
 from utils.experiment import run_directory, sha256, write_json
+from utils.mllm_backbone import backbone_info, load_backbone, image_inputs, model_inputs
 
 import torch
 from PIL import Image
@@ -93,10 +94,12 @@ def main() -> None:
     model_dir, images_dir = args.model_dir.expanduser().resolve(), args.images_dir.expanduser().resolve()
     if not model_dir.is_dir() or not images_dir.is_dir():
         raise FileNotFoundError(f'Missing model/images directory: {model_dir}, {images_dir}')
+    model_type, feature_dim = backbone_info(model_dir)
     if args.output and args.resume:
         parser.error('output and resume cannot be combined')
     output = args.resume.expanduser().resolve() if args.resume else run_directory(
-        args.output.parent if args.output else args.output_dir, 'qwen_features')
+        args.output.parent if args.output else args.output_dir,
+        'medgemma_features' if model_type == 'gemma3' else 'qwen_features')
     if args.resume and not output.is_dir():
         raise FileNotFoundError(output)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s',
@@ -110,6 +113,10 @@ def main() -> None:
                 'prompt_sha256': hashlib.sha256((SYSTEM_PROMPT+'\n'+TCM_PRIOR+'\n'+USER_PROMPT).encode()).hexdigest(),
                 'versions': {name: importlib.metadata.version(name) for name in ['torch','transformers','Pillow']},
                 'add_generation_prompt': True, 'use_cache': False, 'seed': 42}
+    if model_type == 'gemma3':
+        metadata.update(model_type=model_type, feature_dim=feature_dim,
+                        input_protocol='native chat template; preserve image token_type_ids; pixels cast to model dtype',
+                        backbone_source_sha256=sha256(Path(__file__).with_name('mllm_backbone.py')))
     if args.resume:
         if metadata != json.loads((output / 'metadata.json').read_text()):
             raise ValueError('Extraction provenance changed; start a new feature version')
@@ -131,34 +138,22 @@ def main() -> None:
                 raise ValueError(f'Input changed: {path}')
         else:
             pending.append(path)
-    from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
     if pending:
-        processor = AutoProcessor.from_pretrained(str(model_dir), local_files_only=True)
-        model = Qwen3VLForConditionalGeneration.from_pretrained(
-            str(model_dir), dtype=dtype, device_map={'': 0} if torch.cuda.is_available() else None,
-            local_files_only=True).eval()
-        for parameter in model.parameters():
-            parameter.requires_grad_(False)
+        processor, model = load_backbone(model_dir, dtype, 'cuda:0' if torch.cuda.is_available() else 'cpu')
         device = next(model.parameters()).device
         start = time.monotonic()
         for index, img_path in enumerate(pending):
             with Image.open(img_path) as source:
                 image = source.convert('RGB')
-            messages = [
-                {'role': 'system', 'content': [{'type': 'text', 'text': SYSTEM_PROMPT+'\n'+TCM_PRIOR}]},
-                {'role': 'user', 'content': [{'type': 'image', 'image': image}, {'type': 'text', 'text': USER_PROMPT}]},
-            ]
-            inputs = processor.apply_chat_template(messages, tokenize=True, add_generation_prompt=True,
-                                                    return_dict=True, return_tensors='pt')
-            inputs.pop('token_type_ids', None)
+            inputs = image_inputs(processor, model_type, SYSTEM_PROMPT+'\n'+TCM_PRIOR, USER_PROMPT, image)
             input_ids_hash = hashlib.sha256(inputs['input_ids'].numpy().tobytes()).hexdigest()
             input_shapes = {key: list(value.shape) for key,value in inputs.items() if isinstance(value,torch.Tensor)}
-            inputs = _inputs_to_device(inputs, device)
+            inputs = model_inputs(inputs, model) if model_type == 'gemma3' else _inputs_to_device(inputs, device)
             with torch.inference_mode():
                 outputs = model(**inputs, output_hidden_states=True, use_cache=False)
                 hidden = outputs.hidden_states[-1]
                 pooled = _last_hidden_pooled(hidden, inputs.get('attention_mask')).float().cpu()[0]
-            if pooled.shape != (2560,) or not torch.isfinite(pooled).all():
+            if pooled.shape != (feature_dim,) or not torch.isfinite(pooled).all():
                 raise ValueError(f'Invalid feature: {img_path.name}')
             write_json(records_dir / (img_path.name+'.json'), {
                 'image_file': img_path.name, 'image_sha256': sha256(img_path),
@@ -174,7 +169,7 @@ def main() -> None:
     records = [json.loads((records_dir/(path.name+'.json')).read_text()) for path in paths]
     feature_file = output / (args.output.name if args.output else 'all_features.json')
     write_json(feature_file,[{'image_file':row['image_file'],'qwen_feature':row['qwen_feature']} for row in records])
-    old = {row['image_file']:row['qwen_feature'] for row in json.loads(MLLM_FEATURES_FILE.read_text())}
+    old = {} if model_type == 'gemma3' else {row['image_file']:row['qwen_feature'] for row in json.loads(MLLM_FEATURES_FILE.read_text())}
     comparisons=[]
     for row in records:
         if row['image_file'] not in old:
@@ -185,7 +180,7 @@ def main() -> None:
                             'max_absolute_difference':(new-legacy).abs().max().item(),
                             'max_relative_difference':((new-legacy).abs()/legacy.abs().clamp_min(1e-6)).max().item()})
     write_json(output/'cache_comparison.json', {'comparisons':comparisons,
-               'decision':'New version stored separately; legacy cache preserved. Versions have different numerical behavior.'})
+               'decision': 'Cross-backbone coordinate comparisons are not meaningful; Qwen cache preserved.' if model_type == 'gemma3' else 'New version stored separately; legacy cache preserved. Versions have different numerical behavior.'})
     write_json(output/'status.json', {'status':'complete','count':len(records), 'feature_sha256':sha256(feature_file),
                                      'full_dataset':len(records)==5109})
     logging.info('COMPLETE %d records -> %s',len(records),feature_file)

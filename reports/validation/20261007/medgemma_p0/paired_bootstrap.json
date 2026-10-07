@@ -1,0 +1,66 @@
+{
+  "medgemma_p0_minus_qwen_p0": {
+    "definition": "second minus first; paired subject resampling",
+    "iterations": 10000,
+    "seed": 20261007,
+    "subjects": 895,
+    "first_predictions_sha256": "e45c3280efb2a3226e6107ae005b119d10780a1735997a06d31030aac05c68c6",
+    "second_predictions_sha256": "6a8afab7ddf7b4d614e6b43709eb942c933192a441b0667ff29eb474d396762e",
+    "ci95_pp": {
+      "syndrome_acc": [
+        -1.215083798882688,
+        0.6284916201117374
+      ],
+      "syndrome_f1": [
+        -3.11042748706916,
+        0.8569514569726358
+      ],
+      "organ_acc": [
+        -1.0279329608938625,
+        1.8100558659217891
+      ],
+      "organ_f1": [
+        -1.0434160489106012,
+        1.6357027968559195
+      ]
+    },
+    "effect_pp": {
+      "syndrome_acc": -0.29329608938548635,
+      "syndrome_f1": -1.1175170114221977,
+      "organ_acc": 0.4022346368715124,
+      "organ_f1": 0.30444100470076174
+    }
+  },
+  "medgemma_p0_minus_visual": {
+    "definition": "second minus first; paired subject resampling",
+    "iterations": 10000,
+    "seed": 20261007,
+    "subjects": 895,
+    "first_predictions_sha256": "54d764307a08e78077a7a6180cc9ef1b49a6d341a314ead48b8b8aa9074964a1",
+    "second_predictions_sha256": "6a8afab7ddf7b4d614e6b43709eb942c933192a441b0667ff29eb474d396762e",
+    "ci95_pp": {
+      "syndrome_acc": [
+        -2.681564245810064,
+        -0.9497206703910521
+      ],
+      "syndrome_f1": [
+        -6.298461477176393,
+        -2.616646637447859
+      ],
+      "organ_acc": [
+        -3.6648044692737303,
+        -0.9385474860335252
+      ],
+      "organ_f1": [
+        -3.3236711183243126,
+        -0.8061736224190302
+      ]
+    },
+    "effect_pp": {
+      "syndrome_acc": -1.8156424581005748,
+      "syndrome_f1": -4.43611814264695,
+      "organ_acc": -2.324022346368715,
+      "organ_f1": -2.0865423771181613
+    }
+  }
+}
