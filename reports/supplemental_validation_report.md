@@ -36,16 +36,42 @@ Qwen 特征前向约为视觉分支的 **14.89 倍**。这里的 full 测量只�
 
 ### E5a：提示词替换
 
-A0、A1、A2 均完成 5109 张图像的 Qwen3-VL-4B 特征抽取，并在 full 模型上完成 seed 42 训练；P0 使用既有正式复现的 seed 42。测试集均为 895 位受试者：
+A0、A1、A2 均完成 5109 张图像的 Qwen3-VL-4B 特征抽取，并在 full 模型上完成 seed 42 训练；P0 使用既有正式复现的 seed 42。固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 图像和原有受试者划分。full 模型使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。
 
-| 提示词 | 证候 F1 (%) | 脏腑 F1 (%) |
+A0/A1/A2 的 system/user 文本逐字取自验证方案附录 B，图片位于 user 消息内且在文本之前。本实验不执行生成 JSON 或显式反思，只衡量提示词对隐状态特征与下游分类的影响。归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句，A1/A2 的开头目标句也不同，因此 A1−A0 和 A2−A1 不能完全排除措辞或长度效应；P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。
+
+| 提示词 | 证候 Acc (%) | 证候 F1 (%) | 脏腑 Acc (%) | 脏腑 F1 (%) |
+| --- | ---: | ---: | ---: | ---: |
+| P0 | 83.24 | 68.15 | 76.80 | 79.70 |
+| A0 | 82.40 | 66.67 | 76.13 | 79.07 |
+| A1 | 82.42 | 65.67 | 74.70 | 77.52 |
+| A2 | 82.56 | 66.58 | 75.58 | 79.44 |
+
+配对受试者 bootstrap（10,000 次）显示：A1−A0 的证候 F1 变化为 **−1.00 pp**，95% CI **[−2.61, +0.59]**；A2−A1 为 **+0.91 pp**，95% CI **[−0.84, +2.66]**。脏腑 F1 分别为 **−1.56 pp [−2.67, −0.45]** 和 **+1.93 pp [+0.84, +3.00]**。本次按用户要求只使用 seed 42，表中没有训练种子间标准差，不能据此估计训练随机性的总体不确定性。提示词归档还伴随开头措辞和标签清单形式变化，因此差异按归档提示版本效应解释。
+
+四组比较的后一配置减前一配置如下。区间跨零时不宣称有效提升；多项比较未进行校正，显著结果按探索性证据解读。
+
+| 比较 | 证候 F1 Δ (pp) [95% CI] | 脏腑 F1 Δ (pp) [95% CI] |
 | --- | ---: | ---: |
-| P0 | 68.15 | 79.70 |
-| A0 | 66.67 | 79.07 |
-| A1 | 65.67 | 77.52 |
-| A2 | 66.58 | 79.44 |
+| A1−A0 | −1.00 [−2.61, +0.59] | −1.56 [−2.67, −0.45] |
+| A2−A1 | +0.91 [−0.84, +2.66] | +1.93 [+0.84, +3.00] |
+| A0−P0 | −1.48 [−3.40, +0.45] | −0.63 [−1.85, +0.60] |
+| A2−A0 | −0.10 [−1.84, +1.63] | +0.37 [−0.68, +1.43] |
 
-配对受试者 bootstrap（10,000 次）显示：A1−A0 的证候 F1 变化为 **−1.00 pp**，95% CI **[−2.61, +0.59]**；A2−A1 为 **+0.91 pp**，95% CI **[−0.84, +2.66]**。脏腑 F1 分别为 **−1.56 pp [−2.67, −0.45]** 和 **+1.93 pp [+0.84, +3.00]**。本次按用户要求只使用 seed 42，表中没有训练种子间标准差，不能据此估计训练随机性的总体不确定性。提示词归档还伴随开头措辞和标签清单形式变化，因此差异按归档提示版本效应解释。完整产物见 [E5a 报告](prompt_ablation/20261007_041101_955121_E5a_suite/prompt_ablation_report.md)。
+逐类变化中，A1−A0 的证候 F1 变化最大的三个标签为 Spot −6.81 pp、TipSideRed −5.86 pp、Toothmark +4.15 pp；A2−A1 为 Spot +4.16 pp、Ecchymosis +3.03 pp、Toothmark −2.11 pp。Spleen 的测试支持度为阳性 889、阴性 6，严重不平衡，不单独用来说明提示词的临床知识价值。完整逐类 Acc、F1、支持度和混淆矩阵见 `per_class_results.csv`。
+
+![E5a 提示词 F1](prompt_ablation/20261007_041101_955121_E5a_suite/figures/prompt_f1.png)
+
+复现实验需要先用 `scripts/extract_prompt_features.py` 生成 A0/A1/A2 的完整特征，再运行：
+
+```bash
+uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 --jobs 1 \
+  --features data/features/prompt_20261007_A0/all_features.json \
+             data/features/prompt_20261007_A1/all_features.json \
+             data/features/prompt_20261007_A2/all_features.json
+```
+
+完整 E5a 产物（主结果、逐类结果、配对 bootstrap、prompt 原文与哈希、来源清单和图表）保存在 `reports/prompt_ablation/20261007_041101_955121_E5a_suite/`。
 
 ## 结论和边界
 
@@ -60,6 +86,6 @@ E4 池化、E5b 提示词生成模式、E7 BCE 与 Lovász 的完整三种子训
 - 控制特征生成器：[scripts/build_synthetic_feature_controls.py](../scripts/build_synthetic_feature_controls.py)
 - 效率测量器：[scripts/measure_efficiency.py](../scripts/measure_efficiency.py)
 - Lovász 损失实现：[src/train/losses.py](../src/train/losses.py)
-- E5a 提示词替换报告：[reports/prompt_ablation/20261007_041101_955121_E5a_suite/prompt_ablation_report.md](prompt_ablation/20261007_041101_955121_E5a_suite/prompt_ablation_report.md)
+- E5a 结果产物：[reports/prompt_ablation/20261007_041101_955121_E5a_suite/](prompt_ablation/20261007_041101_955121_E5a_suite/)
 
 控制特征按图像文件名的 SHA-256 派生随机种子生成；其完整 5109×2560 JSON 保留在本机实验目录，未纳入 Git。

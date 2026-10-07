@@ -164,7 +164,7 @@ uv run --no-sync python scripts/report_prompt_ablation.py \
 
 报告保存 seed42 的逐类指标，以及 A1−A0、A2−A1 等配对受试者 bootstrap 95% CI。区间跨零不宣称有效提升；该 bootstrap 只表示固定 seed42 模型的测试样本不确定性，不代表重新训练的种子总体不确定性。归档版本还存在开头措辞和标签清单形式的伴随变化，结果按提示词版本效应解释。
 
-本次结果：[E5a 单种子提示词替换报告](reports/prompt_ablation/20261007_041101_955121_E5a_suite/prompt_ablation_report.md)。
+本次结果已并入[补充实验结果报告](reports/supplemental_validation_report.md)；E5a 的 CSV、JSON 和图表产物保存在 `reports/prompt_ablation/20261007_041101_955121_E5a_suite/`。
 
 ## 仓库与产物
 
