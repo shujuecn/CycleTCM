@@ -70,5 +70,23 @@
       "mean": 79.44148301495257,
       "std_sample": 0.0
     }
+  },
+  "A3": {
+    "syndrome_acc": {
+      "mean": 83.71508379888269,
+      "std_sample": 0.0
+    },
+    "syndrome_f1": {
+      "mean": 67.15131223464024,
+      "std_sample": 0.0
+    },
+    "organ_acc": {
+      "mean": 76.73743016759776,
+      "std_sample": 0.0
+    },
+    "organ_f1": {
+      "mean": 80.12455293722817,
+      "std_sample": 0.0
+    }
   }
 }

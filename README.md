@@ -154,7 +154,19 @@ uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 \
              data/features/prompt_20261007_A2/all_features.json
 ```
 
-队列会打印 `SUITE` 路径。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite --seeds 42` 继续；三个 seed42 正式运行全部完成后才能生成结果报告：
+新增 A3 无关提示控制使用单行文本：system 为“喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼”，user 为“别看我只是一只羊 羊儿的聪明难以想象”。不附加原有医学先验；仍保留同一图像输入。可以在完成的 A0/A1/A2 suite 上仅补跑 A3 seed42：
+
+```bash
+uv run --no-sync python scripts/extract_prompt_features.py \
+  --variant A3 --model-dir "$QWEN_MODEL" \
+  --images-dir data/processed/CycleTCM/images \
+  --output-dir data/features/prompt_20261007_A3 --resume
+uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 --jobs 1 \
+  --variants A3 --features data/features/prompt_20261007_A3/all_features.json \
+  --resume-suite outputs/prompt_ablation/20261007_041101_955121_E5a_suite
+```
+
+队列会打印 `SUITE` 路径。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite --seeds 42` 继续；队列中请求的 seed42 正式运行全部完成后才能生成结果报告：
 
 ```bash
 uv run --no-sync python scripts/report_prompt_ablation.py \
@@ -162,9 +174,9 @@ uv run --no-sync python scripts/report_prompt_ablation.py \
   --baseline-suite outputs/reproduction/20261005_042629_774918_suite
 ```
 
-报告保存 seed42 的逐类指标，以及 A1−A0、A2−A1 等配对受试者 bootstrap 95% CI。区间跨零不宣称有效提升；该 bootstrap 只表示固定 seed42 模型的测试样本不确定性，不代表重新训练的种子总体不确定性。归档版本还存在开头措辞和标签清单形式的伴随变化，结果按提示词版本效应解释。
+报告保存 seed42 的逐类指标，以及 A1−A0、A2−A1 和 A3−P0/A0/A1/A2 的配对受试者 bootstrap 95% CI。区间跨零不宣称有效提升；该 bootstrap 只表示固定 seed42 模型的测试样本不确定性，不代表重新训练的种子总体不确定性。归档版本还存在开头措辞和标签清单形式的伴随变化，结果按提示词版本效应解释。
 
-本次结果已并入[补充实验结果报告](reports/supplemental_validation_report.md)；E5a 的 CSV、JSON 和图表产物保存在 `reports/prompt_ablation/20261007_041101_955121_E5a_suite/`。
+报告脚本直接更新[补充实验结果报告](reports/supplemental_validation_report.md)中的 E5a 部分；E5a 的 CSV、JSON 和图表产物保存在 `reports/prompt_ablation/20261007_041101_955121_E5a_suite/`。A3 与 P0/A0/A1/A2 的比较同时改变文本内容和长度，全序列池化中图像与文本 token 的比例也会变化，结果不能仅归因于医学知识。
 
 ## 仓库与产物
 

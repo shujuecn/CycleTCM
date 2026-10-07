@@ -16,7 +16,8 @@ from utils.experiment import run_directory, write_json, sha256
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--features', nargs=3, type=Path, required=True, metavar='A0_A1_A2')
+    parser.add_argument('--variants', nargs='+', choices=['A0', 'A1', 'A2', 'A3'], default=['A0', 'A1', 'A2'])
+    parser.add_argument('--features', nargs='+', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, default=ROOT / 'outputs/prompt_ablation')
     parser.add_argument('--resume-suite', type=Path)
     parser.add_argument('--seeds', type=int, nargs='+', choices=[42, 43, 44], default=[42])
@@ -24,7 +25,9 @@ def main():
     args = parser.parse_args()
     if len(set(args.seeds)) != len(args.seeds):
         parser.error('--seeds must be unique')
-    features = dict(zip(['A0', 'A1', 'A2'], [p.resolve() for p in args.features]))
+    if len(set(args.variants)) != len(args.variants) or len(args.variants) != len(args.features):
+        parser.error('--variants must be unique and match --features in order and count')
+    features = dict(zip(args.variants, [p.resolve() for p in args.features]))
     for variant, path in features.items():
         rows = json.loads(path.read_text())
         assert len(rows) == len({r['image_file'] for r in rows}) == 5109
@@ -33,7 +36,15 @@ def main():
     state_path = suite / 'suite_status.json'
     if args.resume_suite:
         state = json.loads(state_path.read_text())
-        assert state['features_sha256'] == {k: sha256(v) for k, v in features.items()}
+        for variant, path in features.items():
+            digest = sha256(path)
+            if variant in state['features_sha256']:
+                assert state['features_sha256'][variant] == digest
+            else:
+                state['features'][variant] = str(path)
+                state['features_sha256'][variant] = digest
+                state['queue'].extend({'variant': variant, 'seed': seed, 'status': 'pending'} for seed in args.seeds)
+        features = {variant: Path(path) for variant, path in state['features'].items()}
     else:
         state = {'status': 'running', 'features': {k: str(v) for k, v in features.items()},
                  'features_sha256': {k: sha256(v) for k, v in features.items()},

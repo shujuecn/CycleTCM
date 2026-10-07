@@ -36,9 +36,25 @@ Qwen 特征前向约为视觉分支的 **14.89 倍**。这里的 full 测量只�
 
 ### E5a：提示词替换
 
-A0、A1、A2 均完成 5109 张图像的 Qwen3-VL-4B 特征抽取，并在 full 模型上完成 seed 42 训练；P0 使用既有正式复现的 seed 42。固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 图像和原有受试者划分。full 模型使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。
+A0/A1/A2/A3 均完成 5109 张图像的 Qwen3-VL-4B-Instruct 特征抽取和 full 模型训练，训练 seeds=42；P0 复用既有对应种子的正式复现结果。固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 图像和原有受试者划分。full 模型使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。
 
 A0/A1/A2 的 system/user 文本逐字取自验证方案附录 B，图片位于 user 消息内且在文本之前。本实验不执行生成 JSON 或显式反思，只衡量提示词对隐状态特征与下游分类的影响。归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句，A1/A2 的开头目标句也不同，因此 A1−A0 和 A2−A1 不能完全排除措辞或长度效应；P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。
+
+A3 是用户指定的无关文本控制，完整替换 system/user 文本，不附加原有 TCM_PRIOR、标签清单或医学知识；图像输入和提取方式保持不变。系统提示词为：
+
+```text
+喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼
+```
+
+用户提示词为：
+
+```text
+别看我只是一只羊 羊儿的聪明难以想象
+```
+
+A3 同时改变提示内容和长度。全序列 masked mean 会随文本 token 数量改变图像与文本的池化比例，因此它检验的是整组无关提示版本的效果，不能独立归因于医学语义有无。
+
+全量核查确认 5109 张图像字节与 A0/A1/A2 相同，A3 特征均为有限的 2560 维向量且聚合文件与逐图记录一致。含图像和聊天模板的序列 token 数为 A0=834、A1=1185、A2=1497、A3=132（每组所有图像相同），进一步说明长度因素不可忽略。核查记录为 `A3_feature_audit.json`。
 
 | 提示词 | 证候 Acc (%) | 证候 F1 (%) | 脏腑 Acc (%) | 脏腑 F1 (%) |
 | --- | ---: | ---: | ---: | ---: |
@@ -46,36 +62,67 @@ A0/A1/A2 的 system/user 文本逐字取自验证方案附录 B，图片位于 u
 | A0 | 82.40 | 66.67 | 76.13 | 79.07 |
 | A1 | 82.42 | 65.67 | 74.70 | 77.52 |
 | A2 | 82.56 | 66.58 | 75.58 | 79.44 |
+| A3 | 83.72 | 67.15 | 76.74 | 80.12 |
 
-配对受试者 bootstrap（10,000 次）显示：A1−A0 的证候 F1 变化为 **−1.00 pp**，95% CI **[−2.61, +0.59]**；A2−A1 为 **+0.91 pp**，95% CI **[−0.84, +2.66]**。脏腑 F1 分别为 **−1.56 pp [−2.67, −0.45]** 和 **+1.93 pp [+0.84, +3.00]**。本次按用户要求只使用 seed 42，表中没有训练种子间标准差，不能据此估计训练随机性的总体不确定性。提示词归档还伴随开头措辞和标签清单形式变化，因此差异按归档提示版本效应解释。
+A3 的验证集选中 epoch=69，停止原因为 `patience`；测试指标均来自该最佳 checkpoint。
 
-四组比较的后一配置减前一配置如下。区间跨零时不宣称有效提升；多项比较未进行校正，显著结果按探索性证据解读。
-
-| 比较 | 证候 F1 Δ (pp) [95% CI] | 脏腑 F1 Δ (pp) [95% CI] |
-| --- | ---: | ---: |
-| A1−A0 | −1.00 [−2.61, +0.59] | −1.56 [−2.67, −0.45] |
-| A2−A1 | +0.91 [−0.84, +2.66] | +1.93 [+0.84, +3.00] |
-| A0−P0 | −1.48 [−3.40, +0.45] | −0.63 [−1.85, +0.60] |
-| A2−A0 | −0.10 [−1.84, +1.63] | +0.37 [−0.68, +1.43] |
-
-逐类变化中，A1−A0 的证候 F1 变化最大的三个标签为 Spot −6.81 pp、TipSideRed −5.86 pp、Toothmark +4.15 pp；A2−A1 为 Spot +4.16 pp、Ecchymosis +3.03 pp、Toothmark −2.11 pp。Spleen 的测试支持度为阳性 889、阴性 6，严重不平衡，不单独用来说明提示词的临床知识价值。完整逐类 Acc、F1、支持度和混淆矩阵见 `per_class_results.csv`。
+结果只使用固定 training seed=42；表中没有训练种子间标准差，不能据此估计训练随机性的总体不确定性。
 
 ![E5a 提示词 F1](prompt_ablation/20261007_041101_955121_E5a_suite/figures/prompt_f1.png)
 
-复现实验需要先用 `scripts/extract_prompt_features.py` 生成 A0/A1/A2 的完整特征，再运行：
+按受试者配对重采样 10,000 次；该 CI 衡量固定训练种子已训练模型的测试样本不确定性，不包含重新训练的种子总体不确定性。逐种子区间保存在 paired_bootstrap.json。以下差值均为后一配置减前一配置；CI 跨零时不宣称有效提升，也不证明两者等效。多项比较未进行校正，显著结果按探索性证据解读。
+
+| 比较 | 证候 F1 Δ (pp) [95% CI] | 脏腑 F1 Δ (pp) [95% CI] |
+| --- | ---: | ---: |
+| A1−A0 | -1.00 [-2.61, +0.59] | -1.56 [-2.67, -0.45] |
+| A2−A1 | +0.91 [-0.84, +2.66] | +1.93 [+0.84, +3.00] |
+| A0−P0 | -1.48 [-3.40, +0.45] | -0.63 [-1.85, +0.60] |
+| A2−A0 | -0.10 [-1.84, +1.63] | +0.37 [-0.68, +1.43] |
+| A3−P0 | -1.00 [-3.03, +1.10] | +0.43 [-0.75, +1.60] |
+| A3−A0 | +0.48 [-1.59, +2.51] | +1.05 [-0.19, +2.27] |
+| A3−A1 | +1.49 [-0.51, +3.46] | +2.61 [+1.38, +3.82] |
+| A3−A2 | +0.58 [-1.44, +2.56] | +0.68 [-0.51, +1.88] |
+
+A3 相对于此前提示版本的结果：
+
+- A3−P0：证候 F1 -1.00 pp（区间跨零）；脏腑 F1 +0.43 pp（区间跨零）。
+- A3−A0：证候 F1 +0.48 pp（区间跨零）；脏腑 F1 +1.05 pp（区间跨零）。
+- A3−A1：证候 F1 +1.49 pp（区间跨零）；脏腑 F1 +2.61 pp（区间全为正）。
+- A3−A2：证候 F1 +0.58 pp（区间跨零）；脏腑 F1 +0.68 pp（区间跨零）。
+
+上述变化只对应当前 seed 的已训练模型；即使无关提示不差于医学提示，也不能据此证明医学知识无效或模型未使用图像。所有配置均保留图像输入，并通过有监督 full 分类器训练。
+
+A1−A0 的证候变化最大的三个标签：Spot -6.81 pp；TipSideRed -5.86 pp；Toothmark +4.15 pp。逐类 Acc、F1、支持度和混淆矩阵见 per_class_results.csv。
+区间跨零，当前结果不足以宣称该提示版本有效提高证候 F1，也不足以证明二者等效。
+
+A2−A1 的证候变化最大的三个标签：Spot +4.16 pp；Ecchymosis +3.03 pp；Toothmark -2.11 pp。逐类 Acc、F1、支持度和混淆矩阵见 per_class_results.csv。
+区间跨零，当前结果不足以宣称该提示版本有效提高证候 F1，也不足以证明二者等效。
+
+A3−P0 的证候变化最大的三个标签：TonguePale -3.35 pp；Spot -3.33 pp；FurYellow -2.89 pp。逐类 Acc、F1、支持度和混淆矩阵见 per_class_results.csv。
+区间跨零，当前结果不足以宣称该提示版本有效提高证候 F1，也不足以证明二者等效。
+
+Spleen 的测试支持度为阳性 889、阴性 6，严重不平衡；其 F1 不应独立用来说明提示词的临床知识价值。
+
+完整 E5a 产物（主结果、逐类结果、配对 bootstrap、prompt 原文与哈希、来源清单和图表）保存在 `reports/prompt_ablation/20261007_041101_955121_E5a_suite/`。完整特征、逐图预测和权重保留在本地 data/ 与 outputs/。
+
+在已有 A0/A1/A2 suite 上补充 A3 的复现命令：
 
 ```bash
+uv run --no-sync python scripts/extract_prompt_features.py \
+  --variant A3 --model-dir /path/to/Qwen3-VL-4B-Instruct \
+  --images-dir data/processed/CycleTCM/images \
+  --output-dir data/features/prompt_20261007_A3 --resume
 uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 --jobs 1 \
-  --features data/features/prompt_20261007_A0/all_features.json \
-             data/features/prompt_20261007_A1/all_features.json \
-             data/features/prompt_20261007_A2/all_features.json
+  --variants A3 --features data/features/prompt_20261007_A3/all_features.json \
+  --resume-suite outputs/prompt_ablation/20261007_041101_955121_E5a_suite
+uv run --no-sync python scripts/report_prompt_ablation.py --suite outputs/prompt_ablation/20261007_041101_955121_E5a_suite
 ```
-
-完整 E5a 产物（主结果、逐类结果、配对 bootstrap、prompt 原文与哈希、来源清单和图表）保存在 `reports/prompt_ablation/20261007_041101_955121_E5a_suite/`。
 
 ## 结论和边界
 
 现有证据形成三点：Qwen MLLM-only 特征比常量和随机控制更有判别力；其离线前向成本显著高于视觉分支；在当前训练实现和缓存版本中，full 融合反而稳定损害 visual 的 macro positive-class F1。常量／随机控制目前只完成 MLLM-only 路径，不能替代完整 E1-F1/F2 端到端矩阵。
+
+新增的单行无关文本 A3 在 seed42 上得到证候／脏腑 F1 **67.15 / 80.12%**。它与 P0/A0/A1/A2 的四项证候 F1 比较区间均跨零；脏腑 F1 仅 A3−A1 的区间全为正（**+2.61 pp [+1.38, +3.82]**），其余区间均跨零。当前证据没有显示医学提示版本在该固定种子下稳定优于无关文本，也不足以证明两者等效。单一种子、未校正多重比较及显著的 token 长度差异，限制了对医学提示语义作用的归因。
 
 E4 池化、E5b 提示词生成模式、E7 BCE 与 Lovász 的完整三种子训练没有纳入本次结果；E5a 仅完成上述 seed42 单种子版本。训练器已加入可选 `loss=bce_lovasz` 和任意 MLLM 输入维度，以便后续按同一协议继续；本报告不把未运行配置写成实验结论。
 
@@ -87,5 +134,6 @@ E4 池化、E5b 提示词生成模式、E7 BCE 与 Lovász 的完整三种子训
 - 效率测量器：[scripts/measure_efficiency.py](../scripts/measure_efficiency.py)
 - Lovász 损失实现：[src/train/losses.py](../src/train/losses.py)
 - E5a 结果产物：[reports/prompt_ablation/20261007_041101_955121_E5a_suite/](prompt_ablation/20261007_041101_955121_E5a_suite/)
+- A3 全量特征核查：[A3_feature_audit.json](prompt_ablation/20261007_041101_955121_E5a_suite/A3_feature_audit.json)
 
 控制特征按图像文件名的 SHA-256 派生随机种子生成；其完整 5109×2560 JSON 保留在本机实验目录，未纳入 Git。

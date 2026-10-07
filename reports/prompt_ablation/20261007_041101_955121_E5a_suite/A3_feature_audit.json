@@ -1,0 +1,27 @@
+{
+  "variant": "A3",
+  "seed": 42,
+  "images": 5109,
+  "dimensions": 2560,
+  "single_line_prompts_verified": true,
+  "all_feature_values_finite": true,
+  "aggregate_features_match_per_image_records": true,
+  "image_bytes_match_A0_A1_A2": true,
+  "pixel_tensor_shapes_match_A0_A1_A2": true,
+  "ordered_image_hashes_sha256": "a78c6726432a97f4e7e2261c5dc6d7b0ab568ba35225a644ce471a668c9e3481",
+  "feature_sha256": "0ab8c370bc512223874225810a3938d99c9f658b6d22df5341bf0178ee72c97c",
+  "sequence_token_counts": {
+    "A0": {
+      "834": 5109
+    },
+    "A1": {
+      "1185": 5109
+    },
+    "A2": {
+      "1497": 5109
+    },
+    "A3": {
+      "132": 5109
+    }
+  }
+}

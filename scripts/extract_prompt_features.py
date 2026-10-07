@@ -1,4 +1,4 @@
-"""Extract Qwen features for the archived TongueBench A0/A1/A2 prompts."""
+"""Extract Qwen features for the archived A0/A1/A2 and unrelated A3 prompts."""
 from __future__ import annotations
 import argparse, hashlib, importlib.metadata, json, logging, sys, time
 from datetime import datetime
@@ -27,7 +27,7 @@ def archived_prompts(path: Path):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--variant', choices=['A0', 'A1', 'A2'], required=True)
+    p.add_argument('--variant', choices=['A0', 'A1', 'A2', 'A3'], required=True)
     p.add_argument('--prompt-doc', type=Path, default=ROOT / 'docs/CycleTCM-质疑查证与消融验证方案.md')
     p.add_argument('--model-dir', type=Path, required=True)
     p.add_argument('--images-dir', type=Path, required=True)
@@ -39,7 +39,11 @@ def main():
         p.error('max-images must be >= 0')
     torch.set_num_threads(8)
     torch.manual_seed(42)
-    prompts = archived_prompts(args.prompt_doc.resolve())
+    if args.variant == 'A3':
+        prompts = {'system': '喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼',
+                   'A3': '别看我只是一只羊 羊儿的聪明难以想象'}
+    else:
+        prompts = archived_prompts(args.prompt_doc.resolve())
     output = args.output_dir.resolve()
     output.mkdir(parents=True, exist_ok=True)
     records_dir = output / 'records'; records_dir.mkdir(exist_ok=True)
@@ -48,7 +52,8 @@ def main():
         indices = torch.linspace(0, len(paths)-1, min(args.max_images, len(paths))).long().tolist()
         paths = [paths[i] for i in indices]
     prompt_sha = hashlib.sha256((prompts['system']+'\n'+prompts[args.variant]).encode()).hexdigest()
-    metadata = {'variant': args.variant, 'prompt_doc': str(args.prompt_doc.resolve()), 'prompt_sha256': prompt_sha,
+    prompt_source = Path(__file__) if args.variant == 'A3' else args.prompt_doc.resolve()
+    metadata = {'variant': args.variant, 'prompt_doc': str(prompt_source), 'prompt_sha256': prompt_sha,
                 'system_prompt': prompts['system'], 'user_prompt': prompts[args.variant],
                 'model_dir': str(args.model_dir.resolve()), 'images_dir': str(args.images_dir.resolve()),
                 'pooling': 'last hidden state; attention-masked sequence mean', 'add_generation_prompt': True,
@@ -71,7 +76,7 @@ def main():
             raise ValueError('Weights, processor or library versions changed; use a new output directory')
     else:
         write_json(provenance_path, {'created_at':datetime.now().astimezone().isoformat(), 'model_files':model_files, 'versions':versions,
-                   'source_files_sha256':{'extractor':sha256(__file__), 'prompt_doc':sha256(args.prompt_doc), 'uv.lock':sha256(ROOT/'uv.lock')},
+                   'source_files_sha256':{'extractor':sha256(__file__), 'prompt_doc':sha256(prompt_source), 'uv.lock':sha256(ROOT/'uv.lock')},
                    'execution_protocol':{'model_eval':True, 'frozen_parameters':True, 'inference_mode':True,
                                          'use_cache':False, 'add_generation_prompt':True, 'image_before_text':True,
                                          'torch_manual_seed':42, 'torch_num_threads':8}})
