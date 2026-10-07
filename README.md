@@ -136,7 +136,7 @@ uv run --no-sync python scripts/qualitative_report.py \
 
 ## E5a 提示词替换实验
 
-补充实验使用 `supplemental-validation-20261007` 分支，逐字读取 [验证方案附录 B](docs/CycleTCM-质疑查证与消融验证方案.md) 的 A0/A1/A2。保持 Qwen 权重、图像顺序、BF16 单次前向和全序列 masked mean 不变；每组抽取 5109 个 2560 维特征，再按 `code_compat` 训练 full 模型的 seeds 42/43/44。P0 复用原正式复现的三个相同种子。A2 在此模式中只影响隐状态，不执行生成式反思。
+补充实验使用 `supplemental-validation-20261007` 分支，逐字读取 [验证方案附录 B](docs/CycleTCM-质疑查证与消融验证方案.md) 的 A0/A1/A2。保持 Qwen 权重、图像顺序、BF16 单次前向和全序列 masked mean 不变；每组抽取 5109 个 2560 维特征，再按 `code_compat` 训练 full 模型的 seed 42。为控制运行时间，本次 E5a 只完成一个固定训练种子，不能估计训练种子间变异；P0 复用原正式复现的 seed 42。A2 在此模式中只影响隐状态，不执行生成式反思。
 
 使用本次默认数据与本地 Qwen 权重：
 
@@ -148,13 +148,13 @@ for variant in A0 A1 A2; do
     --images-dir data/processed/CycleTCM/images \
     --output-dir "data/features/prompt_20261007_$variant" --resume
 done
-uv run --no-sync python scripts/run_prompt_ablation.py \
+uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 \
   --features data/features/prompt_20261007_A0/all_features.json \
              data/features/prompt_20261007_A1/all_features.json \
              data/features/prompt_20261007_A2/all_features.json
 ```
 
-队列会打印 `SUITE` 路径。显存足够时可附加 `--jobs 2`，让两个独立训练进程共享 GPU，仅改变调度。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite` 继续；只有九个正式运行全部完成后才能生成结果报告：
+队列会打印 `SUITE` 路径。中断后用相同 `--features` 加上 `--resume-suite /path/to/suite --seeds 42` 继续；三个 seed42 正式运行全部完成后才能生成结果报告：
 
 ```bash
 uv run --no-sync python scripts/report_prompt_ablation.py \
@@ -162,7 +162,9 @@ uv run --no-sync python scripts/report_prompt_ablation.py \
   --baseline-suite outputs/reproduction/20261005_042629_774918_suite
 ```
 
-报告保存三种子均值和样本标准差、逐类指标，以及 A1−A0、A2−A1 等配对受试者 bootstrap 95% CI。区间跨零不宣称有效提升；三个固定训练种子的测试 bootstrap 不代表重新训练的种子总体不确定性。归档版本还存在开头措辞和标签清单形式的伴随变化，结果按提示词版本效应解释。
+报告保存 seed42 的逐类指标，以及 A1−A0、A2−A1 等配对受试者 bootstrap 95% CI。区间跨零不宣称有效提升；该 bootstrap 只表示固定 seed42 模型的测试样本不确定性，不代表重新训练的种子总体不确定性。归档版本还存在开头措辞和标签清单形式的伴随变化，结果按提示词版本效应解释。
+
+本次结果：[E5a 单种子提示词替换报告](reports/prompt_ablation/20261007_041101_955121_E5a_suite/prompt_ablation_report.md)。
 
 ## 仓库与产物
 

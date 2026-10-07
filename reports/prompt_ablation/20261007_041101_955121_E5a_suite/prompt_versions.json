@@ -1,0 +1,206 @@
+{
+  "A0": {
+    "metadata": {
+      "variant": "A0",
+      "prompt_doc": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/docs/CycleTCM-质疑查证与消融验证方案.md",
+      "prompt_sha256": "9f72b905e30a2855621e3d697cd78619ad2937aa854b19d928c2a3e23bb3bf18",
+      "system_prompt": "你是一个舌诊图像识别系统，能够通过图像对中医舌诊做出精确识别。\n任务：基于舌象图像中的可见视觉特征，对预定义 22 个标签进行判断。\n全局约束：\n1. 仅依据图像可见特征判断，只按格式输出结果，不得进行任何解释和说明。\n2. 只允许舌部区域作为判断目标；不得依据嘴唇、牙齿、口腔、文字水印、边框、背景等作判断。\n3. 输出必须且只能是一个合法 JSON 对象，不得输出额外文本、注释或 Markdown。\n4. 顶层键顺序固定为：`labels`、`hard_case`、`confidence`。\n5. `labels` 的值只允许 `0` 或 `1`；`hard_case` 只允许 `true` 或 `false`；`confidence` 只允许 `\"high\"`、`\"medium\"`、`\"low\"`。\n6. 必须输出全部 22 个标签键，每个键仅出现一次。\n7. `hard_case` 定义为\"高难样本\"，包含两类：图像质量困难 或 标签判别争议；不等价于\"仅低质量图像\"。\n8. 证据不足、图像质量不佳或标签不稳定时，对应标签必须输出 `0`，不得猜测。\n9. `confidence` 规则为：`\"high\"`：无明显质量问题，核心维度均可稳定判断。`\"medium\"`：存在轻度质量问题或局部不稳定，但整体可判。`\"low\"`：存在明显质量问题或多个维度不稳定。\n10. `hard_case` 规则：若舌体主体可见面积明显不足（约低于 60%）或存在严重失焦/严重曝光异常/严重色偏导致核心维度无法判断，则输出进入保守模式：`labels` 全部置 `0`、`hard_case=true`、`confidence=\"low\"`。\n11. 示例仅用于格式演示，不可复用示例中的标签取值。",
+      "user_prompt": "标签集合（固定顺序）：\n[\"舌嫩\",\"舌老\",\"舌胖\",\"舌瘦\",\"舌上点刺\",\"舌面裂纹\",\"舌边齿痕\",\"舌上瘀斑\",\"舌色淡白\",\"舌色淡红\",\"舌色红绛\",\"舌色青紫\",\"苔无\",\"苔薄\",\"苔厚\",\"苔滑润\",\"苔燥\",\"苔腐腻\",\"苔剥落\",\"苔色白\",\"苔色黄\",\"苔色褐黑\"]\n输出 JSON 示例：\n{\n  \"labels\": {\n    \"舌嫩\": 0,\n    \"舌老\": 0,\n    \"舌胖\": 1,\n    \"舌瘦\": 0,\n    \"舌上点刺\": 0,\n    \"舌面裂纹\": 0,\n    \"舌边齿痕\": 1,\n    \"舌上瘀斑\": 0,\n    \"舌色淡白\": 0,\n    \"舌色淡红\": 1,\n    \"舌色红绛\": 0,\n    \"舌色青紫\": 0,\n    \"苔无\": 0,\n    \"苔薄\": 1,\n    \"苔厚\": 0,\n    \"苔滑润\": 0,\n    \"苔燥\": 0,\n    \"苔腐腻\": 0,\n    \"苔剥落\": 0,\n    \"苔色白\": 1,\n    \"苔色黄\": 0,\n    \"苔色褐黑\": 0\n  },\n  \"hard_case\": false,\n  \"confidence\": \"medium\"\n}",
+      "model_dir": "/home/ps/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master",
+      "images_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/processed/CycleTCM/images",
+      "pooling": "last hidden state; attention-masked sequence mean",
+      "add_generation_prompt": true,
+      "dtype": "torch.bfloat16",
+      "seed": 42,
+      "target": 5109
+    },
+    "provenance": {
+      "audit_time": "2026-10-07T03:50:55.069707+08:00",
+      "audit_stage": "during extraction; source and weights audited after processes started",
+      "source_files_sha256": {
+        "scripts/extract_prompt_features.py": "86ea549f968d361202d55468e5dad3e6e004c548761f459b3e68210559846164",
+        "docs/CycleTCM-质疑查证与消融验证方案.md": "f3c53d60b8d04c305619f21d62611c8afdfc7e3f943ad589b0c9aeea2ab7273f",
+        "uv.lock": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6"
+      },
+      "model_files": {
+        ".gitattributes": "069004832ee7321257fc128150456a55418ebb1d71ad19cfc554f0c0e353120b",
+        "README.md": "a884e5e78f7d6f7bfe237f909dbc41a126542e259dc79d8ab33cc8980580ff79",
+        "chat_template.json": "6f8a6a55027e3da5160105556cda5dd69f6423f1c32645f6730d32de7773d0c4",
+        "config.json": "edac7703329133edfc53e46ac0081835144c99d7eebf28b71c732694d435224d",
+        "configuration.json": "f888421726665e8a84b738eed42a64875aed79de8be7daade851ac8bf4c0cef9",
+        "generation_config.json": "8469742d1fce0de951c8909b26a2c0c0d8490837ce476efb114da9e0cefc4d44",
+        "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+        "model-00001-of-00002.safetensors": "30a01a0556622645a3cce87b655bbbbbc1f170c196099f1b666c93202c3339a9",
+        "model-00002-of-00002.safetensors": "046296a2a387efb43b0c997d5833c789604d168834f6e0d3064bf7bb13d002a6",
+        "model.safetensors.index.json": "58a7841d7bff2548dd91577d216274a83cf1b500bc6a534b809d6c1b1707cf2b",
+        "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+        "tokenizer.json": "a5d85b6dcc535e6b93115a9ef287e6132fdbf30270da6218194ba742261173c7",
+        "tokenizer_config.json": "c2da771801886ad9ae98181793ffd3dfb7f1af30f6f7c6a4e15d7dbba52e2399",
+        "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      "model_dir": "/home/ps/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master",
+      "baseline_metadata_sha256": "6f7ae17129bbb818f9a18f86659cef8e2971c3870db801d77cc87c4d197d2ae7",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.57.6",
+        "Pillow": "12.3.0"
+      },
+      "git_revision": "3cb9e67b87787ed955b1d405684e02439632856c",
+      "rng_note": "No RNG seed was explicitly set in this extractor; frozen model.eval() single forward uses no stochastic generation. The seed=42 metadata field is an inherited declaration, not a call to torch.manual_seed.",
+      "execution_protocol": {
+        "model_eval": true,
+        "frozen_parameters": true,
+        "inference_mode": true,
+        "use_cache": false,
+        "add_generation_prompt": true,
+        "image_before_text": true
+      },
+      "continuation": {
+        "time": "2026-10-07T03:52:24.124774+08:00",
+        "source_sha256": "b5eb8807945e32ae429023936631a1600c48673d74a4affd64cf180dae4a746d",
+        "torch_manual_seed": 42,
+        "torch_num_threads": 8,
+        "existing_records": 4317,
+        "removed_incomplete_records": [],
+        "verification": "A1 first-image record, tokens and pooled vector byte-identical after seed/thread alignment"
+      }
+    }
+  },
+  "A1": {
+    "metadata": {
+      "variant": "A1",
+      "prompt_doc": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/docs/CycleTCM-质疑查证与消融验证方案.md",
+      "prompt_sha256": "eb28f27f2b188dea1937ba810142f3e62260e1b360126e9c1050eddfbd1634bc",
+      "system_prompt": "你是一个舌诊图像识别系统，能够通过图像对中医舌诊做出精确识别。\n任务：基于舌象图像中的可见视觉特征，对预定义 22 个标签进行判断。\n全局约束：\n1. 仅依据图像可见特征判断，只按格式输出结果，不得进行任何解释和说明。\n2. 只允许舌部区域作为判断目标；不得依据嘴唇、牙齿、口腔、文字水印、边框、背景等作判断。\n3. 输出必须且只能是一个合法 JSON 对象，不得输出额外文本、注释或 Markdown。\n4. 顶层键顺序固定为：`labels`、`hard_case`、`confidence`。\n5. `labels` 的值只允许 `0` 或 `1`；`hard_case` 只允许 `true` 或 `false`；`confidence` 只允许 `\"high\"`、`\"medium\"`、`\"low\"`。\n6. 必须输出全部 22 个标签键，每个键仅出现一次。\n7. `hard_case` 定义为\"高难样本\"，包含两类：图像质量困难 或 标签判别争议；不等价于\"仅低质量图像\"。\n8. 证据不足、图像质量不佳或标签不稳定时，对应标签必须输出 `0`，不得猜测。\n9. `confidence` 规则为：`\"high\"`：无明显质量问题，核心维度均可稳定判断。`\"medium\"`：存在轻度质量问题或局部不稳定，但整体可判。`\"low\"`：存在明显质量问题或多个维度不稳定。\n10. `hard_case` 规则：若舌体主体可见面积明显不足（约低于 60%）或存在严重失焦/严重曝光异常/严重色偏导致核心维度无法判断，则输出进入保守模式：`labels` 全部置 `0`、`hard_case=true`、`confidence=\"low\"`。\n11. 示例仅用于格式演示，不可复用示例中的标签取值。",
+      "user_prompt": "目标：增加标签定义知识。\n## 标签定义\n### 舌体形态\n- 舌嫩：舌体较柔嫩，纹理细腻，表面相对光滑。\n- 舌老：舌体纹理较粗，质地偏老，皱缩或粗糙感较明显。\n- 舌胖：舌体宽大肥厚，边缘膨隆。\n- 舌瘦：舌体瘦薄狭长，整体偏小。\n- 舌上点刺：舌面可见点状或刺点样突起。\n- 舌面裂纹：舌面可见裂沟或裂纹。\n- 舌边齿痕：舌边可见牙齿压痕，呈波浪或锯齿样凹陷。\n- 舌上瘀斑：局部紫暗色斑点或斑片，与周围区域有明显对比。\n### 舌体颜色\n- 舌色淡白：整体偏白偏淡，红色成分不足。\n- 舌色淡红：淡红或粉红，色泽相对均匀。\n- 舌色红绛：整体呈较明显红色至深红色。\n- 舌色青紫：整体或明显区域呈青紫、紫暗色调。\n### 舌苔质地\n- 苔无：舌面基本无可辨苔层，以舌质外露为主。\n- 苔薄：苔层薄，舌质可透见。\n- 苔厚：苔层较厚，较大范围遮蔽舌质。\n- 苔滑润：苔面津润，光泽或湿润感明显。\n- 苔燥：苔面干燥少津，欠光泽，可伴粗糙或干裂感。\n- 苔腐腻：苔质黏腻或腐松，呈腻滞或豆渣样外观。\n- 苔剥落：苔层局部缺失，露出下方舌质。\n### 舌苔颜色\n- 苔色白：苔色白或乳白。\n- 苔色黄：苔色黄或黄褐。\n- 苔色褐黑：苔色褐至灰黑。\n输出 JSON 示例：\n{\n  \"labels\": {\n    \"舌嫩\": 0,\n    \"舌老\": 0,\n    \"舌胖\": 1,\n    \"舌瘦\": 0,\n    \"舌上点刺\": 0,\n    \"舌面裂纹\": 0,\n    \"舌边齿痕\": 1,\n    \"舌上瘀斑\": 0,\n    \"舌色淡白\": 0,\n    \"舌色淡红\": 1,\n    \"舌色红绛\": 0,\n    \"舌色青紫\": 0,\n    \"苔无\": 0,\n    \"苔薄\": 1,\n    \"苔厚\": 0,\n    \"苔滑润\": 0,\n    \"苔燥\": 0,\n    \"苔腐腻\": 0,\n    \"苔剥落\": 0,\n    \"苔色白\": 1,\n    \"苔色黄\": 0,\n    \"苔色褐黑\": 0\n  },\n  \"hard_case\": false,\n  \"confidence\": \"medium\"\n}",
+      "model_dir": "/home/ps/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master",
+      "images_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/processed/CycleTCM/images",
+      "pooling": "last hidden state; attention-masked sequence mean",
+      "add_generation_prompt": true,
+      "dtype": "torch.bfloat16",
+      "seed": 42,
+      "target": 5109
+    },
+    "provenance": {
+      "audit_time": "2026-10-07T03:50:55.069707+08:00",
+      "audit_stage": "during extraction; source and weights audited after processes started",
+      "source_files_sha256": {
+        "scripts/extract_prompt_features.py": "86ea549f968d361202d55468e5dad3e6e004c548761f459b3e68210559846164",
+        "docs/CycleTCM-质疑查证与消融验证方案.md": "f3c53d60b8d04c305619f21d62611c8afdfc7e3f943ad589b0c9aeea2ab7273f",
+        "uv.lock": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6"
+      },
+      "model_files": {
+        ".gitattributes": "069004832ee7321257fc128150456a55418ebb1d71ad19cfc554f0c0e353120b",
+        "README.md": "a884e5e78f7d6f7bfe237f909dbc41a126542e259dc79d8ab33cc8980580ff79",
+        "chat_template.json": "6f8a6a55027e3da5160105556cda5dd69f6423f1c32645f6730d32de7773d0c4",
+        "config.json": "edac7703329133edfc53e46ac0081835144c99d7eebf28b71c732694d435224d",
+        "configuration.json": "f888421726665e8a84b738eed42a64875aed79de8be7daade851ac8bf4c0cef9",
+        "generation_config.json": "8469742d1fce0de951c8909b26a2c0c0d8490837ce476efb114da9e0cefc4d44",
+        "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+        "model-00001-of-00002.safetensors": "30a01a0556622645a3cce87b655bbbbbc1f170c196099f1b666c93202c3339a9",
+        "model-00002-of-00002.safetensors": "046296a2a387efb43b0c997d5833c789604d168834f6e0d3064bf7bb13d002a6",
+        "model.safetensors.index.json": "58a7841d7bff2548dd91577d216274a83cf1b500bc6a534b809d6c1b1707cf2b",
+        "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+        "tokenizer.json": "a5d85b6dcc535e6b93115a9ef287e6132fdbf30270da6218194ba742261173c7",
+        "tokenizer_config.json": "c2da771801886ad9ae98181793ffd3dfb7f1af30f6f7c6a4e15d7dbba52e2399",
+        "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      "model_dir": "/home/ps/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master",
+      "baseline_metadata_sha256": "6f7ae17129bbb818f9a18f86659cef8e2971c3870db801d77cc87c4d197d2ae7",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.57.6",
+        "Pillow": "12.3.0"
+      },
+      "git_revision": "3cb9e67b87787ed955b1d405684e02439632856c",
+      "rng_note": "No RNG seed was explicitly set in this extractor; frozen model.eval() single forward uses no stochastic generation. The seed=42 metadata field is an inherited declaration, not a call to torch.manual_seed.",
+      "execution_protocol": {
+        "model_eval": true,
+        "frozen_parameters": true,
+        "inference_mode": true,
+        "use_cache": false,
+        "add_generation_prompt": true,
+        "image_before_text": true
+      },
+      "continuation": {
+        "time": "2026-10-07T03:52:24.345333+08:00",
+        "source_sha256": "b5eb8807945e32ae429023936631a1600c48673d74a4affd64cf180dae4a746d",
+        "torch_manual_seed": 42,
+        "torch_num_threads": 8,
+        "existing_records": 1694,
+        "removed_incomplete_records": [],
+        "verification": "A1 first-image record, tokens and pooled vector byte-identical after seed/thread alignment"
+      }
+    }
+  },
+  "A2": {
+    "metadata": {
+      "variant": "A2",
+      "prompt_doc": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/docs/CycleTCM-质疑查证与消融验证方案.md",
+      "prompt_sha256": "b931d49fc8f5258a67e25384bad88ae8ece23a418e7bc44467a97f3507ac169f",
+      "system_prompt": "你是一个舌诊图像识别系统，能够通过图像对中医舌诊做出精确识别。\n任务：基于舌象图像中的可见视觉特征，对预定义 22 个标签进行判断。\n全局约束：\n1. 仅依据图像可见特征判断，只按格式输出结果，不得进行任何解释和说明。\n2. 只允许舌部区域作为判断目标；不得依据嘴唇、牙齿、口腔、文字水印、边框、背景等作判断。\n3. 输出必须且只能是一个合法 JSON 对象，不得输出额外文本、注释或 Markdown。\n4. 顶层键顺序固定为：`labels`、`hard_case`、`confidence`。\n5. `labels` 的值只允许 `0` 或 `1`；`hard_case` 只允许 `true` 或 `false`；`confidence` 只允许 `\"high\"`、`\"medium\"`、`\"low\"`。\n6. 必须输出全部 22 个标签键，每个键仅出现一次。\n7. `hard_case` 定义为\"高难样本\"，包含两类：图像质量困难 或 标签判别争议；不等价于\"仅低质量图像\"。\n8. 证据不足、图像质量不佳或标签不稳定时，对应标签必须输出 `0`，不得猜测。\n9. `confidence` 规则为：`\"high\"`：无明显质量问题，核心维度均可稳定判断。`\"medium\"`：存在轻度质量问题或局部不稳定，但整体可判。`\"low\"`：存在明显质量问题或多个维度不稳定。\n10. `hard_case` 规则：若舌体主体可见面积明显不足（约低于 60%）或存在严重失焦/严重曝光异常/严重色偏导致核心维度无法判断，则输出进入保守模式：`labels` 全部置 `0`、`hard_case=true`、`confidence=\"low\"`。\n11. 示例仅用于格式演示，不可复用示例中的标签取值。",
+      "user_prompt": "目标：引入严格反思流程（初判 -> 反证审查 -> 冲突审查 -> 保守回退 -> 难例判定）。\n## 标签定义\n### 舌体形态\n- 舌嫩：舌体较柔嫩，纹理细腻，表面相对光滑。\n- 舌老：舌体纹理较粗，质地偏老，皱缩或粗糙感较明显。\n- 舌胖：舌体宽大肥厚，边缘膨隆。\n- 舌瘦：舌体瘦薄狭长，整体偏小。\n- 舌上点刺：舌面可见点状或刺点样突起。\n- 舌面裂纹：舌面可见裂沟或裂纹。\n- 舌边齿痕：舌边可见牙齿压痕，呈波浪或锯齿样凹陷。\n- 舌上瘀斑：局部紫暗色斑点或斑片，与周围区域有明显对比。\n### 舌体颜色\n- 舌色淡白：整体偏白偏淡，红色成分不足。\n- 舌色淡红：淡红或粉红，色泽相对均匀。\n- 舌色红绛：整体呈较明显红色至深红色。\n- 舌色青紫：整体或明显区域呈青紫、紫暗色调。\n### 舌苔质地\n- 苔无：舌面基本无可辨苔层，以舌质外露为主。\n- 苔薄：苔层薄，舌质可透见。\n- 苔厚：苔层较厚，较大范围遮蔽舌质。\n- 苔滑润：苔面津润，光泽或湿润感明显。\n- 苔燥：苔面干燥少津，欠光泽，可伴粗糙或干裂感。\n- 苔腐腻：苔质黏腻或腐松，呈腻滞或豆渣样外观。\n- 苔剥落：苔层局部缺失，露出下方舌质。\n### 舌苔颜色\n- 苔色白：苔色白或乳白。\n- 苔色黄：苔色黄或黄褐。\n- 苔色褐黑：苔色褐至灰黑。\n## 反思流程：\n1. 冲突审查：执行互斥一致性检查。\n   - `舌嫩` 与 `舌老` 不可同时为 `1`。\n   - `舌胖` 与 `舌瘦` 不可同时为 `1`。\n   - `苔薄` 与 `苔厚` 不可同时为 `1`。\n   - `苔滑润` 与 `苔燥` 不可同时为 `1`。\n   - `苔无` 不可与 `苔薄`、`苔厚`、`苔滑润`、`苔燥`、`苔腐腻`、`苔剥落`、`苔色白`、`苔色黄`、`苔色褐黑` 同时为 `1`。\n   - `舌色淡白`、`舌色淡红`、`舌色红绛` 不可同时为1。\n   - `舌色青紫` 可与 `舌色淡白`、`舌色淡红`、`舌色红绛`三者之一共存，也可单独出现。\n2. 保守回退：\n   - 冲突时仅保留证据最明确者；无法稳定排序时，冲突标签全部置 `0`。\n   - 仅由单一弱证据支撑的阳性标签置 `0`。\n输出 JSON 示例：\n{\n  \"labels\": {\n    \"舌嫩\": 0,\n    \"舌老\": 0,\n    \"舌胖\": 1,\n    \"舌瘦\": 0,\n    \"舌上点刺\": 0,\n    \"舌面裂纹\": 0,\n    \"舌边齿痕\": 1,\n    \"舌上瘀斑\": 0,\n    \"舌色淡白\": 0,\n    \"舌色淡红\": 1,\n    \"舌色红绛\": 0,\n    \"舌色青紫\": 0,\n    \"苔无\": 0,\n    \"苔薄\": 1,\n    \"苔厚\": 0,\n    \"苔滑润\": 0,\n    \"苔燥\": 0,\n    \"苔腐腻\": 0,\n    \"苔剥落\": 0,\n    \"苔色白\": 1,\n    \"苔色黄\": 0,\n    \"苔色褐黑\": 0\n  },\n  \"hard_case\": false,\n  \"confidence\": \"medium\"\n}",
+      "model_dir": "/home/ps/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master",
+      "images_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/processed/CycleTCM/images",
+      "pooling": "last hidden state; attention-masked sequence mean",
+      "add_generation_prompt": true,
+      "dtype": "torch.bfloat16",
+      "seed": 42,
+      "target": 5109
+    },
+    "provenance": {
+      "audit_time": "2026-10-07T03:50:55.069707+08:00",
+      "audit_stage": "during extraction; source and weights audited after processes started",
+      "source_files_sha256": {
+        "scripts/extract_prompt_features.py": "86ea549f968d361202d55468e5dad3e6e004c548761f459b3e68210559846164",
+        "docs/CycleTCM-质疑查证与消融验证方案.md": "f3c53d60b8d04c305619f21d62611c8afdfc7e3f943ad589b0c9aeea2ab7273f",
+        "uv.lock": "d824e196c91fb72c8bc85220d4b1d1847431a1a6463fe5a543348457abfe6db6"
+      },
+      "model_files": {
+        ".gitattributes": "069004832ee7321257fc128150456a55418ebb1d71ad19cfc554f0c0e353120b",
+        "README.md": "a884e5e78f7d6f7bfe237f909dbc41a126542e259dc79d8ab33cc8980580ff79",
+        "chat_template.json": "6f8a6a55027e3da5160105556cda5dd69f6423f1c32645f6730d32de7773d0c4",
+        "config.json": "edac7703329133edfc53e46ac0081835144c99d7eebf28b71c732694d435224d",
+        "configuration.json": "f888421726665e8a84b738eed42a64875aed79de8be7daade851ac8bf4c0cef9",
+        "generation_config.json": "8469742d1fce0de951c8909b26a2c0c0d8490837ce476efb114da9e0cefc4d44",
+        "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+        "model-00001-of-00002.safetensors": "30a01a0556622645a3cce87b655bbbbbc1f170c196099f1b666c93202c3339a9",
+        "model-00002-of-00002.safetensors": "046296a2a387efb43b0c997d5833c789604d168834f6e0d3064bf7bb13d002a6",
+        "model.safetensors.index.json": "58a7841d7bff2548dd91577d216274a83cf1b500bc6a534b809d6c1b1707cf2b",
+        "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+        "tokenizer.json": "a5d85b6dcc535e6b93115a9ef287e6132fdbf30270da6218194ba742261173c7",
+        "tokenizer_config.json": "c2da771801886ad9ae98181793ffd3dfb7f1af30f6f7c6a4e15d7dbba52e2399",
+        "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      "model_dir": "/home/ps/.cache/modelscope/models/Qwen--Qwen3-VL-4B-Instruct/snapshots/master",
+      "baseline_metadata_sha256": "6f7ae17129bbb818f9a18f86659cef8e2971c3870db801d77cc87c4d197d2ae7",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.57.6",
+        "Pillow": "12.3.0"
+      },
+      "git_revision": "3cb9e67b87787ed955b1d405684e02439632856c",
+      "rng_note": "No RNG seed was explicitly set in this extractor; frozen model.eval() single forward uses no stochastic generation. The seed=42 metadata field is an inherited declaration, not a call to torch.manual_seed.",
+      "execution_protocol": {
+        "model_eval": true,
+        "frozen_parameters": true,
+        "inference_mode": true,
+        "use_cache": false,
+        "add_generation_prompt": true,
+        "image_before_text": true
+      },
+      "continuation": {
+        "time": "2026-10-07T03:52:24.548578+08:00",
+        "source_sha256": "b5eb8807945e32ae429023936631a1600c48673d74a4affd64cf180dae4a746d",
+        "torch_manual_seed": 42,
+        "torch_num_threads": 8,
+        "existing_records": 1609,
+        "removed_incomplete_records": [],
+        "verification": "A1 first-image record, tokens and pooled vector byte-identical after seed/thread alignment"
+      }
+    }
+  }
+}

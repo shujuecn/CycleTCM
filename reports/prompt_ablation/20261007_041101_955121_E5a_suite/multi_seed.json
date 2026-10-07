@@ -1,0 +1,74 @@
+{
+  "P0": {
+    "syndrome_acc": {
+      "mean": 83.24022346368716,
+      "std_sample": 0.0
+    },
+    "syndrome_f1": {
+      "mean": 68.1537285364912,
+      "std_sample": 0.0
+    },
+    "organ_acc": {
+      "mean": 76.80446927374301,
+      "std_sample": 0.0
+    },
+    "organ_f1": {
+      "mean": 79.69793779612739,
+      "std_sample": 0.0
+    }
+  },
+  "A0": {
+    "syndrome_acc": {
+      "mean": 82.40223463687151,
+      "std_sample": 0.0
+    },
+    "syndrome_f1": {
+      "mean": 66.67052350844473,
+      "std_sample": 0.0
+    },
+    "organ_acc": {
+      "mean": 76.13407821229052,
+      "std_sample": 0.0
+    },
+    "organ_f1": {
+      "mean": 79.07214344871409,
+      "std_sample": 0.0
+    }
+  },
+  "A1": {
+    "syndrome_acc": {
+      "mean": 82.41620111731845,
+      "std_sample": 0.0
+    },
+    "syndrome_f1": {
+      "mean": 65.666058515219,
+      "std_sample": 0.0
+    },
+    "organ_acc": {
+      "mean": 74.70391061452514,
+      "std_sample": 0.0
+    },
+    "organ_f1": {
+      "mean": 77.5154071265989,
+      "std_sample": 0.0
+    }
+  },
+  "A2": {
+    "syndrome_acc": {
+      "mean": 82.55586592178771,
+      "std_sample": 0.0
+    },
+    "syndrome_f1": {
+      "mean": 66.57543986632018,
+      "std_sample": 0.0
+    },
+    "organ_acc": {
+      "mean": 75.5754189944134,
+      "std_sample": 0.0
+    },
+    "organ_f1": {
+      "mean": 79.44148301495257,
+      "std_sample": 0.0
+    }
+  }
+}

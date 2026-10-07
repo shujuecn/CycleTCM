@@ -27,7 +27,7 @@ KEYS = ['syndrome_acc', 'syndrome_f1', 'organ_acc', 'organ_f1']
 
 def write_csv(path, rows):
     with path.open('w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+        writer = csv.DictWriter(f, fieldnames=rows[0].keys(), lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
 
@@ -52,7 +52,7 @@ def count_metrics(counts):
 
 
 def mean_seed_bootstrap(first, second, iterations=10000):
-    """Resample subjects identically across models and seeds; average seed metrics."""
+    """Resample subjects identically across models; average selected seed metrics."""
     a, b = grouped_counts(first), grouped_counts(second)
     rng = np.random.default_rng(20261007)
     differences = []
@@ -63,7 +63,7 @@ def mean_seed_bootstrap(first, second, iterations=10000):
         differences.append(mb-ma)
     differences = np.concatenate(differences)
     effect = (count_metrics(b.sum(axis=1))-count_metrics(a.sum(axis=1))).mean(axis=0)
-    return {'definition': 'second minus first; paired subject resampling, mean of seedwise metrics; fixed training seeds',
+    return {'definition': 'second minus first; paired subject resampling, mean of the selected fixed training seed metrics',
             'iterations': iterations, 'bootstrap_seed': 20261007, 'subjects': 895,
             'seeds': [r['summary']['config']['seed'] for r in first],
             'effect_pp': dict(zip(KEYS, effect.tolist())),
@@ -78,12 +78,15 @@ def main():
     args = parser.parse_args()
     suite = args.suite.resolve()
     state = json.loads((suite/'suite_status.json').read_text())
-    assert state['status'] == 'complete' and len(state['queue']) == 9
+    selected_seeds = sorted(state.get('seeds') or sorted({entry['seed'] for entry in state['queue']}))
+    assert selected_seeds and state['status'] == 'complete'
+    assert all(entry['seed'] in selected_seeds for entry in state['queue'])
     output = args.output_dir.resolve() if args.output_dir else ROOT/'reports/prompt_ablation'/suite.name
     output.mkdir(parents=True, exist_ok=True)
     entries = [{'variant':'P0','seed':json.loads((p/'config.json').read_text())['seed'],'run':str(p)}
                for p in args.baseline_suite.iterdir() if p.is_dir() and (p/'config.json').exists()
-               and json.loads((p/'config.json').read_text())['model'] == 'full'] + state['queue']
+               and json.loads((p/'config.json').read_text())['model'] == 'full'
+               and json.loads((p/'config.json').read_text())['seed'] in selected_seeds] + state['queue']
     runs, tables, per_class, manifest = [], [], [], []
     reference = reference_data = None
     for entry in entries:
@@ -124,7 +127,7 @@ def main():
                          'epochs_missing_wall_time':sum(not r.get('seconds_with_checkpoint') for r in history),
                          'files_sha256':{name:sha256(path/name) for name in ('summary.json','config.json','data_manifest.json','metrics/test.json','predictions/test.jsonl','history.csv','environment.json')}})
     grouped = {variant:sorted([r for r in runs if r['variant']==variant],key=lambda r:r['summary']['config']['seed']) for variant in VARIANTS}
-    assert all([r['summary']['config']['seed'] for r in group] == [42,43,44] for group in grouped.values())
+    assert all([r['summary']['config']['seed'] for r in group] == selected_seeds for group in grouped.values())
     # Only feature path may vary; default additions in the shared trainer preserve P0's protocol.
     scientific_keys = ['profile','epochs','batch_size','precision','learning_rate','weight_decay','patience','min_delta','init','normalize','scheduler_monitor','limit','data_dir','feature_file','label_dir']
     assert all({k:r['summary']['config'][k] for k in scientific_keys} == {k:runs[0]['summary']['config'][k] for k in scientific_keys} for r in runs)
@@ -133,14 +136,14 @@ def main():
         assert sha256(path) == state['features_sha256'][variant]
         assert all(json.loads((r['path']/'data_manifest.json').read_text())['mllm_features_sha256'] == state['features_sha256'][variant] for r in grouped[variant])
     stats = {variant:{key:{'mean':float(np.mean([r['summary']['test'][key.split('_')[0]][key.split('_')[1]]*100 for r in group])),
-                          'std_sample':float(np.std([r['summary']['test'][key.split('_')[0]][key.split('_')[1]]*100 for r in group],ddof=1))}
+                          'std_sample':float(np.std([r['summary']['test'][key.split('_')[0]][key.split('_')[1]]*100 for r in group],ddof=1)) if len(group) > 1 else 0.0}
                       for key in KEYS} for variant,group in grouped.items()}
     effects = {}
     for first, second in [('A0','A1'),('A1','A2'),('P0','A0'),('A0','A2')]:
         key = second+'_minus_'+first
         effects[key] = mean_seed_bootstrap(grouped[first], grouped[second])
         effects[key]['per_seed'] = {str(seed):paired_bootstrap(a['path']/'predictions/test.jsonl', b['path']/'predictions/test.jsonl',seed=20261007)
-                                    for seed,a,b in zip((42,43,44), grouped[first], grouped[second])}
+                                    for seed,a,b in zip(selected_seeds, grouped[first], grouped[second])}
     prompts = {v:{'metadata':json.loads((Path(state['features'][v]).parent/'metadata.json').read_text()),
                   'provenance':json.loads((Path(state['features'][v]).parent/'extraction_provenance.json').read_text())}
                for v in ('A0','A1','A2')}
@@ -158,23 +161,27 @@ def main():
         sd = [stats[v][task+'_f1']['std_sample'] for v in VARIANTS]
         ax.errorbar(range(4),values,yerr=sd,fmt='o',capsize=5)
         for i,v in enumerate(VARIANTS):
-            ax.scatter([i-.1,i,i+.1], [r['summary']['test'][task]['f1']*100 for r in grouped[v]], s=16)
-        ax.set_xticks(range(4),VARIANTS); ax.set_ylabel('Macro positive-class F1 (%)'); ax.set_title(task.capitalize()+'; mean ± sample SD')
+            ax.scatter([i] * len(grouped[v]), [r['summary']['test'][task]['f1']*100 for r in grouped[v]], s=16)
+        ax.set_xticks(range(4),VARIANTS); ax.set_ylabel('Macro positive-class F1 (%)'); ax.set_title(task.capitalize()+'; mean ± sample SD' if len(selected_seeds) > 1 else task.capitalize()+'; seed 42')
     fig.tight_layout()
     for suffix in ('png','pdf'): fig.savefig(figure_dir/f'prompt_f1.{suffix}',dpi=180)
     plt.close(fig)
-    launch_command = f'uv run --no-sync python scripts/run_prompt_ablation.py --jobs {state.get("jobs", 1)} ' + chr(92)
-    lines = ['# CycleTCM E5a 提示词替换实验结果','',f'生成时间：{datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")}。完成 A0/A1/A2 各 3 个种子，共 9 个正式运行；P0 复用既有 3 种子。','',
-             '## 协议','', '固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 原有图像与受试者划分。所有全量特征含 5109 张图；full 模型继续使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。训练 seeds=42/43/44，除提示词产生的特征外，模型和训练配置相同。','',
+    launch_command = f'uv run --no-sync python scripts/run_prompt_ablation.py --seeds {" ".join(map(str, selected_seeds))} --jobs {state.get("jobs", 1)} ' + chr(92)
+    seed_text = ','.join(map(str, selected_seeds))
+    run_text = '；'.join(f'{v} seed={selected_seeds[0]}' for v in ('A0','A1','A2')) if len(selected_seeds) == 1 else f'A0/A1/A2 各 {len(selected_seeds)} 个种子，共 {3 * len(selected_seeds)} 个正式运行'
+    lines = ['# CycleTCM E5a 提示词替换实验结果','',f'生成时间：{datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")}。本报告完成 {run_text}；P0 复用既有对应种子。','',
+             '## 协议','', '固定 Qwen3-VL-4B-Instruct 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 原有图像与受试者划分。所有全量特征含 5109 张图；full 模型继续使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。训练 seeds='+seed_text+'，除提示词产生的特征外，模型和训练配置相同。','',
              f'队列最大并行任务数为 {state.get("jobs", 1)}，每个任务仍为同一 GPU 上的独立训练进程。续训来源、起始 epoch 和 checkpoint 哈希保存在 source_manifest.json；续训使用完整优化器、调度器和随机状态。并行任务的训练耗时包含资源争用，不用于独立推理效率比较。','',
              'A0/A1/A2 的 system/user 文本逐字取自验证方案附录 B。图片均在 user 消息内、位于文本之前，与原提取器顺序一致。没有生成 JSON 或执行显式反思，因此本实验衡量的是提示词对隐状态特征与下游分类的影响，不能代表 TongueBench 的生成判读指标。','',
              '归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句；A1/A2 的开头目标句也不同。保留原文使其符合方案的归档复用要求，但存在这些伴随变化；A1−A0 应理解为归档知识提示版本效应，A2−A1 为归档反思提示版本效应，不能完全排除措辞或长度效应。P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。脏腑标签未出现在 A 组提示词，脏腑变化仅为次级读出。','',
-             '## 三种子结果','', '| 提示词 | 证候 Acc (%) | 证候 F1 (%) | 脏腑 Acc (%) | 脏腑 F1 (%) |','| --- | ---: | ---: | ---: | ---: |']
+             ('## 单种子结果' if len(selected_seeds) == 1 else '## 多种子结果'),'', '| 提示词 | 证候 Acc (%) | 证候 F1 (%) | 脏腑 Acc (%) | 脏腑 F1 (%) |','| --- | ---: | ---: | ---: | ---: |']
     for v in VARIANTS:
-        cells = [f'{stats[v][k]["mean"]:.2f} ± {stats[v][k]["std_sample"]:.2f}' for k in KEYS]
+        cells = [f'{stats[v][k]["mean"]:.2f}' if len(selected_seeds) == 1 else f'{stats[v][k]["mean"]:.2f} ± {stats[v][k]["std_sample"]:.2f}' for k in KEYS]
         lines.append('| '+v+' | '+' | '.join(cells)+' |')
-    lines += ['', '先逐标签计算正类 F1，再在 8 项证候／5 项脏腑内取平均，最后对 3 个训练种子取均值和样本标准差。','', '![提示词三种子 F1](figures/prompt_f1.png)','',
-              '## 配对差异','', '按受试者配对重采样 10,000 次，每次对三个固定训练种子分别计算指标后取均值；该 CI 衡量这三个已训练模型的测试样本不确定性，不包含重新训练的种子总体不确定性。逐种子区间保存在 paired_bootstrap.json。以下差值均为后一配置减前一配置；CI 跨零时不宣称有效提升。多项比较未进行校正，显著结果按探索性证据解读。','',
+    summary_note = ('结果只使用固定 training seed=42；表中没有训练种子间标准差，不能据此估计训练随机性的总体不确定性。' if len(selected_seeds) == 1 else '先逐标签计算正类 F1，再在 8 项证候／5 项脏腑内取平均，最后对固定训练种子取均值和样本标准差。')
+    ci_note = ('按受试者配对重采样 10,000 次；该 CI 衡量固定 seed=42 已训练模型的测试样本不确定性，不包含重新训练的种子总体不确定性。' if len(selected_seeds) == 1 else '按受试者配对重采样 10,000 次，每次对固定训练种子分别计算指标后取均值；该 CI 衡量已训练模型的测试样本不确定性，不包含重新训练的种子总体不确定性。')
+    lines += ['', summary_note,'', '![提示词 F1](figures/prompt_f1.png)','',
+              '## 配对差异','', ci_note+'逐种子区间保存在 paired_bootstrap.json。以下差值均为后一配置减前一配置；CI 跨零时不宣称有效提升。多项比较未进行校正，显著结果按探索性证据解读。','',
               '| 比较 | 证候 F1 Δ (pp) [95% CI] | 脏腑 F1 Δ (pp) [95% CI] |','| --- | ---: | ---: |']
     for key,value in effects.items():
         cells = []
@@ -190,7 +197,7 @@ def main():
         lines.append(f'{second}−{first} 的证候变化最大的三个标签：'+ '；'.join(f'{LABELS[i]} {b[i]-a[i]:+.2f} pp' for i in indices)+'。逐类 Acc、F1、支持度和混淆矩阵见 per_class_results.csv。')
         effect = effects[second+'_minus_'+first]
         low,high = effect['ci95_pp']['syndrome_f1']
-        verdict = '观察到正向差异，但受限于三种子、归档措辞伴随变化及未校正多重比较。' if low > 0 else '观察到负向差异；该归档提示版本没有提高当前协议下的证候 F1。' if high < 0 else '区间跨零，当前结果不足以宣称该归档提示版本有效提高证候 F1，也不足以证明二者等效。'
+        verdict = ('观察到正向差异，但受限于单一训练种子、归档措辞伴随变化及未校正多重比较。' if low > 0 else '观察到负向差异；该归档提示版本没有提高当前协议下的证候 F1。' if high < 0 else '区间跨零，当前结果不足以宣称该归档提示版本有效提高证候 F1，也不足以证明二者等效。') if len(selected_seeds) == 1 else ('观察到正向差异，但受限于多种子数量、归档措辞伴随变化及未校正多重比较。' if low > 0 else '观察到负向差异；该归档提示版本没有提高当前协议下的证候 F1。' if high < 0 else '区间跨零，当前结果不足以宣称该归档提示版本有效提高证候 F1，也不足以证明二者等效。')
         lines.append(verdict)
         lines.append('')
     spleen = grouped['P0'][0]['metrics']['per_class'][10]

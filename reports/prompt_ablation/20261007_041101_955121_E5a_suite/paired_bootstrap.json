@@ -1,0 +1,246 @@
+{
+  "A1_minus_A0": {
+    "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
+    "iterations": 10000,
+    "bootstrap_seed": 20261007,
+    "subjects": 895,
+    "seeds": [
+      42
+    ],
+    "effect_pp": {
+      "syndrome_acc": 0.013966480446939045,
+      "syndrome_f1": -1.0044649932257244,
+      "organ_acc": -1.4301675977653758,
+      "organ_f1": -1.556736322115185
+    },
+    "ci95_pp": {
+      "syndrome_acc": [
+        -0.8100558659217825,
+        0.8100558659217967
+      ],
+      "syndrome_f1": [
+        -2.60782782607755,
+        0.5912065021625206
+      ],
+      "organ_acc": [
+        -2.6592178770949464,
+        -0.22346368715085418
+      ],
+      "organ_f1": [
+        -2.6674857072829274,
+        -0.4512062117217941
+      ]
+    },
+    "per_seed": {
+      "42": {
+        "definition": "second minus first; paired subject resampling",
+        "iterations": 10000,
+        "seed": 20261007,
+        "subjects": 895,
+        "first_predictions_sha256": "1dab3127cd64858802bff31a109a477b3b5edf193661f0d0348b075a7b43475a",
+        "second_predictions_sha256": "1ea0888fc629afab496c3ee0b31bac827832bb0acb7f258c7c4ac6c34bd3050e",
+        "ci95_pp": {
+          "syndrome_acc": [
+            -0.7960893854748519,
+            0.8240223463687246
+          ],
+          "syndrome_f1": [
+            -2.5921095716673013,
+            0.5775083959693929
+          ],
+          "organ_acc": [
+            -2.659217877094966,
+            -0.20111731843576175
+          ],
+          "organ_f1": [
+            -2.700120091002838,
+            -0.4352007592309126
+          ]
+        }
+      }
+    }
+  },
+  "A2_minus_A1": {
+    "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
+    "iterations": 10000,
+    "bootstrap_seed": 20261007,
+    "subjects": 895,
+    "seeds": [
+      42
+    ],
+    "effect_pp": {
+      "syndrome_acc": 0.13966480446926255,
+      "syndrome_f1": 0.9093813511011746,
+      "organ_acc": 0.8715083798882546,
+      "organ_f1": 1.9260758883536653
+    },
+    "ci95_pp": {
+      "syndrome_acc": [
+        -0.6284916201117454,
+        0.9357541899441344
+      ],
+      "syndrome_f1": [
+        -0.8429090152507144,
+        2.659130888895875
+      ],
+      "organ_acc": [
+        -0.31284916201117596,
+        2.0782122905027904
+      ],
+      "organ_f1": [
+        0.8400611939614476,
+        3.0035657001368037
+      ]
+    },
+    "per_seed": {
+      "42": {
+        "definition": "second minus first; paired subject resampling",
+        "iterations": 10000,
+        "seed": 20261007,
+        "subjects": 895,
+        "first_predictions_sha256": "1ea0888fc629afab496c3ee0b31bac827832bb0acb7f258c7c4ac6c34bd3050e",
+        "second_predictions_sha256": "7adf0998a71c347ec4ba85dee6f89cc9f469118151a35fc938fb3802999fea6f",
+        "ci95_pp": {
+          "syndrome_acc": [
+            -0.614525139664801,
+            0.9078212290502763
+          ],
+          "syndrome_f1": [
+            -0.7715137722693288,
+            2.61357748290939
+          ],
+          "organ_acc": [
+            -0.3128491620111751,
+            2.055865921787714
+          ],
+          "organ_f1": [
+            0.8629834499153225,
+            3.02341828110189
+          ]
+        }
+      }
+    }
+  },
+  "A0_minus_P0": {
+    "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
+    "iterations": 10000,
+    "bootstrap_seed": 20261007,
+    "subjects": 895,
+    "seeds": [
+      42
+    ],
+    "effect_pp": {
+      "syndrome_acc": -0.8379888268156463,
+      "syndrome_f1": -1.48320502804647,
+      "organ_acc": -0.6703910614524915,
+      "organ_f1": -0.6257943474133043
+    },
+    "ci95_pp": {
+      "syndrome_acc": [
+        -1.7458100558659169,
+        0.06983240223463838
+      ],
+      "syndrome_f1": [
+        -3.3977698762028963,
+        0.4545216447589428
+      ],
+      "organ_acc": [
+        -2.0335195530726224,
+        0.6927374301675968
+      ],
+      "organ_f1": [
+        -1.8454077897924315,
+        0.6024585580809722
+      ]
+    },
+    "per_seed": {
+      "42": {
+        "definition": "second minus first; paired subject resampling",
+        "iterations": 10000,
+        "seed": 20261007,
+        "subjects": 895,
+        "first_predictions_sha256": "e45c3280efb2a3226e6107ae005b119d10780a1735997a06d31030aac05c68c6",
+        "second_predictions_sha256": "1dab3127cd64858802bff31a109a477b3b5edf193661f0d0348b075a7b43475a",
+        "ci95_pp": {
+          "syndrome_acc": [
+            -1.731843575419001,
+            0.055865921787712214
+          ],
+          "syndrome_f1": [
+            -3.444612617846183,
+            0.49384231136865653
+          ],
+          "organ_acc": [
+            -2.0111731843575287,
+            0.6703910614525133
+          ],
+          "organ_f1": [
+            -1.8520750574892164,
+            0.5919852032998189
+          ]
+        }
+      }
+    }
+  },
+  "A2_minus_A0": {
+    "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
+    "iterations": 10000,
+    "bootstrap_seed": 20261007,
+    "subjects": 895,
+    "seeds": [
+      42
+    ],
+    "effect_pp": {
+      "syndrome_acc": 0.1536312849162016,
+      "syndrome_f1": -0.09508364212454978,
+      "organ_acc": -0.5586592178771213,
+      "organ_f1": 0.3693395662384802
+    },
+    "ci95_pp": {
+      "syndrome_acc": [
+        -0.6564245810055951,
+        0.9776536312849231
+      ],
+      "syndrome_f1": [
+        -1.8437012131648085,
+        1.6273649318388268
+      ],
+      "organ_acc": [
+        -1.7653631284916145,
+        0.6256983240223377
+      ],
+      "organ_f1": [
+        -0.6786181736916489,
+        1.4303903540025986
+      ]
+    },
+    "per_seed": {
+      "42": {
+        "definition": "second minus first; paired subject resampling",
+        "iterations": 10000,
+        "seed": 20261007,
+        "subjects": 895,
+        "first_predictions_sha256": "1dab3127cd64858802bff31a109a477b3b5edf193661f0d0348b075a7b43475a",
+        "second_predictions_sha256": "7adf0998a71c347ec4ba85dee6f89cc9f469118151a35fc938fb3802999fea6f",
+        "ci95_pp": {
+          "syndrome_acc": [
+            -0.6424581005586627,
+            0.9636871508379885
+          ],
+          "syndrome_f1": [
+            -1.8316407042751037,
+            1.6480112434059317
+          ],
+          "organ_acc": [
+            -1.765363128491626,
+            0.6256983240223501
+          ],
+          "organ_f1": [
+            -0.6883502850982489,
+            1.4257085980684594
+          ]
+        }
+      }
+    }
+  }
+}

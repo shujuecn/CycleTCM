@@ -1,0 +1,86 @@
+{
+  "status": "complete",
+  "features": {
+    "A0": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A0/all_features.json",
+    "A1": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A1/all_features.json",
+    "A2": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A2/all_features.json"
+  },
+  "features_sha256": {
+    "A0": "5b820a2ed2cbabde7131357f5610bd6bd7bff3627fbbf8457db13df6eb02ccd2",
+    "A1": "8383571094924b621432a29c0136ec2da2c26b23dc38e804d633b910951cef0e",
+    "A2": "352238cc22c606b964810c9149382a78c57371d6495225bb24d083737898f4a0"
+  },
+  "queue": [
+    {
+      "variant": "A0",
+      "seed": 42,
+      "status": "complete",
+      "pid": 86267,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A0_seed42/20261007_043141_603456_code_compat_full_seed42",
+      "returncode": 0,
+      "seconds": 12778.059950955001
+    },
+    {
+      "variant": "A1",
+      "seed": 42,
+      "status": "complete",
+      "pid": 86268,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A1_seed42/20261007_043140_021860_code_compat_full_seed42",
+      "returncode": 0,
+      "seconds": 10257.401482778005
+    },
+    {
+      "variant": "A2",
+      "seed": 42,
+      "status": "complete",
+      "pid": 204003,
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A2_seed42/20261007_094943_683925_code_compat_full_seed42",
+      "returncode": 0,
+      "seconds": 526.0542521730022
+    }
+  ],
+  "jobs": 1,
+  "excluded_queue": [
+    {
+      "variant": "A0",
+      "seed": 43,
+      "status": "excluded",
+      "pid": 120310,
+      "reason": "Not in the requested seed set"
+    },
+    {
+      "variant": "A1",
+      "seed": 43,
+      "status": "excluded",
+      "reason": "Not in the requested seed set"
+    },
+    {
+      "variant": "A2",
+      "seed": 43,
+      "status": "excluded",
+      "reason": "Not in the requested seed set"
+    },
+    {
+      "variant": "A0",
+      "seed": 44,
+      "status": "excluded",
+      "reason": "Not in the requested seed set"
+    },
+    {
+      "variant": "A1",
+      "seed": 44,
+      "status": "excluded",
+      "reason": "Not in the requested seed set"
+    },
+    {
+      "variant": "A2",
+      "seed": 44,
+      "status": "excluded",
+      "reason": "Not in the requested seed set"
+    }
+  ],
+  "max_jobs_seen": 2,
+  "seeds": [
+    42
+  ]
+}
