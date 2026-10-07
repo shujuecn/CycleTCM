@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-07",
+  "scope": "outputs/",
+  "policy": "保留正式实验结果、最终模型权重、预测、结构化指标、日志和溯源；删除中断副本、排除配置、临时 checkpoint、重复 smoke 输出和空目录。",
+  "removed": [
+    {
+      "path": "outputs/reproduction/20261005_042629_774918_suite/20261005_203049_001784_code_compat_full_seed44",
+      "reason": "被 20261005_221822_932720 完成运行替代的中断 orphan。"
+    },
+    {
+      "path": "outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A0_seed43",
+      "reason": "提示词实验只保留用户要求的 seed42；该 seed43 运行被排除且未完成。"
+    },
+    {
+      "path": "outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A0_seed42/20261007_041103_528280_code_compat_full_seed42",
+      "reason": "被同一变体的 20261007_043141_603456 完成运行替代的中断副本。"
+    },
+    {
+      "path": "outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A2_seed42/20261007_072237_747342_code_compat_full_seed42/checkpoints/best.pt",
+      "reason": "A2 完成运行已经保留最终 best.pt；该恢复过程 checkpoint 属于工程临时文件。"
+    },
+    {
+      "path": "outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A2_seed42/20261007_094943_683925_code_compat_full_seed42/checkpoints/last.pt",
+      "reason": "完成运行后的临时恢复 checkpoint；最终 best.pt、指标、预测和日志保留。"
+    },
+    {
+      "path": "outputs/environment/20261005_042048_132176_batch2, outputs/environment/20261005_042101_913479_batch8, outputs/environment/20261005_042115_092726_batch32",
+      "reason": "旧的重复环境 smoke 目录；保留 canonical batch32 和结构化环境检查。"
+    },
+    {
+      "path": "outputs/environment/{plot_smoke.png,one_image,region_smoke,batch32/plot_smoke.png,batch32/region_smoke}",
+      "reason": "临时可视化 smoke 图片；环境 JSON、CLI/cache 检查和样例结果保留。"
+    },
+    {
+      "path": "outputs/analysis_drafts",
+      "reason": "空目录。"
+    }
+  ],
+  "retained": [
+    "outputs/reproduction/",
+    "outputs/prompt_ablation/20261007_041101_955121_E5a_suite/",
+    "outputs/validation_bootstrap/",
+    "outputs/validation_supplement/",
+    "outputs/qualitative/",
+    "outputs/audit/",
+    "outputs/verification/",
+    "outputs/tracking/",
+    "outputs/cleanup/",
+    "outputs/feature_extraction/legacy/",
+    "outputs/visual/legacy/"
+  ],
+  "verification": {
+    "active_training_process": false,
+    "formal_reproduction_runs_retained": 14,
+    "prompt_variants_retained": ["A0_seed42", "A1_seed42", "A2_seed42"],
+    "validation_control_runs_retained": 3,
+    "empty_directories_remaining": false
+  }
+}
