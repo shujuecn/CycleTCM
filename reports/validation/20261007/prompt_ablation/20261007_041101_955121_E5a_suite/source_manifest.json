@@ -189,9 +189,9 @@
     }
   },
   {
-    "variant": "A3",
+    "variant": "U0",
     "seed": 42,
-    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A3_seed42/20261007_144049_233427_code_compat_full_seed42",
+    "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/U0_seed42/20261007_144049_233427_code_compat_full_seed42",
     "config": {
       "model": "full",
       "profile": "code_compat",
@@ -212,22 +212,22 @@
       "data_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/processed/CycleTCM",
       "feature_file": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/processed/CycleTCM/feature_all_encoded.json",
       "label_dir": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/processed/CycleTCM/labels/json",
-      "mllm_features_file": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A3/all_features.json",
+      "mllm_features_file": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_U0/all_features.json",
       "mllm_input_dim": 2560,
       "loss": "bce",
       "lovasz_alpha": 0.7
     },
-    "checkpoint_sha256": "3d704bd1898a1f3b8bddc9a627285987ec255f8363904027df7632cd2050ad08",
+    "checkpoint_sha256": "4b1988332667e5ef086ffa716643e11a56e7ad1fdfbce97c076416d358f199ba",
     "resume": null,
     "epochs": 120,
     "training_seconds_recorded": 6082.836541146113,
     "epochs_missing_wall_time": 0,
     "files_sha256": {
-      "summary.json": "1bb543da99bbd10d045c354140c7627c1eed36b31c98b5c4ec855fab98c2ab80",
-      "config.json": "78277c87231383e1ccf08f47bd8d7ba884bd7f905d3ec69b82b4ba614f9b4e1e",
+      "summary.json": "9c88fb6630b379d8e62d4f90a153c16200a0f51342ab0f4cdf52df5ab4ba3bb4",
+      "config.json": "5b3037bead434a0b5fdf276d7448d505ddea11f6954d7da3aa029b3dd93d68cf",
       "data_manifest.json": "7ad5a6d2ca08fca8bcc05170368a5ee5c44edca9241b997cbb17c5b0853a62cd",
-      "metrics/test.json": "ece7f397237ff5a7abfdb2a5c0ce7f0df8b88370d23b665aa43bcdf41c897012",
-      "predictions/test.jsonl": "3c826a6dc822563d67a317429b3404361497d9e3e2eafa45e5cfed546c8c6339",
+      "metrics/test.json": "58a9fdced71c2dbc7e4ad16b237c8102569ea5642ea44be09618ab97ca495583",
+      "predictions/test.jsonl": "c7e68d31e1ab52db071a602ab2f03b4e8759571ddfdcfcf7e0cf3c55ad852cc9",
       "history.csv": "7144811e9390c9e20733c49d0acbf60e69ec1e5df702a59bbf5f598c7ff30a92",
       "environment.json": "472d90d06f8d04def9039395051801c6bb1fd72e5ec093e651a0d4561f03dc20"
     }

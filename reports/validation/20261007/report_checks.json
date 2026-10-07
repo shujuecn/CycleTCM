@@ -22,9 +22,9 @@
       "feature_sha256": "a94e5fb77c74b94a7d3d2d2946e8847b3213a0884db3fc6708a592ec830fb722",
       "full_dataset": false
     },
-    "A3": {
+    "U0": {
       "status": "complete",
-      "variant": "A3",
+      "variant": "U0",
       "count": 1,
       "full_dataset": false,
       "feature_sha256": "7e24a89a9489779783c152c1c8c9f4c6c2cf1a0bac2c5a66f55810b57cee338e"
@@ -32,10 +32,21 @@
     "scope": "One-image CPU feature extraction only; superseded by full BF16 GPU P0 extraction"
   },
   "archive_relocation_resume_verified": true,
-  "local_markdown_links_checked": 45,
+  "local_markdown_links_checked": 46,
   "all_local_markdown_links_resolve": true,
   "root_readme_research_sections_removed": true,
   "changed_python_files_compile": true,
   "medgemma_epochs_verified": 120,
-  "backbone_png_visually_checked": true
+  "backbone_png_visually_checked": true,
+  "unrelated_control_identifier": "U0",
+  "unrelated_control_renumbering_verified": true,
+  "unrelated_control_renumbering_checks": {
+    "cached_extraction_resume_passed": true,
+    "completed_suite_resume_passed": true,
+    "regenerated_report_passed": true,
+    "all_pairwise_numeric_statistics_unchanged": true,
+    "all_published_source_file_hashes_match": true,
+    "png_and_pdf_regenerated_with_U0": true,
+    "feature_bytes_unchanged": true
+  }
 }

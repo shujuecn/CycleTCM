@@ -1,4 +1,4 @@
-"""Extract Qwen3-VL or MedGemma features for A0/A1/A2 and unrelated A3 prompts."""
+"""Extract Qwen3-VL or MedGemma features for A0/A1/A2 and unrelated U0 prompts."""
 from __future__ import annotations
 import argparse, hashlib, importlib.metadata, json, logging, sys, time
 from datetime import datetime
@@ -28,7 +28,7 @@ def archived_prompts(path: Path):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--variant', choices=['A0', 'A1', 'A2', 'A3'], required=True)
+    p.add_argument('--variant', choices=['A0', 'A1', 'A2', 'U0'], required=True)
     p.add_argument('--prompt-doc', type=Path, default=ROOT / 'reports/validation/20261007/plan.md')
     p.add_argument('--model-dir', type=Path, required=True)
     p.add_argument('--images-dir', type=Path, required=True)
@@ -41,9 +41,9 @@ def main():
     torch.set_num_threads(8)
     torch.manual_seed(42)
     model_type, feature_dim = backbone_info(args.model_dir.resolve())
-    if args.variant == 'A3':
+    if args.variant == 'U0':
         prompts = {'system': '喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼',
-                   'A3': '别看我只是一只羊 羊儿的聪明难以想象'}
+                   'U0': '别看我只是一只羊 羊儿的聪明难以想象'}
     else:
         prompts = archived_prompts(args.prompt_doc.resolve())
     output = args.output_dir.resolve()
@@ -54,7 +54,7 @@ def main():
         indices = torch.linspace(0, len(paths)-1, min(args.max_images, len(paths))).long().tolist()
         paths = [paths[i] for i in indices]
     prompt_sha = hashlib.sha256((prompts['system']+'\n'+prompts[args.variant]).encode()).hexdigest()
-    prompt_source = Path(__file__) if args.variant == 'A3' else args.prompt_doc.resolve()
+    prompt_source = Path(__file__) if args.variant == 'U0' else args.prompt_doc.resolve()
     metadata = {'variant': args.variant, 'prompt_doc': str(prompt_source), 'prompt_sha256': prompt_sha,
                 'system_prompt': prompts['system'], 'user_prompt': prompts[args.variant],
                 'model_dir': str(args.model_dir.resolve()), 'images_dir': str(args.images_dir.resolve()),
@@ -70,7 +70,7 @@ def main():
             p.error('Output already exists; use --resume or a new output directory')
         previous_metadata = json.loads(metadata_path.read_text())
         # A moved archive may resume if its bytes and all extraction settings still match.
-        if previous_metadata['prompt_doc'] != metadata['prompt_doc'] and args.variant != 'A3':
+        if previous_metadata['prompt_doc'] != metadata['prompt_doc'] and args.variant != 'U0':
             provenance = json.loads((output / 'extraction_provenance.json').read_text())
             source_hashes = provenance['source_files_sha256']
             prompt_hash = source_hashes.get('prompt_doc') or source_hashes.get('docs/CycleTCM-质疑查证与消融验证方案.md')

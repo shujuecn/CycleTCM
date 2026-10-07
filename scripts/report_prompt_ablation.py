@@ -145,8 +145,8 @@ def main():
                       for key in KEYS} for variant,group in grouped.items()}
     effects = {}
     comparisons = [('A0','A1'),('A1','A2'),('P0','A0'),('A0','A2')]
-    if 'A3' in grouped:
-        comparisons += [(v, 'A3') for v in ('P0', 'A0', 'A1', 'A2')]
+    if 'U0' in grouped:
+        comparisons += [(v, 'U0') for v in ('P0', 'A0', 'A1', 'A2')]
     for first, second in comparisons:
         key = second+'_minus_'+first
         effects[key] = mean_seed_bootstrap(grouped[first], grouped[second])
@@ -187,25 +187,25 @@ def main():
              f'{names} 均完成 5109 张图像的 {backbone} 特征抽取和 full 模型训练，训练 seeds={seed_text}；P0 复用既有对应种子的正式复现结果。固定 {backbone} 本地权重、BF16 单次前向、最后一层全序列 masked mean、2560 维特征、224×224 图像和原有受试者划分。full 模型使用 FP32、Adam、batch 32、最多 200 epochs、patience 50 和验证集任务平均 Acc 选模；测试为全部 895 位受试者，固定阈值 >0.5。', '',
              'A0/A1/A2 的 system/user 文本逐字取自验证方案 plan.md 附录 B，图片位于 user 消息内且在文本之前。本实验不执行生成 JSON 或显式反思，只衡量提示词对隐状态特征与下游分类的影响。归档 A0 含显式标签清单，A1 以标签定义代替清单且新增目标句，A1/A2 的开头目标句也不同，因此 A1−A0 和 A2−A1 不能完全排除措辞或长度效应；P0−A0 同时变化语言、粒度、格式和提示内容，仅作整体比较。', '']
     if medgemma:
-        lines += ['本轮使用 MedGemma 原生聊天模板和图像预处理，保留图像 token_type_ids。默认 P0 基线来自既有 Qwen 正式复现，因此 P0 对比同时改变骨干与提示词，不能作为单独的提示词效应；A0/A1/A2/A3 内部对比固定 MedGemma 骨干。', '']
-    if 'A3' in grouped:
-        prompt = prompts['A3']['metadata']
-        lines += ['A3 是用户指定的无关文本控制，完整替换 system/user 文本，不附加原有 TCM_PRIOR、标签清单或医学知识；图像输入和提取方式保持不变。系统提示词为：', '',
+        lines += ['本轮使用 MedGemma 原生聊天模板和图像预处理，保留图像 token_type_ids。默认 P0 基线来自既有 Qwen 正式复现，因此 P0 对比同时改变骨干与提示词，不能作为单独的提示词效应；A0/A1/A2 及 U0 内部对比固定 MedGemma 骨干。', '']
+    if 'U0' in grouped:
+        prompt = prompts['U0']['metadata']
+        lines += ['U0（Unrelated control）是独立的无关文本控制编号；A0/A1/A2 保留医学提示体系的编号。U0 完整替换 system/user 文本，不附加原有 TCM_PRIOR、标签清单或医学知识；图像输入和提取方式保持不变。系统提示词为：', '',
                   '```text', prompt['system_prompt'], '```', '', '用户提示词为：', '', '```text', prompt['user_prompt'], '```', '',
-                  'A3 同时改变提示内容和长度。全序列 masked mean 会随文本 token 数量改变图像与文本的池化比例，因此它检验的是整组无关提示版本的效果，不能独立归因于医学语义有无。', '']
-        audit_path = output/'A3_feature_audit.json'
+                  'U0 同时改变提示内容和长度。全序列 masked mean 会随文本 token 数量改变图像与文本的池化比例，因此它检验的是整组无关提示版本的效果，不能独立归因于医学语义有无。', '']
+        audit_path = output/'U0_feature_audit.json'
         if audit_path.exists():
             audit = json.loads(audit_path.read_text())
-            assert audit['feature_sha256'] == state['features_sha256']['A3']
+            assert audit['feature_sha256'] == state['features_sha256']['U0']
             lengths = '、'.join(f'{v}={"/".join(audit["sequence_token_counts"][v])}' for v in state['features'])
-            lines += [f'全量核查确认 5109 张图像字节与 A0/A1/A2 相同，A3 特征均为有限的 2560 维向量且聚合文件与逐图记录一致。含图像和聊天模板的序列 token 数为 {lengths}（每组所有图像相同），进一步说明长度因素不可忽略。核查记录为 `A3_feature_audit.json`。', '']
+            lines += [f'全量核查确认 5109 张图像字节与 A0/A1/A2 相同，U0 特征均为有限的 2560 维向量且聚合文件与逐图记录一致。含图像和聊天模板的序列 token 数为 {lengths}（每组所有图像相同），进一步说明长度因素不可忽略。核查记录为 `U0_feature_audit.json`。', '']
     lines += ['| 提示词 | 证候 Acc (%) | 证候 F1 (%) | 脏腑 Acc (%) | 脏腑 F1 (%) |', '| --- | ---: | ---: | ---: | ---: |']
     for v in variants:
         cells = [f'{stats[v][k]["mean"]:.2f}' if len(selected_seeds) == 1 else f'{stats[v][k]["mean"]:.2f} ± {stats[v][k]["std_sample"]:.2f}' for k in KEYS]
         lines.append('| '+v+' | '+' | '.join(cells)+' |')
-    if 'A3' in grouped:
-        selected = grouped['A3'][0]['summary']
-        lines += ['', f'A3 的验证集选中 epoch={selected["best_epoch"]}，停止原因为 `{selected["stop_reason"]}`；测试指标均来自该最佳 checkpoint。']
+    if 'U0' in grouped:
+        selected = grouped['U0'][0]['summary']
+        lines += ['', f'U0 的验证集选中 epoch={selected["best_epoch"]}，停止原因为 `{selected["stop_reason"]}`；测试指标均来自该最佳 checkpoint。']
     summary_note = (f'结果只使用固定 training seed={selected_seeds[0]}；表中没有训练种子间标准差，不能据此估计训练随机性的总体不确定性。' if len(selected_seeds) == 1 else '先逐标签计算正类 F1，再在 8 项证候／5 项脏腑内取平均，最后对固定训练种子取均值和样本标准差。')
     ci_note = '按受试者配对重采样 10,000 次；该 CI 衡量固定训练种子已训练模型的测试样本不确定性，不包含重新训练的种子总体不确定性。'
     figure_path = os.path.relpath(figure_dir/'prompt_f1.png', args.report_path.resolve().parent)
@@ -218,21 +218,21 @@ def main():
             low,high = value['ci95_pp'][k]
             cells.append(f'{value["effect_pp"][k]:+.2f} [{low:+.2f}, {high:+.2f}]')
         lines.append('| '+key.replace('_minus_', '−')+' | '+' | '.join(cells)+' |')
-    if 'A3' in grouped:
-        lines += ['', 'A3 相对于此前提示版本的结果：', '']
+    if 'U0' in grouped:
+        lines += ['', 'U0 相对于此前提示版本的结果：', '']
         for first in ('P0', 'A0', 'A1', 'A2'):
-            effect = effects['A3_minus_'+first]
+            effect = effects['U0_minus_'+first]
             parts = []
             for task, label in [('syndrome', '证候'), ('organ', '脏腑')]:
                 key = task+'_f1'
                 low, high = effect['ci95_pp'][key]
                 verdict = '区间全为正' if low > 0 else '区间全为负' if high < 0 else '区间跨零'
                 parts.append(f'{label} F1 {effect["effect_pp"][key]:+.2f} pp（{verdict}）')
-            lines.append(f'- A3−{first}：'+ '；'.join(parts)+'。')
+            lines.append(f'- U0−{first}：'+ '；'.join(parts)+'。')
         lines += ['', '上述变化只对应当前 seed 的已训练模型；即使无关提示不差于医学提示，也不能据此证明医学知识无效或模型未使用图像。所有配置均保留图像输入，并通过有监督 full 分类器训练。', '']
     class_comparisons = [('A0','A1'),('A1','A2')]
-    if 'A3' in grouped:
-        class_comparisons.append(('P0', 'A3'))
+    if 'U0' in grouped:
+        class_comparisons.append(('P0', 'U0'))
     for first,second in class_comparisons:
         a = np.mean([[c['f1']*100 for c in r['metrics']['per_class']] for r in grouped[first]],axis=0)
         b = np.mean([[c['f1']*100 for c in r['metrics']['per_class']] for r in grouped[second]],axis=0)
@@ -246,15 +246,15 @@ def main():
     spleen = grouped['P0'][0]['metrics']['per_class'][10]
     lines += [f'Spleen 的测试支持度为阳性 {spleen["positive"]}、阴性 {spleen["negative"]}，严重不平衡；其 F1 不应独立用来说明提示词的临床知识价值。', '',
               f'完整 E5a 产物（主结果、逐类结果、配对 bootstrap、prompt 原文与哈希、来源清单和图表）保存在 `{output.relative_to(ROOT)}/`。完整特征、逐图预测和权重保留在本地 data/ 与 outputs/。', '']
-    if 'A3' in grouped:
-        a3_feature_dir = 'data/features/medgemma_20261007_A3' if medgemma else 'data/features/prompt_20261007_A3'
-        lines += ['在已有 A0/A1/A2 suite 上补充 A3 的复现命令：', '', '```bash',
+    if 'U0' in grouped:
+        u0_feature_dir = 'data/features/medgemma_20261007_U0' if medgemma else 'data/features/prompt_20261007_U0'
+        lines += ['在已有 A0/A1/A2 suite 上补充 U0 的复现命令：', '', '```bash',
                   'uv run --no-sync python scripts/extract_prompt_features.py \\',
-                  '  --variant A3 --model-dir /path/to/Qwen3-VL-4B-Instruct \\',
+                  '  --variant U0 --model-dir /path/to/Qwen3-VL-4B-Instruct \\',
                   '  --images-dir data/processed/CycleTCM/images \\',
-                  '  --output-dir '+a3_feature_dir+' --resume',
+                  '  --output-dir '+u0_feature_dir+' --resume',
                   'uv run --no-sync python scripts/run_prompt_ablation.py --seeds 42 --jobs 1 \\',
-                  '  --variants A3 --features '+a3_feature_dir+'/all_features.json \\',
+                  '  --variants U0 --features '+u0_feature_dir+'/all_features.json \\',
                   '  --resume-suite '+str(suite.relative_to(ROOT)),
                   'uv run --no-sync python scripts/report_prompt_ablation.py --suite '+str(suite.relative_to(ROOT)),
                   '```', '']

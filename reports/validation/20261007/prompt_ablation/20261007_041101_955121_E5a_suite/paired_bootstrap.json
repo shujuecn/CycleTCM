@@ -243,7 +243,7 @@
       }
     }
   },
-  "A3_minus_P0": {
+  "U0_minus_P0": {
     "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
     "iterations": 10000,
     "bootstrap_seed": 20261007,
@@ -282,7 +282,7 @@
         "seed": 20261007,
         "subjects": 895,
         "first_predictions_sha256": "e45c3280efb2a3226e6107ae005b119d10780a1735997a06d31030aac05c68c6",
-        "second_predictions_sha256": "3c826a6dc822563d67a317429b3404361497d9e3e2eafa45e5cfed546c8c6339",
+        "second_predictions_sha256": "c7e68d31e1ab52db071a602ab2f03b4e8759571ddfdcfcf7e0cf3c55ad852cc9",
         "ci95_pp": {
           "syndrome_acc": [
             -0.3910614525139633,
@@ -304,7 +304,7 @@
       }
     }
   },
-  "A3_minus_A0": {
+  "U0_minus_A0": {
     "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
     "iterations": 10000,
     "bootstrap_seed": 20261007,
@@ -343,7 +343,7 @@
         "seed": 20261007,
         "subjects": 895,
         "first_predictions_sha256": "1dab3127cd64858802bff31a109a477b3b5edf193661f0d0348b075a7b43475a",
-        "second_predictions_sha256": "3c826a6dc822563d67a317429b3404361497d9e3e2eafa45e5cfed546c8c6339",
+        "second_predictions_sha256": "c7e68d31e1ab52db071a602ab2f03b4e8759571ddfdcfcf7e0cf3c55ad852cc9",
         "ci95_pp": {
           "syndrome_acc": [
             0.41899441340782495,
@@ -365,7 +365,7 @@
       }
     }
   },
-  "A3_minus_A1": {
+  "U0_minus_A1": {
     "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
     "iterations": 10000,
     "bootstrap_seed": 20261007,
@@ -404,7 +404,7 @@
         "seed": 20261007,
         "subjects": 895,
         "first_predictions_sha256": "1ea0888fc629afab496c3ee0b31bac827832bb0acb7f258c7c4ac6c34bd3050e",
-        "second_predictions_sha256": "3c826a6dc822563d67a317429b3404361497d9e3e2eafa45e5cfed546c8c6339",
+        "second_predictions_sha256": "c7e68d31e1ab52db071a602ab2f03b4e8759571ddfdcfcf7e0cf3c55ad852cc9",
         "ci95_pp": {
           "syndrome_acc": [
             0.40502793296088857,
@@ -426,7 +426,7 @@
       }
     }
   },
-  "A3_minus_A2": {
+  "U0_minus_A2": {
     "definition": "second minus first; paired subject resampling, mean of the selected fixed training seed metrics",
     "iterations": 10000,
     "bootstrap_seed": 20261007,
@@ -465,7 +465,7 @@
         "seed": 20261007,
         "subjects": 895,
         "first_predictions_sha256": "7adf0998a71c347ec4ba85dee6f89cc9f469118151a35fc938fb3802999fea6f",
-        "second_predictions_sha256": "3c826a6dc822563d67a317429b3404361497d9e3e2eafa45e5cfed546c8c6339",
+        "second_predictions_sha256": "c7e68d31e1ab52db071a602ab2f03b4e8759571ddfdcfcf7e0cf3c55ad852cc9",
         "ci95_pp": {
           "syndrome_acc": [
             0.2929469273742919,

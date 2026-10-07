@@ -4,13 +4,13 @@
     "A0": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A0/all_features.json",
     "A1": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A1/all_features.json",
     "A2": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A2/all_features.json",
-    "A3": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_A3/all_features.json"
+    "U0": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/data/features/prompt_20261007_U0/all_features.json"
   },
   "features_sha256": {
     "A0": "5b820a2ed2cbabde7131357f5610bd6bd7bff3627fbbf8457db13df6eb02ccd2",
     "A1": "8383571094924b621432a29c0136ec2da2c26b23dc38e804d633b910951cef0e",
     "A2": "352238cc22c606b964810c9149382a78c57371d6495225bb24d083737898f4a0",
-    "A3": "0ab8c370bc512223874225810a3938d99c9f658b6d22df5341bf0178ee72c97c"
+    "U0": "0ab8c370bc512223874225810a3938d99c9f658b6d22df5341bf0178ee72c97c"
   },
   "queue": [
     {
@@ -41,11 +41,11 @@
       "seconds": 526.0542521730022
     },
     {
-      "variant": "A3",
+      "variant": "U0",
       "seed": 42,
       "status": "complete",
       "pid": 432322,
-      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/A3_seed42/20261007_144049_233427_code_compat_full_seed42",
+      "run": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/outputs/prompt_ablation/20261007_041101_955121_E5a_suite/U0_seed42/20261007_144049_233427_code_compat_full_seed42",
       "returncode": 0,
       "seconds": 6096.620648905999
     }

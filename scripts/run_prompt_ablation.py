@@ -16,7 +16,7 @@ from utils.experiment import run_directory, write_json, sha256
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--variants', nargs='+', choices=['A0', 'A1', 'A2', 'A3'], default=['A0', 'A1', 'A2'])
+    parser.add_argument('--variants', nargs='+', choices=['A0', 'A1', 'A2', 'U0'], default=['A0', 'A1', 'A2'])
     parser.add_argument('--features', nargs='+', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, default=ROOT / 'outputs/prompt_ablation')
     parser.add_argument('--resume-suite', type=Path)

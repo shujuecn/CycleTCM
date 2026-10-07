@@ -14,7 +14,7 @@
 2026-10-07 的实验数据目录：
 
 - [feature_controls/](validation/20261007/feature_controls/)：常量、随机与 Qwen MLLM-only 的聚合表、逐类指标及来源。
-- [prompt_ablation/](validation/20261007/prompt_ablation/)：Qwen A0–A3 的表、图、提示词原文、A3 核查和配对区间。
+- [prompt_ablation/](validation/20261007/prompt_ablation/)：Qwen A0–A2 与 U0 的表、图、提示词原文、U0 核查和配对区间。
 - [medgemma_p0/](validation/20261007/medgemma_p0/)：visual、Qwen P0、MedGemma P0 的同种子比较及权重／输入来源。
 - [efficiency.json](validation/20261007/efficiency.json)：原始效率测量；累计显存与 warm-up 限制见完整报告。
 - [report_checks.json](validation/20261007/report_checks.json)：报告生成时实际完成的校验范围。

@@ -203,9 +203,9 @@
       }
     }
   },
-  "A3": {
+  "U0": {
     "metadata": {
-      "variant": "A3",
+      "variant": "U0",
       "prompt_doc": "/home/ps/Documents/NuanWorkSpace/CV/CycleTCM/scripts/extract_prompt_features.py",
       "prompt_sha256": "bc593a8a6520b3fa34d43f7d041bd84aba9c7d260b92f0adf5228727fde415b7",
       "system_prompt": "喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼",
